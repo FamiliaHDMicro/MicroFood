@@ -17,8 +17,8 @@ const templatesPorNicho = {
     { id: 'barber-shop', nome: 'BarberShop', emoji: '💈', desc: 'Masculino e vintage. Ideal para barbearias.' }
   ],
   servico: [
-    { id: 'mao-na-massa', nome: 'MãoNaMassa', emoji: '', desc: 'Prático e direto. Ideal para eletricista, encanador.' },
-    { id: 'tech-solutions', nome: 'TechSolutions', emoji: '💻', desc: 'Corporativo. Ideal para TI, manutenção.' },
+    { id: 'mao-na-massa', nome: 'MãoNaMassa', emoji: '🔧', desc: 'Prático e direto. Ideal para eletricista, encanador.' },
+    { id: 'tech-solutions', nome: 'TechSolutions', emoji: '', desc: 'Corporativo. Ideal para TI, manutenção.' },
     { id: 'limpeza-total', nome: 'LimpezaTotal', emoji: '🧹', desc: 'Fresco e organizado. Ideal para diaristas.' }
   ],
   business: [
@@ -142,6 +142,7 @@ async function finalizarCadastro() {
     const hoje = new Date(); hoje.setDate(hoje.getDate() + 30);
     document.getElementById('dash-cobranca').textContent = hoje.toLocaleDateString('pt-BR');
     irPara('tela-dashboard');
+    carregarAnalytics();
   } catch (erro) {
     mostrarMsg('erro', '❌ ' + erro.message);
     btn.disabled = false;
@@ -153,6 +154,29 @@ function copiarPix() { navigator.clipboard.writeText('5517992644042'); mostrarMs
 function copiarLink() { navigator.clipboard.writeText(SITE_URL + '/loja.html?subdomain=' + estado.subdomain); mostrarMsg('sucesso', '✅ Link copiado!'); }
 function abrirLoja() { window.open(SITE_URL + '/loja.html?subdomain=' + estado.subdomain, '_blank'); }
 function compartilharZap() { const texto = 'Olá! Veja minha loja: ' + SITE_URL + '/loja.html?subdomain=' + estado.subdomain; window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(texto), '_blank'); }
+
+async function carregarAnalytics() {
+  if (!estado.lojaId) return;
+  try {
+    const resposta = await fetch(WORKER_URL + '/api/analytics?loja_id=' + estado.lojaId);
+    const dados = await resposta.json();
+    if (!dados.sucesso) return;
+    const a = dados.analytics;
+    
+    document.getElementById('dash-visitas-total').textContent = a.total;
+    document.getElementById('dash-visitas-hoje').textContent = a.hoje;
+    document.getElementById('dash-visitas-semana').textContent = a.semana;
+    
+    const lista = document.getElementById('lista-ultimas-visitas');
+    if (a.ultimas.length === 0) {
+      lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhuma visita ainda. Compartilhe sua loja!</div>';
+    } else {
+      lista.innerHTML = a.ultimas.map(v => '<div class="bg-black rounded-lg p-3 flex items-center gap-3"><div class="text-2xl"></div><div class="flex-1"><div class="text-sm font-bold">Visita registrada</div><div class="text-xs text-gray-400">' + v.data + ' às ' + (v.hora || '--') + '</div></div></div>').join('');
+    }
+  } catch (erro) {
+    console.error('Erro ao carregar analytics:', erro);
+  }
+}
 
 function abrirModalUpload() {
   document.getElementById('modal-upload').classList.remove('tela-oculta');
@@ -239,7 +263,7 @@ async function carregarFotosExistentes() {
     if (dados.midias.length === 0) {
       lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhuma foto enviada ainda.</div>';
     } else {
-      lista.innerHTML = '<div class="text-sm font-bold text-amarelo mb-2">Fotos ativas:</div>' + dados.midias.map(m => '<div class="foto-item bg-black rounded-lg p-3 flex items-center gap-3"><img src="' + m.url + '" class="w-16 h-16 object-cover rounded" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%22 font-size=%2240%22></text></svg>\'"><div class="flex-1"><div class="text-sm font-bold">Foto</div><div class="text-xs text-gray-400">Upload: ' + (m.data_upload || '--') + '</div><div class="text-xs ' + (m.data_expira ? 'text-amarelo' : 'text-verde') + '">Expira: ' + (m.data_expira || 'Nunca') + '</div></div><button onclick="deletarFoto(\'' + m.id + '\')" class="bg-vermelho px-3 py-1 rounded text-xs font-bold hover:bg-red-600">Excluir</button></div>').join('');
+      lista.innerHTML = '<div class="text-sm font-bold text-amarelo mb-2">Fotos ativas:</div>' + dados.midias.map(m => '<div class="foto-item bg-black rounded-lg p-3 flex items-center gap-3"><img src="' + m.url + '" class="w-16 h-16 object-cover rounded" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%22 font-size=%2240%22>📷</text></svg>\'"><div class="flex-1"><div class="text-sm font-bold">Foto</div><div class="text-xs text-gray-400">Upload: ' + (m.data_upload || '--') + '</div><div class="text-xs ' + (m.data_expira ? 'text-amarelo' : 'text-verde') + '">Expira: ' + (m.data_expira || 'Nunca') + '</div></div><button onclick="deletarFoto(\'' + m.id + '\')" class="bg-vermelho px-3 py-1 rounded text-xs font-bold hover:bg-red-600">Excluir</button></div>').join('');
     }
     atualizarContador();
   } catch (erro) { console.error('Erro ao carregar fotos:', erro); }
