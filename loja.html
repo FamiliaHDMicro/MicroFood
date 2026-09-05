@@ -1,4 +1,19 @@
-<!DOCTYPE html>
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <style>
+                body {
+                  background-color: white; /* Ensure the iframe has a white background */
+                }
+
+                
+              </style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -24,7 +39,7 @@
   .card-hover { transition: all 0.3s; }
   .card-hover:hover { transform: translateY(-5px); }
   .tela-oculta { display: none !important; }
-  video { width: 100%; border-radius: 12px; }
+  video, iframe { width: 100%; border-radius: 12px; }
 </style>
 </head>
 <body>
@@ -65,7 +80,7 @@ const templatesHTML = {
   'eventos-plus': renderEventosPlus
 };
 
-function renderSaborCaseiro(loja, fotos, videos) {
+function renderSaborCaseiro(loja, fotos, videos, musicas) {
   const galeria = fotos.length > 0 
     ? fotos.map(f => `<div class="card-hover rounded-2xl overflow-hidden shadow-2xl"><img src="${f.url}" class="w-full h-64 object-cover"></div>`).join('')
     : `<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4">🍽️</div><div class="text-xl text-gray-400">Fotos em breve!</div></div>`;
@@ -75,6 +90,14 @@ function renderSaborCaseiro(loja, fotos, videos) {
       <h2 class="text-3xl font-black text-laranja mb-6 text-center">Nossos vídeos</h2>
       <div class="grid md:grid-cols-3 gap-6">
         ${videos.map(v => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="${v.url}" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">${v.titulo || ''}</div></div>`).join('')}
+      </div>
+    </div>` : '';
+
+  const musicasHtml = musicas.length > 0 ? `
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6 text-center">🎵 Trilha sonora</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        ${musicas.map(m => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><iframe src="${m.url}" class="w-full h-48" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="p-3"><div class="text-sm font-bold text-white">${m.titulo || ''}</div><div class="text-xs text-gray-400">${m.artista || ''}</div></div></div>`).join('')}
       </div>
     </div>` : '';
 
@@ -99,11 +122,12 @@ function renderSaborCaseiro(loja, fotos, videos) {
       <div class="grid md:grid-cols-3 gap-6">${galeria}</div>
     </div>
     ${videosHtml}
+    ${musicasHtml}
     <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
   `;
 }
 
-function renderLojaVirtual(loja, fotos, videos) {
+function renderLojaVirtual(loja, fotos, videos, musicas) {
   const produtos = fotos.length > 0 
     ? fotos.map(f => `<div class="card-hover bg-card rounded-2xl overflow-hidden border border-roxo"><img src="${f.url}" class="w-full h-48 object-cover"><div class="p-4"><div class="font-bold text-lg">Produto</div><div class="text-laranja font-black text-xl mt-2">R$ --</div><a href="https://wa.me/${loja.zap}" target="_blank" class="block mt-3 bg-laranja text-white text-center py-2 rounded-lg font-bold">Comprar</a></div></div>`).join('')
     : `<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4">🛒</div><div class="text-xl text-gray-400">Produtos em breve!</div></div>`;
@@ -116,9 +140,17 @@ function renderLojaVirtual(loja, fotos, videos) {
       </div>
     </div>` : '';
 
+  const musicasHtml = musicas.length > 0 ? `
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6">🎵 Músicas da loja</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        ${musicas.map(m => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><iframe src="${m.url}" class="w-full h-48" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="p-3"><div class="text-sm font-bold text-white">${m.titulo || ''}</div><div class="text-xs text-gray-400">${m.artista || ''}</div></div></div>`).join('')}
+      </div>
+    </div>` : '';
+
   return `
     <div class="bg-gradient-to-r from-blue-900 to-purple-900 py-16 text-center fade-in">
-      <div class="text-6xl mb-4">️</div>
+      <div class="text-6xl mb-4">🛍️</div>
       <h1 class="text-5xl font-black text-white mb-4">${loja.nome_loja}</h1>
       <p class="text-xl text-blue-200">Sua loja online completa</p>
       <a href="https://wa.me/${loja.zap}" target="_blank" class="inline-block mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl">💬 Pedir pelo WhatsApp</a>
@@ -128,11 +160,12 @@ function renderLojaVirtual(loja, fotos, videos) {
       <div class="grid md:grid-cols-3 gap-6">${produtos}</div>
     </div>
     ${videosHtml}
+    ${musicasHtml}
     <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
   `;
 }
 
-function renderDefault(loja, fotos, videos, emoji, cor1, cor2) {
+function renderDefault(loja, fotos, videos, musicas, emoji, cor1, cor2) {
   const galeria = fotos.length > 0 
     ? `<div class="max-w-6xl mx-auto px-4 py-12"><h2 class="text-3xl font-black text-laranja mb-6 text-center">Galeria</h2><div class="grid md:grid-cols-3 gap-6">${fotos.map(f => `<div class="card-hover rounded-2xl overflow-hidden shadow-2xl"><img src="${f.url}" class="w-full h-64 object-cover"></div>`).join('')}</div></div>`
     : '';
@@ -145,6 +178,14 @@ function renderDefault(loja, fotos, videos, emoji, cor1, cor2) {
       </div>
     </div>` : '';
 
+  const musicasHtml = musicas.length > 0 ? `
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6 text-center"> Músicas</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        ${musicas.map(m => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><iframe src="${m.url}" class="w-full h-48" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="p-3"><div class="text-sm font-bold text-white">${m.titulo || ''}</div><div class="text-xs text-gray-400">${m.artista || ''}</div></div></div>`).join('')}
+      </div>
+    </div>` : '';
+
   return `
     <div class="bg-gradient-to-r ${cor1} ${cor2} py-16 text-center fade-in">
       <div class="text-6xl mb-4">${emoji}</div>
@@ -154,20 +195,21 @@ function renderDefault(loja, fotos, videos, emoji, cor1, cor2) {
     </div>
     ${galeria}
     ${videosHtml}
+    ${musicasHtml}
     <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
   `;
 }
 
-function renderConsultPro(loja, f, v) { return renderDefault(loja, f, v, '💼', 'from-slate-900', 'to-gray-900'); }
-function renderBarberShop(loja, f, v) { return renderDefault(loja, f, v, '💈', 'from-gray-900', 'to-black'); }
-function renderDeliveryRapido(loja, f, v) { return renderDefault(loja, f, v, '🚀', 'from-red-900', 'to-orange-900'); }
-function renderMesaFarta(loja, f, v) { return renderDefault(loja, f, v, '️', 'from-amber-900', 'to-yellow-900'); }
-function renderGlamourStudio(loja, f, v) { return renderDefault(loja, f, v, '✨', 'from-purple-900', 'to-pink-900'); }
-function renderBeautyExpress(loja, f, v) { return renderDefault(loja, f, v, '💅', 'from-pink-900', 'to-rose-900'); }
-function renderMaoNaMassa(loja, f, v) { return renderDefault(loja, f, v, '🔧', 'from-orange-900', 'to-amber-900'); }
-function renderTechSolutions(loja, f, v) { return renderDefault(loja, f, v, '💻', 'from-blue-900', 'to-cyan-900'); }
-function renderLimpezaTotal(loja, f, v) { return renderDefault(loja, f, v, '🧹', 'from-green-900', 'to-teal-900'); }
-function renderEventosPlus(loja, f, v) { return renderDefault(loja, f, v, '🎉', 'from-fuchsia-900', 'to-purple-900'); }
+function renderConsultPro(loja, f, v, m) { return renderDefault(loja, f, v, m, '💼', 'from-slate-900', 'to-gray-900'); }
+function renderBarberShop(loja, f, v, m) { return renderDefault(loja, f, v, m, '💈', 'from-gray-900', 'to-black'); }
+function renderDeliveryRapido(loja, f, v, m) { return renderDefault(loja, f, v, m, '', 'from-red-900', 'to-orange-900'); }
+function renderMesaFarta(loja, f, v, m) { return renderDefault(loja, f, v, m, '🍽️', 'from-amber-900', 'to-yellow-900'); }
+function renderGlamourStudio(loja, f, v, m) { return renderDefault(loja, f, v, m, '✨', 'from-purple-900', 'to-pink-900'); }
+function renderBeautyExpress(loja, f, v, m) { return renderDefault(loja, f, v, m, '💅', 'from-pink-900', 'to-rose-900'); }
+function renderMaoNaMassa(loja, f, v, m) { return renderDefault(loja, f, v, m, '', 'from-orange-900', 'to-amber-900'); }
+function renderTechSolutions(loja, f, v, m) { return renderDefault(loja, f, v, m, '💻', 'from-blue-900', 'to-cyan-900'); }
+function renderLimpezaTotal(loja, f, v, m) { return renderDefault(loja, f, v, m, '🧹', 'from-green-900', 'to-teal-900'); }
+function renderEventosPlus(loja, f, v, m) { return renderDefault(loja, f, v, m, '🎉', 'from-fuchsia-900', 'to-purple-900'); }
 
 async function carregarLoja() {
   const params = new URLSearchParams(window.location.search);
@@ -187,11 +229,12 @@ async function carregarLoja() {
     const loja = dados.loja;
     const fotos = dados.fotos || [];
     const videos = dados.videos || [];
+    const musicas = dados.musicas || [];
     const templateId = loja.template_id || 'consult-pro';
     const renderFn = templatesHTML[templateId] || renderDefault;
 
     document.getElementById('titulo-loja').textContent = loja.nome_loja;
-    document.getElementById('conteudo-loja').innerHTML = renderFn(loja, fotos, videos);
+    document.getElementById('conteudo-loja').innerHTML = renderFn(loja, fotos, videos, musicas);
     document.getElementById('loading').classList.add('tela-oculta');
     document.getElementById('conteudo-loja').classList.remove('tela-oculta');
 
@@ -205,3 +248,187 @@ carregarLoja();
 </script>
 </body>
 </html>
+
+
+              <script>
+                              const R2_PUBLIC_URL = 'https://pub-4c6d087b787a47b8ae27e1d94b5725e1.r2.dev';
+
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Max-Age': '86400',
+        },
+      });
+    }
+
+    if (url.pathname === '/api/criar-loja' && request.method === 'POST') return await criarLoja(request, env);
+    if (url.pathname === '/api/ver' && request.method === 'GET') return await verLoja(request, env);
+    if (url.pathname === '/api/upload-foto' && request.method === 'POST') return await uploadFoto(request, env);
+    if (url.pathname === '/api/listar-fotos' && request.method === 'GET') return await listarFotos(request, env);
+    if (url.pathname === '/api/deletar-foto' && request.method === 'POST') return await deletarFoto(request, env);
+
+    return new Response('Microfood API Online - SiteOne v1.0', {
+      headers: { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' }
+    });
+  },
+};
+
+async function criarLoja(request, env) {
+  try {
+    const dados = await request.json();
+    const { nome, nome_loja, subdomain, nicho, plano, zap, template_id } = dados;
+
+    if (!nome || !nome_loja || !subdomain || !nicho || !plano) {
+      return new Response(JSON.stringify({ erro: 'Campos obrigatórios ausentes' }), {
+        status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+
+    const subdomainLimpo = subdomain.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30);
+    if (subdomainLimpo.length < 3) {
+      return new Response(JSON.stringify({ erro: 'Domínio muito curto' }), {
+        status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+
+    const existente = await env.DB.prepare('SELECT id FROM lojas WHERE subdomain = ?').bind(subdomainLimpo).first();
+    if (existente) {
+      return new Response(JSON.stringify({ erro: 'Domínio já em uso' }), {
+        status: 409, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+
+    const idLoja = 'loja_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const dataExpira = new Date(); dataExpira.setDate(dataExpira.getDate() + 30);
+    const dataCobranca = new Date(); dataCobranca.setDate(dataCobranca.getDate() + 30);
+
+    await env.DB.prepare(`
+      INSERT INTO lojas (id, nome, nome_loja, subdomain, nicho, plano, template_id, setup_pago, mensal_pago, ativa, zap, data_expira_midia, data_proxima_cobranca)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0, 1, ?, ?, ?)
+    `).bind(idLoja, nome, nome_loja, subdomainLimpo, nicho, plano, template_id || null, zap || '', dataExpira.toISOString().split('T')[0], dataCobranca.toISOString().split('T')[0]).run();
+
+    return new Response(JSON.stringify({
+      sucesso: true,
+      loja: { id: idLoja, nome: nome_loja, subdomain: subdomainLimpo, plano, nicho, template_id: template_id || null }
+    }), { status: 201, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+  } catch (erro) {
+    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  }
+}
+
+async function verLoja(request, env) {
+  try {
+    const url = new URL(request.url);
+    const subdomain = url.searchParams.get('subdomain');
+    if (!subdomain) return new Response(JSON.stringify({ erro: 'Subdomínio não fornecido' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    const loja = await env.DB.prepare('SELECT * FROM lojas WHERE subdomain = ?').bind(subdomain).first();
+    if (!loja) return new Response(JSON.stringify({ erro: 'Loja não encontrada' }), { status: 404, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    const fotos = await env.DB.prepare('SELECT * FROM midias WHERE loja_id = ? AND tipo = ? AND ativa = 1').bind(loja.id, 'foto').all();
+
+    let videos = [];
+    let musicas = [];
+    if (loja.template_id) {
+      const vids = await env.DB.prepare('SELECT * FROM videos_autorais WHERE template_id = ? ORDER BY ordem').bind(loja.template_id).all();
+      videos = vids.results || [];
+      
+      const musics = await env.DB.prepare('SELECT * FROM musicas_autorais WHERE template_id = ? ORDER BY ordem').bind(loja.template_id).all();
+      musicas = musics.results || [];
+    }
+
+    return new Response(JSON.stringify({ 
+      sucesso: true, 
+      loja, 
+      fotos: fotos.results || [],
+      videos,
+      musicas
+    }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  } catch (erro) {
+    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  }
+}
+
+async function uploadFoto(request, env) {
+  try {
+    const formData = await request.formData();
+    const arquivo = formData.get('foto');
+    const lojaId = formData.get('loja_id');
+
+    if (!arquivo || !lojaId) return new Response(JSON.stringify({ erro: 'Arquivo ou loja_id ausente' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    const tipoValido = ['image/jpeg', 'image/png', 'image/webp'].includes(arquivo.type);
+    if (!tipoValido) return new Response(JSON.stringify({ erro: 'Formato inválido. Use JPG, PNG ou WEBP.' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    if (arquivo.size > 5 * 1024 * 1024) return new Response(JSON.stringify({ erro: 'Arquivo muito grande. Máximo 5MB.' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    const loja = await env.DB.prepare('SELECT plano FROM lojas WHERE id = ?').bind(lojaId).first();
+    if (!loja) return new Response(JSON.stringify({ erro: 'Loja não encontrada' }), { status: 404, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[loja.plano] || 30;
+    const dataExpira = new Date();
+    if (rotacao > 0) dataExpira.setDate(dataExpira.getDate() + rotacao);
+
+    const ext = arquivo.name.split('.').pop().toLowerCase();
+    const r2Key = `lojas/${lojaId}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
+
+    await env.FOTOS.put(r2Key, arquivo.stream(), { httpMetadata: { contentType: arquivo.type } });
+    const urlPublica = `${R2_PUBLIC_URL}/${r2Key}`;
+
+    const idMidia = 'mid_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    await env.DB.prepare(`
+      INSERT INTO midias (id, loja_id, tipo, url, r2_key, data_upload, data_expira, ativa)
+      VALUES (?, ?, 'foto', ?, ?, ?, ?, 1)
+    `).bind(idMidia, lojaId, urlPublica, r2Key, new Date().toISOString().split('T')[0], rotacao > 0 ? dataExpira.toISOString().split('T')[0] : null).run();
+
+    return new Response(JSON.stringify({ sucesso: true, midia: { id: idMidia, url: urlPublica, data_expira: rotacao > 0 ? dataExpira.toISOString().split('T')[0] : 'Nunca' } }), { status: 201, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+  } catch (erro) {
+    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  }
+}
+
+async function listarFotos(request, env) {
+  try {
+    const url = new URL(request.url);
+    const lojaId = url.searchParams.get('loja_id');
+    if (!lojaId) return new Response(JSON.stringify({ erro: 'loja_id ausente' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    const midias = await env.DB.prepare('SELECT * FROM midias WHERE loja_id = ? AND tipo = ? AND ativa = 1 ORDER BY data_upload DESC').bind(lojaId, 'foto').all();
+    return new Response(JSON.stringify({ sucesso: true, midias: midias.results || [] }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  } catch (erro) {
+    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  }
+}
+
+async function deletarFoto(request, env) {
+  try {
+    const dados = await request.json();
+    const { midia_id, loja_id } = dados;
+    if (!midia_id || !loja_id) return new Response(JSON.stringify({ erro: 'IDs ausentes' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    const midia = await env.DB.prepare('SELECT * FROM midias WHERE id = ? AND loja_id = ?').bind(midia_id, loja_id).first();
+    if (!midia) return new Response(JSON.stringify({ erro: 'Mídia não encontrada' }), { status: 404, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    if (midia.r2_key) await env.FOTOS.delete(midia.r2_key);
+    await env.DB.prepare('UPDATE midias SET ativa = 0 WHERE id = ?').bind(midia_id).run();
+
+    return new Response(JSON.stringify({ sucesso: true }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  } catch (erro) {
+    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  }
+}
+
+
+              </script>
+                        </body>
+                        </html>
+                    
