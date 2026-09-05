@@ -20,11 +20,21 @@ export default {
     if (url.pathname === '/api/upload-foto' && request.method === 'POST') return await uploadFoto(request, env);
     if (url.pathname === '/api/listar-fotos' && request.method === 'GET') return await listarFotos(request, env);
     if (url.pathname === '/api/deletar-foto' && request.method === 'POST') return await deletarFoto(request, env);
+    if (url.pathname === '/api/testar-rotacao' && request.method === 'GET') {
+      await rotacionarFotosExpiradas(env);
+      return new Response(JSON.stringify({ sucesso: true, mensagem: 'Rotação testada!' }), {
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
 
     return new Response('Microfood API Online - SiteOne v1.0', {
       headers: { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' }
     });
   },
+
+  async scheduled(event, env, ctx) {
+    await rotacionarFotosExpiradas(env);
+  }
 };
 
 async function criarLoja(request, env) {
@@ -83,16 +93,21 @@ async function verLoja(request, env) {
     const fotos = await env.DB.prepare('SELECT * FROM midias WHERE loja_id = ? AND tipo = ? AND ativa = 1').bind(loja.id, 'foto').all();
 
     let videos = [];
+    let musicas = [];
     if (loja.template_id) {
       const vids = await env.DB.prepare('SELECT * FROM videos_autorais WHERE template_id = ? ORDER BY ordem').bind(loja.template_id).all();
       videos = vids.results || [];
+      
+      const musics = await env.DB.prepare('SELECT * FROM musicas_autorais WHERE template_id = ? ORDER BY ordem').bind(loja.template_id).all();
+      musicas = musics.results || [];
     }
 
     return new Response(JSON.stringify({ 
       sucesso: true, 
       loja, 
       fotos: fotos.results || [],
-      videos 
+      videos,
+      musicas
     }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   } catch (erro) {
     return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
@@ -166,5 +181,44 @@ async function deletarFoto(request, env) {
     return new Response(JSON.stringify({ sucesso: true }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   } catch (erro) {
     return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  }
+}
+
+async function rotacionarFotosExpiradas(env) {
+  try {
+    const hoje = new Date().toISOString().split('T')[0];
+    
+    const fotosExpiradas = await env.DB.prepare(
+      'SELECT * FROM midias WHERE tipo = ? AND ativa = 1 AND data_expira < ?'
+    ).bind('foto', hoje).all();
+    
+    if (!fotosExpiradas.results || fotosExpiradas.results.length === 0) {
+      console.log('✅ Nenhuma foto expirada hoje');
+      return;
+    }
+    
+    console.log(`🗑️ Apagando ${fotosExpiradas.results.length} fotos expiradas`);
+    
+    for (const foto of fotosExpiradas.results) {
+      if (foto.r2_key) {
+        try {
+          await env.FOTOS.delete(foto.r2_key);
+          console.log(`  ✓ Deletada do R2: ${foto.r2_key}`);
+        } catch (erro) {
+          console.error(`  ✗ Erro ao deletar do R2: ${foto.r2_key}`, erro);
+        }
+      }
+      
+      await env.DB.prepare(
+        'UPDATE midias SET ativa = 0 WHERE id = ?'
+      ).bind(foto.id).run();
+      
+      console.log(`  ✓ Marcada como inativa: ${foto.id}`);
+    }
+    
+    console.log('✅ Rotação concluída!');
+    
+  } catch (erro) {
+    console.error('❌ Erro na rotação:', erro);
   }
 }
