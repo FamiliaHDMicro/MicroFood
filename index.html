@@ -18,7 +18,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SiteOne — Sua loja em 5 minutos</title>
+<title id="titulo-loja">Carregando...</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -34,533 +34,189 @@
 </script>
 <style>
   body { background: #0d0d0d; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; }
-  .glow { box-shadow: 0 0 30px rgba(255, 85, 0, 0.15); }
-  .pulse-dot { animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
-  .fade-in { animation: fadeIn 0.4s ease-out; }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:translateY(0) } }
-  .btn-laranja { background: #ff5500; transition: all 0.2s; }
-  .btn-laranja:hover:not(:disabled) { background: #e04b00; transform: translateY(-2px); }
-  .btn-laranja:disabled { background: #555; cursor: not-allowed; }
-  .card-hover { transition: all 0.2s; border: 1px solid #1a0f2b; }
-  .card-hover:hover { border-color: #ff5500; transform: translateY(-2px); }
-  .item-selecionado { border-color: #ff5500 !important; background: #1a0f2b !important; }
-  input, select, textarea { background: #0d0d0d; border: 1px solid #1a0f2b; color: #fff; }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: #ff5500; }
+  .fade-in { animation: fadeIn 0.6s ease-out; }
+  @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+  .card-hover { transition: all 0.3s; }
+  .card-hover:hover { transform: translateY(-5px); }
   .tela-oculta { display: none !important; }
-  .passo-ativo { display: block; }
-  .passo-inativo { display: none; }
-  .checkbox-termo { width: 20px; height: 20px; accent-color: #ff5500; }
-  .termo-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px; background: #0d0d0d; border-radius: 8px; margin-bottom: 8px; }
-  .barra-progresso { height: 4px; background: #1a0f2b; border-radius: 2px; overflow: hidden; }
-  .barra-progresso-fill { height: 100%; background: #ff5500; transition: width 0.3s; }
-  .spinner { border: 3px solid #1a0f2b; border-top: 3px solid #ff5500; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
-  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-  .msg-erro { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
-  .msg-sucesso { background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
-  .btn-autoral { cursor: default; }
-  .btn-autoral:hover { transform: none; }
+  video { width: 100%; border-radius: 12px; }
 </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-<!-- TELA 1: LANDING -->
-<div id="tela-landing" class="min-h-screen flex items-center justify-center p-4">
-  <div class="max-w-5xl w-full fade-in">
-    <div class="text-center mb-10">
-      <div class="inline-block bg-amarelo text-bg text-xs font-bold px-3 py-1 rounded mb-4 uppercase">Foco em Conversão</div>
-      <h1 class="text-5xl md:text-6xl font-black text-laranja uppercase tracking-tight leading-tight mb-4">Seu negócio<br>no ar em 5 minutos</h1>
-      <p class="text-gray-400 text-lg max-w-2xl mx-auto">12 modelos prontos. Fotos, vídeos e músicas autorais. Você cuida do seu negócio, a gente cuida da vitrine.</p>
-    </div>
-    <div class="grid md:grid-cols-4 gap-4 mb-8">
-      <div class="bg-card rounded-xl p-6 card-hover">
-        <div class="text-xs text-gray-500 uppercase mb-2">Teste grátis</div>
-        <div class="text-3xl font-black text-white mb-1">FREE</div>
-        <div class="text-laranja font-bold mb-4">R$ 0</div>
-        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 3 fotos</li><li>✓ 1 vídeo autoral</li><li>✓ 15 dias grátis</li><li>✗ Sem músicas</li></ul>
-      </div>
-      <div class="bg-card rounded-xl p-6 card-hover border-2 border-laranja glow">
-        <div class="text-xs text-laranja uppercase mb-2 font-bold">Mais popular</div>
-        <div class="text-3xl font-black text-white mb-1">BASIC</div>
-        <div class="text-laranja font-bold mb-4">R$ 79 + R$ 29/mês</div>
-        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 10 fotos</li><li>✓ 3 vídeos autorais</li><li>✓ 1 música autoral</li><li>✓ Business (90 dias)</li></ul>
-      </div>
-      <div class="bg-card rounded-xl p-6 card-hover">
-        <div class="text-xs text-gray-500 uppercase mb-2">Serviços</div>
-        <div class="text-3xl font-black text-white mb-1">PLUS</div>
-        <div class="text-laranja font-bold mb-4">R$ 99 + R$ 39/mês</div>
-        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 13 fotos</li><li>✓ 3 vídeos autorais</li><li>✓ 2 músicas autorais</li><li>✓ Rotação 15 dias</li></ul>
-      </div>
-      <div class="bg-card rounded-xl p-6 card-hover">
-        <div class="text-xs text-gray-500 uppercase mb-2">Alimentos</div>
-        <div class="text-3xl font-black text-white mb-1">PRO</div>
-        <div class="text-laranja font-bold mb-4">R$ 120 + R$ 55/mês</div>
-        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 16 fotos</li><li>✓ 4 vídeos autorais</li><li>✓ 3 músicas autorais</li><li>✓ Rotação livre</li></ul>
-      </div>
-    </div>
-    <button onclick="irPara('tela-cadastro')" class="btn-laranja w-full md:w-auto px-12 py-4 rounded-lg font-bold text-lg uppercase">Começar agora →</button>
-    <p class="text-center text-gray-600 text-sm mt-6">Terminal de controle • Processamento Cloudflare • Distribuição gratuita</p>
+<div id="loading" class="min-h-screen flex items-center justify-center">
+  <div class="text-center">
+    <div class="text-6xl mb-4">🍽️</div>
+    <div class="text-2xl font-bold text-laranja">Carregando loja...</div>
   </div>
 </div>
 
-<!-- TELA 2: CADASTRO (7 passos) -->
-<div id="tela-cadastro" class="tela-oculta min-h-screen flex items-center justify-center p-4">
-  <div class="max-w-2xl w-full bg-card rounded-2xl p-8 glow fade-in">
-    <button onclick="irPara('tela-landing')" class="text-gray-500 hover:text-white mb-4 text-sm">← Voltar</button>
-    <div class="mb-6">
-      <div class="flex justify-between text-xs text-gray-500 mb-2">
-        <span id="label-passo">Passo 1 de 7</span>
-        <span id="percent-passo">14%</span>
-      </div>
-      <div class="barra-progresso"><div class="barra-progresso-fill" id="barra-fill" style="width: 14%"></div></div>
-    </div>
-    <h2 class="text-3xl font-black text-laranja uppercase mb-2" id="titulo-passo">Seus dados</h2>
-    <p class="text-gray-400 mb-6" id="subtitulo-passo">Vamos começar pelo básico.</p>
-    <div id="area-msg"></div>
-
-    <div id="passo-1" class="passo-ativo">
-      <div class="space-y-4">
-        <div><label class="block text-sm font-bold mb-2 text-amarelo uppercase">Seu nome</label><input type="text" id="inp-nome" placeholder="Ex: Maria Silva" class="w-full p-3 rounded-lg"></div>
-        <div><label class="block text-sm font-bold mb-2 text-amarelo uppercase">WhatsApp</label><input type="tel" id="inp-zap" placeholder="(17) 99999-9999" class="w-full p-3 rounded-lg"></div>
-        <div>
-          <label class="block text-sm font-bold mb-2 text-amarelo uppercase">Qual o nicho do seu negócio?</label>
-          <div class="grid grid-cols-2 gap-3">
-            <button onclick="escolherNicho('alimentacao', this)" class="btn-nicho bg-roxo p-4 rounded-lg text-left hover:border-laranja border border-transparent">🍔 Alimentação</button>
-            <button onclick="escolherNicho('beleza', this)" class="btn-nicho bg-roxo p-4 rounded-lg text-left hover:border-laranja border border-transparent">💄 Beleza</button>
-            <button onclick="escolherNicho('servico', this)" class="btn-nicho bg-roxo p-4 rounded-lg text-left hover:border-laranja border border-transparent">🔧 Serviços</button>
-            <button onclick="escolherNicho('business', this)" class="btn-nicho bg-roxo p-4 rounded-lg text-left hover:border-laranja border border-transparent">💼 Business</button>
-          </div>
-        </div>
-      </div>
-      <button onclick="proximoPasso(2)" class="btn-laranja w-full py-4 rounded-lg font-bold text-lg uppercase mt-6">Continuar →</button>
-    </div>
-
-    <div id="passo-2" class="passo-inativo">
-      <label class="block text-sm font-bold mb-2 text-amarelo uppercase">Escolha seu plano</label>
-      <div class="grid grid-cols-2 gap-3">
-        <button onclick="escolherPlano('FREE', 0, 0, this)" class="btn-plano bg-roxo p-4 rounded-lg text-left border border-transparent"><div class="font-bold text-lg">FREE</div><div class="text-xs text-gray-400">R$ 0 • 15 dias grátis</div><div class="text-xs text-gray-500 mt-2">3 fotos • 1 vídeo autoral</div></button>
-        <button onclick="escolherPlano('BASIC', 79, 29, this)" class="btn-plano bg-roxo p-4 rounded-lg text-left border border-transparent"><div class="font-bold text-lg">BASIC</div><div class="text-xs text-laranja">R$ 79 + R$ 29/mês</div><div class="text-xs text-gray-500 mt-2">10 fotos • 3 vídeos • 1 música</div></button>
-        <button onclick="escolherPlano('PLUS', 99, 39, this)" class="btn-plano bg-roxo p-4 rounded-lg text-left border border-transparent"><div class="font-bold text-lg">PLUS</div><div class="text-xs text-laranja">R$ 99 + R$ 39/mês</div><div class="text-xs text-gray-500 mt-2">13 fotos • 3 vídeos • 2 músicas</div></button>
-        <button onclick="escolherPlano('PRO', 120, 55, this)" class="btn-plano bg-roxo p-4 rounded-lg text-left border border-transparent"><div class="font-bold text-lg">PRO</div><div class="text-xs text-laranja">R$ 120 + R$ 55/mês</div><div class="text-xs text-gray-500 mt-2">16 fotos • 4 vídeos • 3 músicas</div></button>
-      </div>
-      <div id="info-plano" class="mt-4 p-3 bg-roxo rounded-lg text-sm text-gray-300 hidden"></div>
-      <div class="flex gap-3 mt-6">
-        <button onclick="voltarPasso(1)" class="flex-1 bg-roxo py-4 rounded-lg font-bold">← Voltar</button>
-        <button onclick="proximoPasso(3)" class="flex-1 btn-laranja py-4 rounded-lg font-bold uppercase">Continuar →</button>
-      </div>
-    </div>
-
-    <div id="passo-3" class="passo-inativo">
-      <label class="block text-sm font-bold mb-2 text-amarelo uppercase">Qual nome você gostaria para seu domínio GRÁTIS?</label>
-      <p class="text-gray-400 text-sm mb-4">Este será o endereço da sua loja.</p>
-      <input type="text" id="inp-dominio" placeholder="Ex: marmitasdmaria" class="w-full p-4 rounded-lg text-lg" oninput="atualizarPreviewDominio()">
-      <div class="mt-4 bg-roxo rounded-lg p-4 border-l-4 border-laranja">
-        <div class="text-xs text-amarelo uppercase font-bold mb-2">Seu link será:</div>
-        <div class="text-xl font-bold text-white break-all" id="preview-dominio">seuloja.pages.dev</div>
-      </div>
-      <div class="flex gap-3 mt-6">
-        <button onclick="voltarPasso(2)" class="flex-1 bg-roxo py-4 rounded-lg font-bold">← Voltar</button>
-        <button onclick="proximoPasso(4)" class="flex-1 btn-laranja py-4 rounded-lg font-bold uppercase">Continuar →</button>
-      </div>
-    </div>
-
-    <div id="passo-4" class="passo-inativo">
-      <div class="text-center">
-        <div class="text-5xl mb-4">🔒</div>
-        <h3 class="text-2xl font-black text-amarelo mb-3">Confirme seu domínio</h3>
-        <p class="text-gray-300 mb-6">Este nome <strong class="text-laranja">NÃO poderá ser trocado depois</strong>.</p>
-        <div class="bg-roxo rounded-lg p-6 mb-6 border-2 border-laranja">
-          <div class="text-xs text-gray-400 uppercase mb-2">Seu domínio será:</div>
-          <div class="text-2xl font-black text-laranja break-all" id="confirm-dominio">seuloja.pages.dev</div>
-        </div>
-      </div>
-      <div class="flex gap-3">
-        <button onclick="voltarPasso(3)" class="flex-1 bg-roxo py-4 rounded-lg font-bold">← Trocar nome</button>
-        <button onclick="proximoPasso(5)" class="flex-1 btn-laranja py-4 rounded-lg font-bold uppercase">Confirmar ✓</button>
-      </div>
-    </div>
-
-    <div id="passo-5" class="passo-inativo">
-      <label class="block text-sm font-bold mb-4 text-amarelo uppercase">Termos e consentimentos</label>
-      <p class="text-gray-400 text-sm mb-4">Aceite todos os termos:</p>
-      <div class="space-y-2 mb-6">
-        <div class="termo-item"><input type="checkbox" id="termo-1" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-1" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Autoria:</strong> As fotos que enviar são de minha autoria.</label></div>
-        <div class="termo-item"><input type="checkbox" id="termo-2" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-2" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Responsabilidade:</strong> Assumo responsabilidade legal pelo conteúdo.</label></div>
-        <div class="termo-item"><input type="checkbox" id="termo-3" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-3" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Rotação:</strong> Minhas fotos duram conforme o plano e serão removidas após o período.</label></div>
-        <div class="termo-item"><input type="checkbox" id="termo-4" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-4" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Pagamento:</strong> Sem mensalidade = loja desativada.</label></div>
-        <div class="termo-item"><input type="checkbox" id="termo-5" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-5" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Domínio:</strong> Nome não pode ser alterado depois.</label></div>
-      </div>
-      <div class="flex gap-3">
-        <button onclick="voltarPasso(4)" class="flex-1 bg-roxo py-4 rounded-lg font-bold">← Voltar</button>
-        <button id="btn-ir-pagamento" onclick="proximoPasso(6)" disabled class="flex-1 btn-laranja py-4 rounded-lg font-bold uppercase">Ir para pagamento →</button>
-      </div>
-    </div>
-
-    <div id="passo-6" class="passo-inativo">
-      <div class="text-center">
-        <div class="text-5xl mb-4">💳</div>
-        <h3 class="text-2xl font-black text-laranja mb-4">Ative sua loja</h3>
-        <div class="bg-roxo rounded-lg p-4 mb-6">
-          <div class="text-xs text-gray-400 uppercase">Plano escolhido</div>
-          <div class="text-xl font-bold" id="pag-plano">BASIC</div>
-          <div class="text-3xl font-black text-laranja mt-2" id="pag-valor">R$ 79</div>
-          <div class="text-sm text-gray-400" id="pag-mensal">+ R$ 29/mês</div>
-        </div>
-        <div class="bg-black rounded-lg p-4 mb-4">
-          <div class="text-xs text-gray-400 uppercase mb-2">Sua loja:</div>
-          <div class="text-lg font-mono text-amarelo break-all" id="pag-dominio">seuloja.pages.dev</div>
-        </div>
-        <div class="bg-black rounded-lg p-4 mb-6">
-          <div class="text-xs text-gray-400 uppercase mb-2">Chave PIX</div>
-          <div class="text-lg font-mono text-amarelo break-all">5517992644042</div>
-          <button onclick="copiarPix()" class="mt-3 text-xs bg-roxo px-4 py-2 rounded hover:bg-laranja">📋 Copiar chave</button>
-        </div>
-        <div class="text-sm text-gray-400 mb-6">Após o pagamento, você escolhe o modelo da sua loja.</div>
-      </div>
-      <div class="flex gap-3">
-        <button onclick="voltarPasso(5)" class="flex-1 bg-roxo py-4 rounded-lg font-bold">← Voltar</button>
-        <button id="btn-confirmar-pgto" onclick="confirmarPagamento()" class="flex-1 btn-laranja py-4 rounded-lg font-bold uppercase">Já paguei ✓</button>
-      </div>
-    </div>
-
-    <div id="passo-7" class="passo-inativo">
-      <label class="block text-sm font-bold mb-2 text-amarelo uppercase">Escolha o modelo da sua loja</label>
-      <p class="text-gray-400 text-sm mb-4">Selecione o estilo que mais combina com seu negócio:</p>
-      <div id="lista-templates" class="grid grid-cols-1 gap-3"></div>
-      <div class="flex gap-3 mt-6">
-        <button onclick="voltarPasso(6)" class="flex-1 bg-roxo py-4 rounded-lg font-bold">← Voltar</button>
-        <button id="btn-finalizar" onclick="finalizarCadastro()" disabled class="flex-1 btn-laranja py-4 rounded-lg font-bold uppercase">Finalizar ✓</button>
-      </div>
-    </div>
-
+<div id="erro" class="tela-oculta min-h-screen flex items-center justify-center">
+  <div class="text-center">
+    <div class="text-6xl mb-4">😕</div>
+    <div class="text-2xl font-bold text-vermelho mb-2">Loja não encontrada</div>
+    <div class="text-gray-400 mb-6">Este endereço não existe ou foi desativado.</div>
+    <a href="https://microfood.pages.dev" class="inline-block bg-laranja px-6 py-3 rounded-lg font-bold hover:bg-orange-600">Voltar ao SiteOne</a>
   </div>
 </div>
 
-<!-- TELA 3: DASHBOARD -->
-<div id="tela-dashboard" class="tela-oculta min-h-screen">
-  <header class="bg-card border-b border-roxo p-4 flex justify-between items-center">
-    <div>
-      <div class="text-xs text-gray-500 uppercase">SITEONE V1.0</div>
-      <div class="font-bold text-laranja">SEU NEGÓCIO NO TURBO</div>
-    </div>
-    <div class="text-right">
-      <div class="text-sm font-bold" id="dash-nome">Olá, Vendedor 👋</div>
-      <div class="text-xs text-gray-500" id="dash-link">seuloja.pages.dev</div>
-    </div>
-  </header>
-  <div class="max-w-6xl mx-auto p-4 md:p-8">
-    <div class="grid md:grid-cols-4 gap-4 mb-8">
-      <div class="bg-card rounded-xl p-5 border border-roxo">
-        <div class="text-xs text-gray-500 uppercase mb-1">Plano ativo</div>
-        <div class="text-2xl font-black text-laranja" id="dash-plano">FREE</div>
-        <div class="text-xs text-verde mt-2">✓ Em dia</div>
-      </div>
-      <div class="bg-card rounded-xl p-5 border border-roxo">
-        <div class="text-xs text-gray-500 uppercase mb-1">Fotos ativas</div>
-        <div class="text-2xl font-black text-white" id="dash-fotos">0/3</div>
-        <div class="text-xs text-amarelo mt-2 pulse-dot">⏳ Rotação em 30 dias</div>
-      </div>
-      <div class="bg-card rounded-xl p-5 border border-roxo">
-        <div class="text-xs text-gray-500 uppercase mb-1">Vídeos autorais</div>
-        <div class="text-2xl font-black text-white" id="dash-videos">0/1</div>
-        <div class="text-xs text-verde mt-2">✓ Incluídos no plano</div>
-      </div>
-      <div class="bg-card rounded-xl p-5 border border-roxo">
-        <div class="text-xs text-gray-500 uppercase mb-1">Próxima cobrança</div>
-        <div class="text-2xl font-black text-white" id="dash-cobranca">--/--</div>
-        <div class="text-xs text-gray-400 mt-2" id="dash-mensal">R$ 0/mês</div>
-      </div>
-    </div>
-    <div class="bg-roxo rounded-xl p-6 mb-8 border-l-4 border-laranja">
-      <h3 class="text-xl font-bold mb-2">Aprovar em 3 cliques</h3>
-      <p class="text-gray-400 mb-4">Upload • Rotação • Distribuição em sequência</p>
-      <div class="grid md:grid-cols-3 gap-3">
-        <button onclick="abrirModalUpload()" class="bg-black p-4 rounded-lg text-left hover:border-laranja border border-transparent cursor-pointer">
-          <div class="text-2xl mb-1">📸</div>
-          <div class="font-bold">1. Upload de Fotos</div>
-          <div class="text-xs text-gray-400">Arraste ou selecione</div>
-        </button>
-        <button class="bg-black p-4 rounded-lg text-left border border-verde opacity-75 btn-autoral">
-          <div class="text-2xl mb-1"></div>
-          <div class="font-bold">2. Vídeos Autorais</div>
-          <div class="text-xs text-verde">✓ Já inclusos no seu plano</div>
-        </button>
-        <button class="bg-black p-4 rounded-lg text-left border border-verde opacity-75 btn-autoral">
-          <div class="text-2xl mb-1">🎵</div>
-          <div class="font-bold">3. Músicas Autorais</div>
-          <div class="text-xs text-verde">✓ Já inclusas no seu plano</div>
-        </button>
-      </div>
-    </div>
-    <div class="bg-card rounded-xl p-6 border border-roxo mb-8">
-      <h3 class="text-lg font-bold mb-4 text-amarelo">🌐 Terminal de Controle</h3>
-      <div class="bg-black rounded-lg p-4 mb-4">
-        <div class="text-xs text-gray-500 uppercase mb-1">LINK DA SUA LOJA</div>
-        <div class="text-lg font-mono text-laranja break-all" id="dash-link-final">seuloja.pages.dev</div>
-      </div>
-      <div class="flex gap-3 flex-wrap">
-        <button onclick="abrirLoja()" class="bg-laranja px-6 py-2 rounded-lg font-bold">👁️ Ver minha loja</button>
-        <button onclick="copiarLink()" class="bg-roxo px-6 py-2 rounded-lg font-bold hover:bg-laranja">📋 Copiar link</button>
-        <button onclick="compartilharZap()" class="bg-verde px-6 py-2 rounded-lg font-bold text-black">💬 Compartilhar no Zap</button>
-      </div>
-    </div>
-    <div class="bg-roxo rounded-xl p-5 border-l-4 border-amarelo">
-      <div class="text-sm text-amarelo font-bold mb-1">💡 Dica SiteOne</div>
-      <div class="text-sm text-gray-300" id="dash-dica">Carregando dica...</div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL DE UPLOAD -->
-<div id="modal-upload" class="tela-oculta fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50">
-  <div class="bg-card rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-    <div class="flex justify-between items-center mb-6">
-      <h3 class="text-2xl font-black text-laranja">Upload de Fotos</h3>
-      <button onclick="fecharModalUpload()" class="text-gray-400 hover:text-white text-2xl">✕</button>
-    </div>
-    <div class="mb-4">
-      <div class="flex justify-between text-sm text-gray-400 mb-2">
-        <span>Fotos ativas: <strong class="text-white" id="modal-contador">0/10</strong></span>
-        <span>Rotação: <strong class="text-amarelo" id="modal-rotacao">30 dias</strong></span>
-      </div>
-    </div>
-    <div id="drop-zone" class="border-2 border-dashed border-roxo rounded-xl p-8 text-center mb-6 hover:border-laranja transition cursor-pointer"
-         onclick="document.getElementById('input-foto').click()"
-         ondragover="event.preventDefault(); this.classList.add('border-laranja')"
-         ondragleave="this.classList.remove('border-laranja')"
-         ondrop="handleDrop(event)">
-      <div class="text-5xl mb-3">📸</div>
-      <div class="text-lg font-bold mb-2">Arraste fotos aqui ou clique para selecionar</div>
-      <div class="text-sm text-gray-400">JPG, PNG ou WEBP • Máximo 5MB por foto</div>
-      <input type="file" id="input-foto" accept="image/jpeg,image/png,image/webp" multiple class="hidden" onchange="handleFiles(this.files)">
-    </div>
-    <div id="preview-area" class="space-y-3 mb-6"></div>
-    <div id="lista-fotos" class="space-y-2 mb-6"></div>
-    <div class="flex gap-3">
-      <button onclick="fecharModalUpload()" class="flex-1 bg-roxo py-3 rounded-lg font-bold">Fechar</button>
-    </div>
-  </div>
-</div>
+<div id="conteudo-loja" class="tela-oculta"></div>
 
 <script>
 const WORKER_URL = 'https://microfood.hdmicro.workers.dev';
-const SITE_URL = 'https://microfood.pages.dev';
 
-let estado = { nicho: null, plano: null, setup: 0, mensal: 0, nome: '', zap: '', subdomain: '', nomeLoja: '', lojaId: null, passoAtual: 1 };
-const limites = { FREE: { fotos: 3, videos: 1, musicas: 0, rotacao: 15 }, BASIC: { fotos: 10, videos: 3, musicas: 1, rotacao: 90 }, PLUS: { fotos: 13, videos: 3, musicas: 2, rotacao: 15 }, PRO: { fotos: 16, videos: 4, musicas: 3, rotacao: 0 } };
-const dicasPorNicho = { alimentacao: 'Lanchonetes do PRO podem trocar fotos todo dia. Use isso a seu favor!', beleza: 'Barbeiros e tatuadores: troque a vitrine a cada 15 dias para atrair clientes novos.', servico: 'Serviços locais: fotos de antes/depois convertem 3x mais.', business: 'Advogados e contadores: sua rotação é trimestral. Aproveite para atualizar promoções.' };
-
-const templatesPorNicho = {
-  alimentacao: [
-    { id: 'sabor-caseiro', nome: 'SaborCaseiro', emoji: '', desc: 'Quente e acolhedor. Ideal para marmitas, doces, bolos.' },
-    { id: 'delivery-rapido', nome: 'DeliveryRápido', emoji: '', desc: 'Moderno e ágil. Ideal para lanches, pizza, açaí.' },
-    { id: 'mesa-farta', nome: 'MesaFarta', emoji: '️', desc: 'Elegante e completo. Ideal para restaurantes e buffets.' }
-  ],
-  beleza: [
-    { id: 'glamour-studio', nome: 'GlamourStudio', emoji: '✨', desc: 'Luxo e sofisticação. Ideal para salões premium.' },
-    { id: 'beauty-express', nome: 'BeautyExpress', emoji: '💅', desc: 'Clean e rápido. Ideal para manicure, sobrancelha.' },
-    { id: 'barber-shop', nome: 'BarberShop', emoji: '💈', desc: 'Masculino e vintage. Ideal para barbearias.' }
-  ],
-  servico: [
-    { id: 'mao-na-massa', nome: 'MãoNaMassa', emoji: '🔧', desc: 'Prático e direto. Ideal para eletricista, encanador.' },
-    { id: 'tech-solutions', nome: 'TechSolutions', emoji: '💻', desc: 'Corporativo. Ideal para TI, manutenção.' },
-    { id: 'limpeza-total', nome: 'LimpezaTotal', emoji: '', desc: 'Fresco e organizado. Ideal para diaristas.' }
-  ],
-  business: [
-    { id: 'consult-pro', nome: 'ConsultPro', emoji: '💼', desc: 'Minimalista e profissional. Ideal para consultores.' },
-    { id: 'loja-virtual', nome: 'LojaVirtual', emoji: '🛒', desc: 'E-commerce completo. Ideal para varejo.' },
-    { id: 'eventos-plus', nome: 'EventosPlus', emoji: '🎉', desc: 'Vibrante. Ideal para festas, DJ, fotografia.' }
-  ]
+const templatesHTML = {
+  'sabor-caseiro': renderSaborCaseiro,
+  'loja-virtual': renderLojaVirtual,
+  'consult-pro': renderConsultPro,
+  'barber-shop': renderBarberShop,
+  'delivery-rapido': renderDeliveryRapido,
+  'mesa-farta': renderMesaFarta,
+  'glamour-studio': renderGlamourStudio,
+  'beauty-express': renderBeautyExpress,
+  'mao-na-massa': renderMaoNaMassa,
+  'tech-solutions': renderTechSolutions,
+  'limpeza-total': renderLimpezaTotal,
+  'eventos-plus': renderEventosPlus
 };
 
-let templateEscolhido = null;
-let fotosParaUpload = [];
+function renderSaborCaseiro(loja, fotos, videos) {
+  const galeria = fotos.length > 0 
+    ? fotos.map(f => `<div class="card-hover rounded-2xl overflow-hidden shadow-2xl"><img src="${f.url}" class="w-full h-64 object-cover"></div>`).join('')
+    : `<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4">🍽️</div><div class="text-xl text-gray-400">Fotos em breve!</div></div>`;
 
-function irPara(idTela) { document.querySelectorAll('[id^="tela-"]').forEach(t => t.classList.add('tela-oculta')); const tela = document.getElementById(idTela); if (tela) { tela.classList.remove('tela-oculta'); window.scrollTo(0, 0); } }
-function mostrarMsg(tipo, texto) { const area = document.getElementById('area-msg'); if (!area) return; const classe = tipo === 'erro' ? 'msg-erro' : 'msg-sucesso'; area.innerHTML = '<div class="' + classe + '">' + texto + '</div>'; setTimeout(() => { area.innerHTML = ''; }, 5000); }
-function mostrarPasso(num) { for (let i = 1; i <= 7; i++) { const passo = document.getElementById('passo-' + i); if (passo) { passo.classList.remove('passo-ativo'); passo.classList.add('passo-inativo'); } } const passoAtual = document.getElementById('passo-' + num); if (passoAtual) { passoAtual.classList.remove('passo-inativo'); passoAtual.classList.add('passo-ativo'); } const percent = Math.round((num / 7) * 100); document.getElementById('barra-fill').style.width = percent + '%'; document.getElementById('label-passo').textContent = 'Passo ' + num + ' de 7'; document.getElementById('percent-passo').textContent = percent + '%'; const titulos = { 1: ['Seus dados', 'Vamos começar pelo básico.'], 2: ['Escolha seu plano', 'Selecione o que faz mais sentido.'], 3: ['Escolha seu domínio', 'Este será o endereço da sua loja.'], 4: ['Confirme o domínio', 'Atenção: não poderá ser trocado.'], 5: ['Termos de uso', 'Leia e aceite.'], 6: ['Pagamento', 'Ative sua loja.'], 7: ['Escolha o modelo', 'Selecione o estilo da sua loja.'] }; document.getElementById('titulo-passo').textContent = titulos[num][0]; document.getElementById('subtitulo-passo').textContent = titulos[num][1]; estado.passoAtual = num; window.scrollTo(0, 0); }
-function proximoPasso(num) { if (num === 2) { if (!document.getElementById('inp-nome').value.trim()) return mostrarMsg('erro', 'Preencha seu nome'); if (!document.getElementById('inp-zap').value.trim()) return mostrarMsg('erro', 'Preencha seu WhatsApp'); if (!estado.nicho) return mostrarMsg('erro', 'Escolha um nicho'); estado.nome = document.getElementById('inp-nome').value.trim(); estado.zap = document.getElementById('inp-zap').value.trim(); } if (num === 3) { if (!estado.plano) return mostrarMsg('erro', 'Escolha um plano'); } if (num === 4) { const dominio = document.getElementById('inp-dominio').value.trim(); if (!dominio) return mostrarMsg('erro', 'Digite o nome do domínio'); if (dominio.length < 3) return mostrarMsg('erro', 'Domínio muito curto'); estado.subdomain = dominio.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30); estado.nomeLoja = document.getElementById('inp-nome').value.trim(); document.getElementById('confirm-dominio').textContent = estado.subdomain + '.pages.dev'; } if (num === 6) { document.getElementById('pag-plano').textContent = estado.plano; document.getElementById('pag-valor').textContent = 'R$ ' + estado.setup; document.getElementById('pag-mensal').textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias'; document.getElementById('pag-dominio').textContent = estado.subdomain + '.pages.dev'; } mostrarPasso(num); }
-function voltarPasso(num) { mostrarPasso(num); }
-function escolherNicho(nicho, elemento) { estado.nicho = nicho; document.querySelectorAll('.btn-nicho').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); }
-function escolherPlano(plano, setup, mensal, elemento) { estado.plano = plano; estado.setup = setup; estado.mensal = mensal; document.querySelectorAll('.btn-plano').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); const info = document.getElementById('info-plano'); info.classList.remove('hidden'); const lim = limites[plano]; info.innerHTML = '<strong class="text-laranja">' + plano + ':</strong> ' + lim.fotos + ' fotos • ' + lim.videos + ' vídeos autorais • ' + lim.musicas + ' músicas autorais • Rotação: ' + (lim.rotacao === 0 ? 'Livre' : lim.rotacao + ' dias'); }
-function atualizarPreviewDominio() { const nome = document.getElementById('inp-dominio').value; const sub = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30); document.getElementById('preview-dominio').textContent = (sub || 'seuloja') + '.pages.dev'; }
-function verificarTermos() { const todos = ['termo-1','termo-2','termo-3','termo-4','termo-5'].map(id => document.getElementById(id).checked); document.getElementById('btn-ir-pagamento').disabled = !todos.every(t => t); }
+  const videosHtml = videos.length > 0 ? `
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6 text-center">Nossos vídeos</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        ${videos.map(v => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="${v.url}" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">${v.titulo || ''}</div></div>`).join('')}
+      </div>
+    </div>` : '';
 
-function confirmarPagamento() {
-  document.getElementById('pag-plano').textContent = estado.plano;
-  document.getElementById('pag-valor').textContent = 'R$ ' + estado.setup;
-  document.getElementById('pag-mensal').textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias';
-  document.getElementById('pag-dominio').textContent = estado.subdomain + '.pages.dev';
-  renderizarTemplates();
-  mostrarPasso(7);
+  return `
+    <div class="relative h-96 bg-gradient-to-br from-orange-900 via-red-900 to-amber-900 flex items-center justify-center overflow-hidden fade-in">
+      <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%22 font-size=%2280%22>🍲</text></svg>'); background-size: 100px;"></div>
+      <div class="relative text-center px-4">
+        <div class="text-6xl mb-4">🍲</div>
+        <h1 class="text-5xl md:text-6xl font-black text-white mb-2">${loja.nome_loja}</h1>
+        <p class="text-xl text-amber-200">Feito com amor, entregue com carinho</p>
+        <a href="https://wa.me/${loja.zap}" target="_blank" class="inline-block mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl">💬 Pedir pelo WhatsApp</a>
+      </div>
+    </div>
+    <div class="max-w-4xl mx-auto px-4 py-12">
+      <div class="bg-card rounded-2xl p-8 border border-roxo">
+        <h2 class="text-3xl font-black text-laranja mb-4">Sobre nós</h2>
+        <p class="text-gray-300 text-lg">Bem-vindo à <strong class="text-white">${loja.nome_loja}</strong>! Preparamos cada prato com ingredientes frescos e muito carinho.</p>
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6 text-center">Nossas delícias</h2>
+      <div class="grid md:grid-cols-3 gap-6">${galeria}</div>
+    </div>
+    ${videosHtml}
+    <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
+  `;
 }
 
-function renderizarTemplates() {
-  const lista = document.getElementById('lista-templates');
-  const templates = templatesPorNicho[estado.nicho] || [];
-  lista.innerHTML = templates.map(t => '<button onclick="escolherTemplate(\'' + t.id + '\', this)" class="btn-template bg-roxo p-4 rounded-lg text-left hover:border-laranja border border-transparent flex items-center gap-4"><div class="text-4xl">' + t.emoji + '</div><div class="flex-1"><div class="font-bold text-lg">' + t.nome + '</div><div class="text-xs text-gray-400">' + t.desc + '</div></div></button>').join('');
+function renderLojaVirtual(loja, fotos, videos) {
+  const produtos = fotos.length > 0 
+    ? fotos.map(f => `<div class="card-hover bg-card rounded-2xl overflow-hidden border border-roxo"><img src="${f.url}" class="w-full h-48 object-cover"><div class="p-4"><div class="font-bold text-lg">Produto</div><div class="text-laranja font-black text-xl mt-2">R$ --</div><a href="https://wa.me/${loja.zap}" target="_blank" class="block mt-3 bg-laranja text-white text-center py-2 rounded-lg font-bold">Comprar</a></div></div>`).join('')
+    : `<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4"></div><div class="text-xl text-gray-400">Produtos em breve!</div></div>`;
+
+  const videosHtml = videos.length > 0 ? `
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6">Vídeos da loja</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        ${videos.map(v => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="${v.url}" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">${v.titulo || ''}</div></div>`).join('')}
+      </div>
+    </div>` : '';
+
+  return `
+    <div class="bg-gradient-to-r from-blue-900 to-purple-900 py-16 text-center fade-in">
+      <div class="text-6xl mb-4">🛍️</div>
+      <h1 class="text-5xl font-black text-white mb-4">${loja.nome_loja}</h1>
+      <p class="text-xl text-blue-200">Sua loja online completa</p>
+      <a href="https://wa.me/${loja.zap}" target="_blank" class="inline-block mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl">💬 Pedir pelo WhatsApp</a>
+    </div>
+    <div class="max-w-6xl mx-auto px-4 py-12">
+      <h2 class="text-3xl font-black text-laranja mb-6">Produtos</h2>
+      <div class="grid md:grid-cols-3 gap-6">${produtos}</div>
+    </div>
+    ${videosHtml}
+    <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
+  `;
 }
 
-function escolherTemplate(id, elemento) {
-  templateEscolhido = id;
-  document.querySelectorAll('.btn-template').forEach(b => b.classList.remove('item-selecionado'));
-  elemento.classList.add('item-selecionado');
-  document.getElementById('btn-finalizar').disabled = false;
+function renderDefault(loja, fotos, videos, emoji, cor1, cor2) {
+  const galeria = fotos.length > 0 
+    ? `<div class="max-w-6xl mx-auto px-4 py-12"><h2 class="text-3xl font-black text-laranja mb-6 text-center">Galeria</h2><div class="grid md:grid-cols-3 gap-6">${fotos.map(f => `<div class="card-hover rounded-2xl overflow-hidden shadow-2xl"><img src="${f.url}" class="w-full h-64 object-cover"></div>`).join('')}</div></div>`
+    : '';
+  
+  const videosHtml = videos.length > 0 ? `
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6 text-center">Vídeos</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        ${videos.map(v => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="${v.url}" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">${v.titulo || ''}</div></div>`).join('')}
+      </div>
+    </div>` : '';
+
+  return `
+    <div class="bg-gradient-to-r ${cor1} ${cor2} py-16 text-center fade-in">
+      <div class="text-6xl mb-4">${emoji}</div>
+      <h1 class="text-5xl font-black text-white mb-4">${loja.nome_loja}</h1>
+      <p class="text-xl text-gray-200">Template ${loja.template_id || 'profissional'}</p>
+      <a href="https://wa.me/${loja.zap}" target="_blank" class="inline-block mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl">💬 WhatsApp</a>
+    </div>
+    ${galeria}
+    ${videosHtml}
+    <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
+  `;
 }
 
-async function finalizarCadastro() {
-  const btn = document.getElementById('btn-finalizar');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Criando sua loja...';
+function renderConsultPro(loja, f, v) { return renderDefault(loja, f, v, '💼', 'from-slate-900', 'to-gray-900'); }
+function renderBarberShop(loja, f, v) { return renderDefault(loja, f, v, '💈', 'from-gray-900', 'to-black'); }
+function renderDeliveryRapido(loja, f, v) { return renderDefault(loja, f, v, '', 'from-red-900', 'to-orange-900'); }
+function renderMesaFarta(loja, f, v) { return renderDefault(loja, f, v, '️', 'from-amber-900', 'to-yellow-900'); }
+function renderGlamourStudio(loja, f, v) { return renderDefault(loja, f, v, '✨', 'from-purple-900', 'to-pink-900'); }
+function renderBeautyExpress(loja, f, v) { return renderDefault(loja, f, v, '💅', 'from-pink-900', 'to-rose-900'); }
+function renderMaoNaMassa(loja, f, v) { return renderDefault(loja, f, v, '🔧', 'from-orange-900', 'to-amber-900'); }
+function renderTechSolutions(loja, f, v) { return renderDefault(loja, f, v, '💻', 'from-blue-900', 'to-cyan-900'); }
+function renderLimpezaTotal(loja, f, v) { return renderDefault(loja, f, v, '🧹', 'from-green-900', 'to-teal-900'); }
+function renderEventosPlus(loja, f, v) { return renderDefault(loja, f, v, '🎉', 'from-fuchsia-900', 'to-purple-900'); }
+
+async function carregarLoja() {
+  const params = new URLSearchParams(window.location.search);
+  const subdomain = params.get('subdomain');
+  if (!subdomain) {
+    document.getElementById('loading').classList.add('tela-oculta');
+    document.getElementById('erro').classList.remove('tela-oculta');
+    return;
+  }
+
   try {
-    const resposta = await fetch(WORKER_URL + '/api/criar-loja', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome: estado.nome, nome_loja: estado.nomeLoja, subdomain: estado.subdomain, nicho: estado.nicho, plano: estado.plano, zap: estado.zap, template_id: templateEscolhido })
-    });
+    const resposta = await fetch(WORKER_URL + '/api/ver?subdomain=' + encodeURIComponent(subdomain));
     const dados = await resposta.json();
-    if (!resposta.ok) throw new Error(dados.erro || 'Erro ao criar loja');
-    estado.lojaId = dados.loja.id;
-    const lim = limites[estado.plano];
-    document.getElementById('dash-nome').textContent = 'Olá, ' + estado.nome + ' 👋';
-    document.getElementById('dash-link').textContent = estado.subdomain + '.pages.dev';
-    document.getElementById('dash-plano').textContent = estado.plano;
-    document.getElementById('dash-fotos').textContent = '0/' + lim.fotos;
-    document.getElementById('dash-videos').textContent = '0/' + lim.videos;
-    document.getElementById('dash-link-final').textContent = estado.subdomain + '.pages.dev';
-    document.getElementById('dash-mensal').textContent = 'R$ ' + estado.mensal + '/mês';
-    document.getElementById('dash-dica').textContent = dicasPorNicho[estado.nicho] || dicasPorNicho.alimentacao;
-    const hoje = new Date(); hoje.setDate(hoje.getDate() + 30);
-    document.getElementById('dash-cobranca').textContent = hoje.toLocaleDateString('pt-BR');
-    irPara('tela-dashboard');
+    
+    if (!resposta.ok || !dados.sucesso) throw new Error('Loja não encontrada');
+
+    const loja = dados.loja;
+    const fotos = dados.fotos || [];
+    const videos = dados.videos || [];
+    const templateId = loja.template_id || 'consult-pro';
+    const renderFn = templatesHTML[templateId] || renderDefault;
+
+    document.getElementById('titulo-loja').textContent = loja.nome_loja;
+    document.getElementById('conteudo-loja').innerHTML = renderFn(loja, fotos, videos);
+    document.getElementById('loading').classList.add('tela-oculta');
+    document.getElementById('conteudo-loja').classList.remove('tela-oculta');
+
   } catch (erro) {
-    mostrarMsg('erro', ' ' + erro.message);
-    btn.disabled = false;
-    btn.innerHTML = 'Finalizar ✓';
+    document.getElementById('loading').classList.add('tela-oculta');
+    document.getElementById('erro').classList.remove('tela-oculta');
   }
 }
 
-function copiarPix() { navigator.clipboard.writeText('5517992644042'); mostrarMsg('sucesso', '✅ Chave PIX copiada!'); }
-function copiarLink() { navigator.clipboard.writeText(SITE_URL + '/loja.html?subdomain=' + estado.subdomain); mostrarMsg('sucesso', '✅ Link copiado!'); }
-function abrirLoja() { window.open(SITE_URL + '/loja.html?subdomain=' + estado.subdomain, '_blank'); }
-function compartilharZap() { const texto = 'Olá! Veja minha loja: ' + SITE_URL + '/loja.html?subdomain=' + estado.subdomain; window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(texto), '_blank'); }
-
-// UPLOAD DE FOTOS
-function abrirModalUpload() {
-  document.getElementById('modal-upload').classList.remove('tela-oculta');
-  const lim = limites[estado.plano];
-  document.getElementById('modal-contador').textContent = '0/' + lim.fotos;
-  const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[estado.plano] || 30;
-  document.getElementById('modal-rotacao').textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
-  fotosParaUpload = [];
-  document.getElementById('preview-area').innerHTML = '';
-  carregarFotosExistentes();
-}
-
-function fecharModalUpload() {
-  document.getElementById('modal-upload').classList.add('tela-oculta');
-}
-
-function handleDrop(e) {
-  e.preventDefault();
-  e.currentTarget.classList.remove('border-laranja');
-  handleFiles(e.dataTransfer.files);
-}
-
-function handleFiles(files) {
-  const previewArea = document.getElementById('preview-area');
-  Array.from(files).forEach((file, idx) => {
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      mostrarMsg('erro', '❌ ' + file.name + ': formato inválido');
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      mostrarMsg('erro', '❌ ' + file.name + ': muito grande (máx 5MB)');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const id = 'preview-' + Date.now() + '-' + idx;
-      fotosParaUpload.push({ id, file, dataUrl: e.target.result });
-      const div = document.createElement('div');
-      div.id = id;
-      div.className = 'bg-roxo rounded-lg p-3 flex items-center gap-3';
-      div.innerHTML = '<img src="' + e.target.result + '" class="w-16 h-16 object-cover rounded"><div class="flex-1"><div class="text-sm font-bold truncate">' + file.name + '</div><div class="text-xs text-gray-400">' + (file.size / 1024).toFixed(1) + ' KB</div><div class="text-xs text-amarelo status-text">Aguardando upload...</div></div><button onclick="removerPreview(\'' + id + '\')" class="text-vermelho hover:text-white">✕</button>';
-      previewArea.appendChild(div);
-      uploadFotoAutomatico(id, file);
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-function removerPreview(id) {
-  fotosParaUpload = fotosParaUpload.filter(f => f.id !== id);
-  const el = document.getElementById(id);
-  if (el) el.remove();
-}
-
-async function uploadFotoAutomatico(id, file) {
-  const formData = new FormData();
-  formData.append('foto', file);
-  formData.append('loja_id', estado.lojaId);
-  const el = document.getElementById(id);
-  const statusText = el.querySelector('.status-text');
-  try {
-    statusText.textContent = 'Enviando...';
-    statusText.className = 'text-xs text-amarelo status-text';
-    const resposta = await fetch(WORKER_URL + '/api/upload-foto', { method: 'POST', body: formData });
-    const dados = await resposta.json();
-    if (!resposta.ok) throw new Error(dados.erro || 'Erro no upload');
-    statusText.textContent = '✓ Enviada! Expira: ' + dados.midia.data_expira;
-    statusText.className = 'text-xs text-verde status-text';
-    const lim = limites[estado.plano];
-    const atuais = document.querySelectorAll('#lista-fotos .foto-item').length + 1;
-    document.getElementById('modal-contador').textContent = atuais + '/' + lim.fotos;
-    document.getElementById('dash-fotos').textContent = atuais + '/' + lim.fotos;
-  } catch (erro) {
-    statusText.textContent = '❌ ' + erro.message;
-    statusText.className = 'text-xs text-vermelho status-text';
-  }
-}
-
-async function carregarFotosExistentes() {
-  if (!estado.lojaId) return;
-  try {
-    const resposta = await fetch(WORKER_URL + '/api/listar-fotos?loja_id=' + estado.lojaId);
-    const dados = await resposta.json();
-    if (!dados.sucesso) return;
-    const lista = document.getElementById('lista-fotos');
-    const lim = limites[estado.plano];
-    if (dados.midias.length === 0) {
-      lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhuma foto enviada ainda.</div>';
-      return;
-    }
-    lista.innerHTML = '<div class="text-sm font-bold text-amarelo mb-2">Fotos ativas:</div>' + dados.midias.map(m => '<div class="foto-item bg-black rounded-lg p-3 flex items-center gap-3"><img src="' + m.url + '" class="w-16 h-16 object-cover rounded" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%22 font-size=%2240%22>📷</text></svg>\'"><div class="flex-1"><div class="text-sm font-bold">Foto</div><div class="text-xs text-gray-400">Upload: ' + (m.data_upload || '--') + '</div><div class="text-xs ' + (m.data_expira ? 'text-amarelo' : 'text-verde') + '">Expira: ' + (m.data_expira || 'Nunca') + '</div></div><button onclick="deletarFoto(\'' + m.id + '\')" class="bg-vermelho px-3 py-1 rounded text-xs font-bold hover:bg-red-600">Excluir</button></div>').join('');
-    document.getElementById('modal-contador').textContent = dados.midias.length + '/' + lim.fotos;
-    document.getElementById('dash-fotos').textContent = dados.midias.length + '/' + lim.fotos;
-  } catch (erro) {
-    console.error('Erro ao carregar fotos:', erro);
-  }
-}
-
-async function deletarFoto(midiaId) {
-  if (!confirm('Tem certeza que quer excluir esta foto?')) return;
-  try {
-    const resposta = await fetch(WORKER_URL + '/api/deletar-foto', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ midia_id: midiaId, loja_id: estado.lojaId })
-    });
-    const dados = await resposta.json();
-    if (!resposta.ok) throw new Error(dados.erro);
-    carregarFotosExistentes();
-    mostrarMsg('sucesso', '✅ Foto excluída!');
-  } catch (erro) {
-    mostrarMsg('erro', '❌ ' + erro.message);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => { console.log('SiteOne carregado.'); });
+carregarLoja();
 </script>
 </body>
 </html>
@@ -584,21 +240,11 @@ export default {
       });
     }
 
-    if (url.pathname === '/api/criar-loja' && request.method === 'POST') {
-      return await criarLoja(request, env);
-    }
-    if (url.pathname === '/api/ver' && request.method === 'GET') {
-      return await verLoja(request, env);
-    }
-    if (url.pathname === '/api/upload-foto' && request.method === 'POST') {
-      return await uploadFoto(request, env);
-    }
-    if (url.pathname === '/api/listar-fotos' && request.method === 'GET') {
-      return await listarFotos(request, env);
-    }
-    if (url.pathname === '/api/deletar-foto' && request.method === 'POST') {
-      return await deletarFoto(request, env);
-    }
+    if (url.pathname === '/api/criar-loja' && request.method === 'POST') return await criarLoja(request, env);
+    if (url.pathname === '/api/ver' && request.method === 'GET') return await verLoja(request, env);
+    if (url.pathname === '/api/upload-foto' && request.method === 'POST') return await uploadFoto(request, env);
+    if (url.pathname === '/api/listar-fotos' && request.method === 'GET') return await listarFotos(request, env);
+    if (url.pathname === '/api/deletar-foto' && request.method === 'POST') return await deletarFoto(request, env);
 
     return new Response('Microfood API Online - SiteOne v1.0', {
       headers: { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' }
@@ -613,27 +259,21 @@ async function criarLoja(request, env) {
 
     if (!nome || !nome_loja || !subdomain || !nicho || !plano) {
       return new Response(JSON.stringify({ erro: 'Campos obrigatórios ausentes' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
 
-    const subdomainLimpo = subdomain.toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '').substring(0, 30);
-
+    const subdomainLimpo = subdomain.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30);
     if (subdomainLimpo.length < 3) {
       return new Response(JSON.stringify({ erro: 'Domínio muito curto' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
 
     const existente = await env.DB.prepare('SELECT id FROM lojas WHERE subdomain = ?').bind(subdomainLimpo).first();
     if (existente) {
       return new Response(JSON.stringify({ erro: 'Domínio já em uso' }), {
-        status: 409,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        status: 409, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
 
@@ -649,16 +289,10 @@ async function criarLoja(request, env) {
     return new Response(JSON.stringify({
       sucesso: true,
       loja: { id: idLoja, nome: nome_loja, subdomain: subdomainLimpo, plano, nicho, template_id: template_id || null }
-    }), {
-      status: 201,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    }), { status: 201, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
   } catch (erro) {
-    return new Response(JSON.stringify({ erro: erro.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   }
 }
 
@@ -671,11 +305,22 @@ async function verLoja(request, env) {
     const loja = await env.DB.prepare('SELECT * FROM lojas WHERE subdomain = ?').bind(subdomain).first();
     if (!loja) return new Response(JSON.stringify({ erro: 'Loja não encontrada' }), { status: 404, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
-    const midias = await env.DB.prepare('SELECT * FROM midias WHERE loja_id = ? AND ativa = 1').bind(loja.id).all();
-    return new Response(JSON.stringify({ sucesso: true, loja, midias: midias.results || [] }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    // Fotos do vendedor (R2)
+    const fotos = await env.DB.prepare('SELECT * FROM midias WHERE loja_id = ? AND tipo = ? AND ativa = 1').bind(loja.id, 'foto').all();
+
+    // Vídeos autorais do template escolhido
+    let videos = [];
+    if (loja.template_id) {
+      const vids = await env.DB.prepare('SELECT * FROM videos_autorais WHERE template_id = ? ORDER BY ordem').bind(loja.template_id).all();
+      videos = vids.results || [];
+    }
+
+    return new Response(JSON.stringify({ 
+      sucesso: true, 
+      loja, 
+      fotos: fotos.results || [],
+      videos 
+    }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   } catch (erro) {
     return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   }
@@ -687,35 +332,15 @@ async function uploadFoto(request, env) {
     const arquivo = formData.get('foto');
     const lojaId = formData.get('loja_id');
 
-    if (!arquivo || !lojaId) {
-      return new Response(JSON.stringify({ erro: 'Arquivo ou loja_id ausente' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-      });
-    }
+    if (!arquivo || !lojaId) return new Response(JSON.stringify({ erro: 'Arquivo ou loja_id ausente' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
     const tipoValido = ['image/jpeg', 'image/png', 'image/webp'].includes(arquivo.type);
-    if (!tipoValido) {
-      return new Response(JSON.stringify({ erro: 'Formato inválido. Use JPG, PNG ou WEBP.' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-      });
-    }
+    if (!tipoValido) return new Response(JSON.stringify({ erro: 'Formato inválido. Use JPG, PNG ou WEBP.' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
-    if (arquivo.size > 5 * 1024 * 1024) {
-      return new Response(JSON.stringify({ erro: 'Arquivo muito grande. Máximo 5MB.' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-      });
-    }
+    if (arquivo.size > 5 * 1024 * 1024) return new Response(JSON.stringify({ erro: 'Arquivo muito grande. Máximo 5MB.' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
     const loja = await env.DB.prepare('SELECT plano FROM lojas WHERE id = ?').bind(lojaId).first();
-    if (!loja) {
-      return new Response(JSON.stringify({ erro: 'Loja não encontrada' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-      });
-    }
+    if (!loja) return new Response(JSON.stringify({ erro: 'Loja não encontrada' }), { status: 404, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
     const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[loja.plano] || 30;
     const dataExpira = new Date();
@@ -724,35 +349,19 @@ async function uploadFoto(request, env) {
     const ext = arquivo.name.split('.').pop().toLowerCase();
     const r2Key = `lojas/${lojaId}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
 
-    await env.FOTOS.put(r2Key, arquivo.stream(), {
-      httpMetadata: { contentType: arquivo.type }
-    });
-
+    await env.FOTOS.put(r2Key, arquivo.stream(), { httpMetadata: { contentType: arquivo.type } });
     const urlPublica = `${R2_PUBLIC_URL}/${r2Key}`;
 
     const idMidia = 'mid_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     await env.DB.prepare(`
       INSERT INTO midias (id, loja_id, tipo, url, r2_key, data_upload, data_expira, ativa)
       VALUES (?, ?, 'foto', ?, ?, ?, ?, 1)
-    `).bind(
-      idMidia, lojaId, urlPublica, r2Key,
-      new Date().toISOString().split('T')[0],
-      rotacao > 0 ? dataExpira.toISOString().split('T')[0] : null
-    ).run();
+    `).bind(idMidia, lojaId, urlPublica, r2Key, new Date().toISOString().split('T')[0], rotacao > 0 ? dataExpira.toISOString().split('T')[0] : null).run();
 
-    return new Response(JSON.stringify({
-      sucesso: true,
-      midia: { id: idMidia, url: urlPublica, data_expira: rotacao > 0 ? dataExpira.toISOString().split('T')[0] : 'Nunca' }
-    }), {
-      status: 201,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    return new Response(JSON.stringify({ sucesso: true, midia: { id: idMidia, url: urlPublica, data_expira: rotacao > 0 ? dataExpira.toISOString().split('T')[0] : 'Nunca' } }), { status: 201, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
   } catch (erro) {
-    return new Response(JSON.stringify({ erro: erro.message }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   }
 }
 
@@ -763,10 +372,7 @@ async function listarFotos(request, env) {
     if (!lojaId) return new Response(JSON.stringify({ erro: 'loja_id ausente' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
     const midias = await env.DB.prepare('SELECT * FROM midias WHERE loja_id = ? AND tipo = ? AND ativa = 1 ORDER BY data_upload DESC').bind(lojaId, 'foto').all();
-    return new Response(JSON.stringify({ sucesso: true, midias: midias.results || [] }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    return new Response(JSON.stringify({ sucesso: true, midias: midias.results || [] }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   } catch (erro) {
     return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   }
@@ -781,15 +387,10 @@ async function deletarFoto(request, env) {
     const midia = await env.DB.prepare('SELECT * FROM midias WHERE id = ? AND loja_id = ?').bind(midia_id, loja_id).first();
     if (!midia) return new Response(JSON.stringify({ erro: 'Mídia não encontrada' }), { status: 404, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
-    if (midia.r2_key) {
-      await env.FOTOS.delete(midia.r2_key);
-    }
+    if (midia.r2_key) await env.FOTOS.delete(midia.r2_key);
     await env.DB.prepare('UPDATE midias SET ativa = 0 WHERE id = ?').bind(midia_id).run();
 
-    return new Response(JSON.stringify({ sucesso: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-    });
+    return new Response(JSON.stringify({ sucesso: true }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   } catch (erro) {
     return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   }
