@@ -39,7 +39,7 @@
   .card-hover { transition: all 0.3s; }
   .card-hover:hover { transform: translateY(-5px); }
   .tela-oculta { display: none !important; }
-  video { width: 100%; border-radius: 12px; }
+  video, iframe { width: 100%; border-radius: 12px; }
 </style>
 </head>
 <body>
@@ -80,16 +80,24 @@ const templatesHTML = {
   'eventos-plus': renderEventosPlus
 };
 
-function renderSaborCaseiro(loja, fotos, videos) {
+function renderSaborCaseiro(loja, fotos, videos, musicas) {
   const galeria = fotos.length > 0 
     ? fotos.map(f => `<div class="card-hover rounded-2xl overflow-hidden shadow-2xl"><img src="${f.url}" class="w-full h-64 object-cover"></div>`).join('')
-    : `<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4">🍽️</div><div class="text-xl text-gray-400">Fotos em breve!</div></div>`;
+    : `<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4">️</div><div class="text-xl text-gray-400">Fotos em breve!</div></div>`;
 
   const videosHtml = videos.length > 0 ? `
     <div class="max-w-6xl mx-auto px-4 pb-12">
       <h2 class="text-3xl font-black text-laranja mb-6 text-center">Nossos vídeos</h2>
       <div class="grid md:grid-cols-3 gap-6">
         ${videos.map(v => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="${v.url}" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">${v.titulo || ''}</div></div>`).join('')}
+      </div>
+    </div>` : '';
+
+  const musicasHtml = musicas.length > 0 ? `
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6 text-center">Trilha sonora</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        ${musicas.map(m => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><iframe src="${m.url}" class="w-full h-48" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="p-3"><div class="text-sm font-bold text-white">${m.titulo || ''}</div><div class="text-xs text-gray-400">${m.artista || ''}</div></div></div>`).join('')}
       </div>
     </div>` : '';
 
@@ -114,20 +122,29 @@ function renderSaborCaseiro(loja, fotos, videos) {
       <div class="grid md:grid-cols-3 gap-6">${galeria}</div>
     </div>
     ${videosHtml}
+    ${musicasHtml}
     <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
   `;
 }
 
-function renderLojaVirtual(loja, fotos, videos) {
+function renderLojaVirtual(loja, fotos, videos, musicas) {
   const produtos = fotos.length > 0 
     ? fotos.map(f => `<div class="card-hover bg-card rounded-2xl overflow-hidden border border-roxo"><img src="${f.url}" class="w-full h-48 object-cover"><div class="p-4"><div class="font-bold text-lg">Produto</div><div class="text-laranja font-black text-xl mt-2">R$ --</div><a href="https://wa.me/${loja.zap}" target="_blank" class="block mt-3 bg-laranja text-white text-center py-2 rounded-lg font-bold">Comprar</a></div></div>`).join('')
-    : `<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4"></div><div class="text-xl text-gray-400">Produtos em breve!</div></div>`;
+    : `<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4">🛒</div><div class="text-xl text-gray-400">Produtos em breve!</div></div>`;
 
   const videosHtml = videos.length > 0 ? `
     <div class="max-w-6xl mx-auto px-4 pb-12">
       <h2 class="text-3xl font-black text-laranja mb-6">Vídeos da loja</h2>
       <div class="grid md:grid-cols-3 gap-6">
         ${videos.map(v => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="${v.url}" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">${v.titulo || ''}</div></div>`).join('')}
+      </div>
+    </div>` : '';
+
+  const musicasHtml = musicas.length > 0 ? `
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6">Músicas da loja</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        ${musicas.map(m => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><iframe src="${m.url}" class="w-full h-48" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="p-3"><div class="text-sm font-bold text-white">${m.titulo || ''}</div><div class="text-xs text-gray-400">${m.artista || ''}</div></div></div>`).join('')}
       </div>
     </div>` : '';
 
@@ -143,11 +160,12 @@ function renderLojaVirtual(loja, fotos, videos) {
       <div class="grid md:grid-cols-3 gap-6">${produtos}</div>
     </div>
     ${videosHtml}
+    ${musicasHtml}
     <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
   `;
 }
 
-function renderDefault(loja, fotos, videos, emoji, cor1, cor2) {
+function renderDefault(loja, fotos, videos, musicas, emoji, cor1, cor2) {
   const galeria = fotos.length > 0 
     ? `<div class="max-w-6xl mx-auto px-4 py-12"><h2 class="text-3xl font-black text-laranja mb-6 text-center">Galeria</h2><div class="grid md:grid-cols-3 gap-6">${fotos.map(f => `<div class="card-hover rounded-2xl overflow-hidden shadow-2xl"><img src="${f.url}" class="w-full h-64 object-cover"></div>`).join('')}</div></div>`
     : '';
@@ -160,6 +178,14 @@ function renderDefault(loja, fotos, videos, emoji, cor1, cor2) {
       </div>
     </div>` : '';
 
+  const musicasHtml = musicas.length > 0 ? `
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6 text-center">Músicas</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        ${musicas.map(m => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><iframe src="${m.url}" class="w-full h-48" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="p-3"><div class="text-sm font-bold text-white">${m.titulo || ''}</div><div class="text-xs text-gray-400">${m.artista || ''}</div></div></div>`).join('')}
+      </div>
+    </div>` : '';
+
   return `
     <div class="bg-gradient-to-r ${cor1} ${cor2} py-16 text-center fade-in">
       <div class="text-6xl mb-4">${emoji}</div>
@@ -169,20 +195,21 @@ function renderDefault(loja, fotos, videos, emoji, cor1, cor2) {
     </div>
     ${galeria}
     ${videosHtml}
+    ${musicasHtml}
     <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
   `;
 }
 
-function renderConsultPro(loja, f, v) { return renderDefault(loja, f, v, '💼', 'from-slate-900', 'to-gray-900'); }
-function renderBarberShop(loja, f, v) { return renderDefault(loja, f, v, '💈', 'from-gray-900', 'to-black'); }
-function renderDeliveryRapido(loja, f, v) { return renderDefault(loja, f, v, '', 'from-red-900', 'to-orange-900'); }
-function renderMesaFarta(loja, f, v) { return renderDefault(loja, f, v, '️', 'from-amber-900', 'to-yellow-900'); }
-function renderGlamourStudio(loja, f, v) { return renderDefault(loja, f, v, '✨', 'from-purple-900', 'to-pink-900'); }
-function renderBeautyExpress(loja, f, v) { return renderDefault(loja, f, v, '💅', 'from-pink-900', 'to-rose-900'); }
-function renderMaoNaMassa(loja, f, v) { return renderDefault(loja, f, v, '🔧', 'from-orange-900', 'to-amber-900'); }
-function renderTechSolutions(loja, f, v) { return renderDefault(loja, f, v, '💻', 'from-blue-900', 'to-cyan-900'); }
-function renderLimpezaTotal(loja, f, v) { return renderDefault(loja, f, v, '🧹', 'from-green-900', 'to-teal-900'); }
-function renderEventosPlus(loja, f, v) { return renderDefault(loja, f, v, '🎉', 'from-fuchsia-900', 'to-purple-900'); }
+function renderConsultPro(loja, f, v, m) { return renderDefault(loja, f, v, m, '💼', 'from-slate-900', 'to-gray-900'); }
+function renderBarberShop(loja, f, v, m) { return renderDefault(loja, f, v, m, '💈', 'from-gray-900', 'to-black'); }
+function renderDeliveryRapido(loja, f, v, m) { return renderDefault(loja, f, v, m, '🚀', 'from-red-900', 'to-orange-900'); }
+function renderMesaFarta(loja, f, v, m) { return renderDefault(loja, f, v, m, '🍽️', 'from-amber-900', 'to-yellow-900'); }
+function renderGlamourStudio(loja, f, v, m) { return renderDefault(loja, f, v, m, '✨', 'from-purple-900', 'to-pink-900'); }
+function renderBeautyExpress(loja, f, v, m) { return renderDefault(loja, f, v, m, '💅', 'from-pink-900', 'to-rose-900'); }
+function renderMaoNaMassa(loja, f, v, m) { return renderDefault(loja, f, v, m, '🔧', 'from-orange-900', 'to-amber-900'); }
+function renderTechSolutions(loja, f, v, m) { return renderDefault(loja, f, v, m, '💻', 'from-blue-900', 'to-cyan-900'); }
+function renderLimpezaTotal(loja, f, v, m) { return renderDefault(loja, f, v, m, '🧹', 'from-green-900', 'to-teal-900'); }
+function renderEventosPlus(loja, f, v, m) { return renderDefault(loja, f, v, m, '🎉', 'from-fuchsia-900', 'to-purple-900'); }
 
 async function carregarLoja() {
   const params = new URLSearchParams(window.location.search);
@@ -202,11 +229,12 @@ async function carregarLoja() {
     const loja = dados.loja;
     const fotos = dados.fotos || [];
     const videos = dados.videos || [];
+    const musicas = dados.musicas || [];
     const templateId = loja.template_id || 'consult-pro';
     const renderFn = templatesHTML[templateId] || renderDefault;
 
     document.getElementById('titulo-loja').textContent = loja.nome_loja;
-    document.getElementById('conteudo-loja').innerHTML = renderFn(loja, fotos, videos);
+    document.getElementById('conteudo-loja').innerHTML = renderFn(loja, fotos, videos, musicas);
     document.getElementById('loading').classList.add('tela-oculta');
     document.getElementById('conteudo-loja').classList.remove('tela-oculta');
 
@@ -305,21 +333,24 @@ async function verLoja(request, env) {
     const loja = await env.DB.prepare('SELECT * FROM lojas WHERE subdomain = ?').bind(subdomain).first();
     if (!loja) return new Response(JSON.stringify({ erro: 'Loja não encontrada' }), { status: 404, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
-    // Fotos do vendedor (R2)
     const fotos = await env.DB.prepare('SELECT * FROM midias WHERE loja_id = ? AND tipo = ? AND ativa = 1').bind(loja.id, 'foto').all();
 
-    // Vídeos autorais do template escolhido
     let videos = [];
+    let musicas = [];
     if (loja.template_id) {
       const vids = await env.DB.prepare('SELECT * FROM videos_autorais WHERE template_id = ? ORDER BY ordem').bind(loja.template_id).all();
       videos = vids.results || [];
+      
+      const musics = await env.DB.prepare('SELECT * FROM musicas_autorais WHERE template_id = ? ORDER BY ordem').bind(loja.template_id).all();
+      musicas = musics.results || [];
     }
 
     return new Response(JSON.stringify({ 
       sucesso: true, 
       loja, 
       fotos: fotos.results || [],
-      videos 
+      videos,
+      musicas
     }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   } catch (erro) {
     return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
