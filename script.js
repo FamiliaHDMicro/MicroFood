@@ -18,11 +18,11 @@ const templatesPorNicho = {
   ],
   servico: [
     { id: 'mao-na-massa', nome: 'MãoNaMassa', emoji: '🔧', desc: 'Prático e direto. Ideal para eletricista, encanador.' },
-    { id: 'tech-solutions', nome: 'TechSolutions', emoji: '', desc: 'Corporativo. Ideal para TI, manutenção.' },
+    { id: 'tech-solutions', nome: 'TechSolutions', emoji: '💻', desc: 'Corporativo. Ideal para TI, manutenção.' },
     { id: 'limpeza-total', nome: 'LimpezaTotal', emoji: '🧹', desc: 'Fresco e organizado. Ideal para diaristas.' }
   ],
   business: [
-    { id: 'consult-pro', nome: 'ConsultPro', emoji: '💼', desc: 'Minimalista e profissional. Ideal para consultores.' },
+    { id: 'consult-pro', nome: 'ConsultPro', emoji: '', desc: 'Minimalista e profissional. Ideal para consultores.' },
     { id: 'loja-virtual', nome: 'LojaVirtual', emoji: '🛒', desc: 'E-commerce completo. Ideal para varejo.' },
     { id: 'eventos-plus', nome: 'EventosPlus', emoji: '🎉', desc: 'Vibrante. Ideal para festas, DJ, fotografia.' }
   ]
@@ -30,6 +30,8 @@ const templatesPorNicho = {
 
 let templateEscolhido = null;
 let fotosParaUpload = [];
+let videosParaUpload = [];
+let musicasParaUpload = [];
 let debounceTimer = null;
 
 function irPara(idTela) { document.querySelectorAll('[id^="tela-"]').forEach(t => t.classList.add('tela-oculta')); const tela = document.getElementById(idTela); if (tela) { tela.classList.remove('tela-oculta'); window.scrollTo(0, 0); } }
@@ -38,7 +40,7 @@ function mostrarPasso(num) { for (let i = 1; i <= 7; i++) { const passo = docume
 function proximoPasso(num) { if (num === 2) { if (!document.getElementById('inp-nome').value.trim()) return mostrarMsg('erro', 'Preencha seu nome'); if (!document.getElementById('inp-zap').value.trim()) return mostrarMsg('erro', 'Preencha seu WhatsApp'); if (!estado.nicho) return mostrarMsg('erro', 'Escolha um nicho'); estado.nome = document.getElementById('inp-nome').value.trim(); estado.zap = document.getElementById('inp-zap').value.trim(); } if (num === 3) { if (!estado.plano) return mostrarMsg('erro', 'Escolha um plano'); } if (num === 5) { if (!estado.dominioValido) return mostrarMsg('erro', 'Valide o domínio primeiro'); } if (num === 6) { document.getElementById('pag-plano').textContent = estado.plano; document.getElementById('pag-valor').textContent = 'R$ ' + estado.setup; document.getElementById('pag-mensal').textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias'; document.getElementById('pag-dominio').textContent = estado.subdomain + '.pages.dev'; } mostrarPasso(num); }
 function voltarPasso(num) { mostrarPasso(num); }
 function escolherNicho(nicho, elemento) { estado.nicho = nicho; document.querySelectorAll('.btn-nicho').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); }
-function escolherPlano(plano, setup, mensal, elemento) { estado.plano = plano; estado.setup = setup; estado.mensal = mensal; document.querySelectorAll('.btn-plano').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); const info = document.getElementById('info-plano'); info.classList.remove('hidden'); const lim = limites[plano]; info.innerHTML = '<strong class="text-laranja">' + plano + ':</strong> ' + lim.fotos + ' fotos • ' + lim.videos + ' vídeos autorais • ' + lim.musicas + ' músicas autorais • Rotação: ' + (lim.rotacao === 0 ? 'Livre' : lim.rotacao + ' dias'); }
+function escolherPlano(plano, setup, mensal, elemento) { estado.plano = plano; estado.setup = setup; estado.mensal = mensal; document.querySelectorAll('.btn-plano').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); const info = document.getElementById('info-plano'); info.classList.remove('hidden'); const lim = limites[plano]; info.innerHTML = '<strong class="text-laranja">' + plano + ':</strong> ' + lim.fotos + ' fotos • ' + lim.videos + ' vídeos • ' + lim.musicas + ' músicas • Rotação: ' + (lim.rotacao === 0 ? 'Livre' : lim.rotacao + ' dias'); }
 
 function atualizarPreviewDominio() {
   const nome = document.getElementById('inp-dominio').value;
@@ -63,7 +65,7 @@ async function validarDominio(sub) {
     const dados = await resposta.json();
     if (dados.sucesso) {
       statusDiv.className = 'mt-2 text-sm text-vermelho';
-      statusDiv.textContent = '❌ Domínio já está em uso! Escolha outro.';
+      statusDiv.textContent = ' Domínio já está em uso! Escolha outro.';
       btn.disabled = true;
       estado.dominioValido = false;
       document.getElementById('inp-dominio').classList.add('dominio-invalido');
@@ -136,6 +138,7 @@ async function finalizarCadastro() {
     document.getElementById('dash-plano').textContent = estado.plano;
     document.getElementById('dash-fotos').textContent = '0/' + lim.fotos;
     document.getElementById('dash-videos').textContent = '0/' + lim.videos;
+    document.getElementById('dash-musicas').textContent = '0/' + lim.musicas;
     document.getElementById('dash-link-final').textContent = estado.subdomain + '.pages.dev';
     document.getElementById('dash-mensal').textContent = 'R$ ' + estado.mensal + '/mês';
     document.getElementById('dash-dica').textContent = dicasPorNicho[estado.nicho] || dicasPorNicho.alimentacao;
@@ -162,91 +165,163 @@ async function carregarAnalytics() {
     const dados = await resposta.json();
     if (!dados.sucesso) return;
     const a = dados.analytics;
-    
     document.getElementById('dash-visitas-total').textContent = a.total;
     document.getElementById('dash-visitas-hoje').textContent = a.hoje;
     document.getElementById('dash-visitas-semana').textContent = a.semana;
-    
     const lista = document.getElementById('lista-ultimas-visitas');
     if (a.ultimas.length === 0) {
       lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhuma visita ainda. Compartilhe sua loja!</div>';
     } else {
-      lista.innerHTML = a.ultimas.map(v => '<div class="bg-black rounded-lg p-3 flex items-center gap-3"><div class="text-2xl"></div><div class="flex-1"><div class="text-sm font-bold">Visita registrada</div><div class="text-xs text-gray-400">' + v.data + ' às ' + (v.hora || '--') + '</div></div></div>').join('');
+      lista.innerHTML = a.ultimas.map(v => '<div class="bg-black rounded-lg p-3 flex items-center gap-3"><div class="text-2xl">👤</div><div class="flex-1"><div class="text-sm font-bold">Visita registrada</div><div class="text-xs text-gray-400">' + v.data + ' às ' + (v.hora || '--') + '</div></div></div>').join('');
     }
-  } catch (erro) {
-    console.error('Erro ao carregar analytics:', erro);
+  } catch (erro) { console.error('Erro ao carregar analytics:', erro); }
+}
+
+function abrirModalUpload(tipo) {
+  const lim = limites[estado.plano];
+  if (tipo === 'fotos') {
+    document.getElementById('modal-fotos').classList.remove('tela-oculta');
+    document.getElementById('modal-fotos-contador').textContent = '0/' + lim.fotos;
+    const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[estado.plano] || 30;
+    document.getElementById('modal-fotos-rotacao').textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
+    fotosParaUpload = [];
+    document.getElementById('preview-fotos').innerHTML = '';
+    document.getElementById('lista-fotos').innerHTML = '';
+    carregarFotosExistentes();
+  } else if (tipo === 'videos') {
+    document.getElementById('modal-videos').classList.remove('tela-oculta');
+    document.getElementById('modal-videos-contador').textContent = '0/' + lim.videos;
+    const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[estado.plano] || 30;
+    document.getElementById('modal-videos-rotacao').textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
+    videosParaUpload = [];
+    document.getElementById('preview-videos').innerHTML = '';
+    document.getElementById('lista-videos').innerHTML = '';
+    carregarVideosExistentes();
+  } else if (tipo === 'musicas') {
+    document.getElementById('modal-musicas').classList.remove('tela-oculta');
+    document.getElementById('modal-musicas-contador').textContent = '0/' + lim.musicas;
+    const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[estado.plano] || 30;
+    document.getElementById('modal-musicas-rotacao').textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
+    musicasParaUpload = [];
+    document.getElementById('preview-musicas').innerHTML = '';
+    document.getElementById('lista-musicas').innerHTML = '';
+    carregarMusicasExistentes();
   }
 }
 
-function abrirModalUpload() {
-  document.getElementById('modal-upload').classList.remove('tela-oculta');
-  const lim = limites[estado.plano];
-  document.getElementById('modal-contador').textContent = '0/' + lim.fotos;
-  const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[estado.plano] || 30;
-  document.getElementById('modal-rotacao').textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
-  fotosParaUpload = [];
-  document.getElementById('preview-area').innerHTML = '';
-  document.getElementById('lista-fotos').innerHTML = '';
-  carregarFotosExistentes();
+function fecharModal(tipo) {
+  document.getElementById('modal-' + tipo).classList.add('tela-oculta');
 }
 
-function fecharModalUpload() { document.getElementById('modal-upload').classList.add('tela-oculta'); }
-function handleDrop(e) { e.preventDefault(); e.currentTarget.classList.remove('border-laranja'); handleFiles(e.dataTransfer.files); }
+function handleDrop(e, tipo) { e.preventDefault(); e.currentTarget.classList.remove('border-laranja'); handleFiles(e.dataTransfer.files, tipo); }
 
-function handleFiles(files) {
+function handleFiles(files, tipo) {
   const lim = limites[estado.plano];
-  const previewArea = document.getElementById('preview-area');
-  const fotosNoPreview = previewArea.children.length;
+  let previewArea, maxTamanho, tiposValidos, campoNome;
+  
+  if (tipo === 'fotos') {
+    previewArea = document.getElementById('preview-fotos');
+    maxTamanho = 5 * 1024 * 1024;
+    tiposValidos = ['image/jpeg', 'image/png', 'image/webp'];
+    campoNome = 'foto';
+  } else if (tipo === 'videos') {
+    previewArea = document.getElementById('preview-videos');
+    maxTamanho = 50 * 1024 * 1024;
+    tiposValidos = ['video/mp4', 'video/webm', 'video/quicktime'];
+    campoNome = 'video';
+  } else {
+    previewArea = document.getElementById('preview-musicas');
+    maxTamanho = 10 * 1024 * 1024;
+    tiposValidos = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/aac'];
+    campoNome = 'musica';
+  }
+  
+  const itensNoPreview = previewArea.children.length;
   Array.from(files).forEach((file, idx) => {
-    if (fotosNoPreview + idx >= lim.fotos) { mostrarMsg('erro', '❌ Limite de ' + lim.fotos + ' fotos atingido!'); return; }
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) { mostrarMsg('erro', '❌ ' + file.name + ': formato inválido'); return; }
-    if (file.size > 5 * 1024 * 1024) { mostrarMsg('erro', '❌ ' + file.name + ': muito grande (máx 5MB)'); return; }
+    if (itensNoPreview + idx >= lim[tipo === 'fotos' ? 'fotos' : tipo === 'videos' ? 'videos' : 'musicas']) {
+      mostrarMsg('erro', '❌ Limite de ' + lim[tipo === 'fotos' ? 'fotos' : tipo === 'videos' ? 'videos' : 'musicas'] + ' atingido!');
+      return;
+    }
+    if (!tiposValidos.includes(file.type)) {
+      mostrarMsg('erro', '❌ ' + file.name + ': formato inválido');
+      return;
+    }
+    if (file.size > maxTamanho) {
+      mostrarMsg('erro', '❌ ' + file.name + ': muito grande (máx ' + (maxTamanho / 1024 / 1024) + 'MB)');
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (e) => {
-      const id = 'preview-' + Date.now() + '-' + idx;
-      fotosParaUpload.push({ id, file, dataUrl: e.target.result });
+      const id = 'preview-' + tipo + '-' + Date.now() + '-' + idx;
+      if (tipo === 'fotos') fotosParaUpload.push({ id, file, dataUrl: e.target.result });
+      else if (tipo === 'videos') videosParaUpload.push({ id, file, dataUrl: e.target.result });
+      else musicasParaUpload.push({ id, file, dataUrl: e.target.result });
+      
       const div = document.createElement('div');
       div.id = id;
       div.className = 'bg-roxo rounded-lg p-3 flex items-center gap-3';
-      div.innerHTML = '<img src="' + e.target.result + '" class="w-16 h-16 object-cover rounded"><div class="flex-1"><div class="text-sm font-bold truncate">' + file.name + '</div><div class="text-xs text-gray-400">' + (file.size / 1024).toFixed(1) + ' KB</div><div class="text-xs text-amarelo status-text">Aguardando upload...</div></div><button onclick="removerPreview(\'' + id + '\')" class="text-vermelho hover:text-white">✕</button>';
+      
+      let previewHtml = '';
+      if (tipo === 'fotos') {
+        previewHtml = '<img src="' + e.target.result + '" class="w-16 h-16 object-cover rounded">';
+      } else if (tipo === 'videos') {
+        previewHtml = '<video src="' + e.target.result + '" class="w-16 h-16 object-cover rounded"></video>';
+      } else {
+        previewHtml = '<div class="w-16 h-16 bg-black rounded flex items-center justify-center text-2xl">🎵</div>';
+      }
+      
+      div.innerHTML = previewHtml + '<div class="flex-1"><div class="text-sm font-bold truncate">' + file.name + '</div><div class="text-xs text-gray-400">' + (file.size / 1024).toFixed(1) + ' KB</div><div class="text-xs text-amarelo status-text">Aguardando upload...</div></div><button onclick="removerPreview(\'' + id + '\', \'' + tipo + '\')" class="text-vermelho hover:text-white">✕</button>';
       previewArea.appendChild(div);
-      atualizarContador();
-      uploadFotoAutomatico(id, file);
+      atualizarContador(tipo);
+      uploadAutomatico(id, file, tipo);
     };
     reader.readAsDataURL(file);
   });
 }
 
-function removerPreview(id) { fotosParaUpload = fotosParaUpload.filter(f => f.id !== id); const el = document.getElementById(id); if (el) el.remove(); atualizarContador(); }
-
-function atualizarContador() {
-  const lim = limites[estado.plano];
-  const fotosNoPreview = document.getElementById('preview-area').children.length;
-  const fotosExistentes = document.querySelectorAll('#lista-fotos .foto-item').length;
-  const total = fotosNoPreview + fotosExistentes;
-  document.getElementById('modal-contador').textContent = total + '/' + lim.fotos;
-  document.getElementById('dash-fotos').textContent = total + '/' + lim.fotos;
+function removerPreview(id, tipo) {
+  if (tipo === 'fotos') fotosParaUpload = fotosParaUpload.filter(f => f.id !== id);
+  else if (tipo === 'videos') videosParaUpload = videosParaUpload.filter(f => f.id !== id);
+  else musicasParaUpload = musicasParaUpload.filter(f => f.id !== id);
+  const el = document.getElementById(id);
+  if (el) el.remove();
+  atualizarContador(tipo);
 }
 
-async function uploadFotoAutomatico(id, file) {
+function atualizarContador(tipo) {
+  const lim = limites[estado.plano];
+  const previewArea = document.getElementById('preview-' + tipo);
+  const listaArea = document.getElementById('lista-' + tipo);
+  const noPreview = previewArea ? previewArea.children.length : 0;
+  const naLista = listaArea ? listaArea.querySelectorAll('.item-midia').length : 0;
+  const total = noPreview + naLista;
+  const campo = tipo === 'fotos' ? 'fotos' : tipo === 'videos' ? 'videos' : 'musicas';
+  const contadorEl = document.getElementById('modal-' + tipo + '-contador');
+  const dashEl = document.getElementById('dash-' + campo);
+  if (contadorEl) contadorEl.textContent = total + '/' + lim[campo];
+  if (dashEl) dashEl.textContent = total + '/' + lim[campo];
+}
+
+async function uploadAutomatico(id, file, tipo) {
   const formData = new FormData();
-  formData.append('foto', file);
+  const campo = tipo === 'fotos' ? 'foto' : tipo === 'videos' ? 'video' : 'musica';
+  formData.append(campo, file);
   formData.append('loja_id', estado.lojaId);
+  
   const el = document.getElementById(id);
   if (!el) return;
   const statusText = el.querySelector('.status-text');
+  
   try {
     statusText.textContent = 'Enviando...';
     statusText.className = 'text-xs text-amarelo status-text';
-    const resposta = await fetch(WORKER_URL + '/api/upload-foto', { method: 'POST', body: formData });
+    const endpoint = tipo === 'fotos' ? '/api/upload-foto' : tipo === 'videos' ? '/api/upload-video' : '/api/upload-musica';
+    const resposta = await fetch(WORKER_URL + endpoint, { method: 'POST', body: formData });
     const dados = await resposta.json();
     if (!resposta.ok) throw new Error(dados.erro || 'Erro no upload');
-    statusText.textContent = '✓ Enviada! Expira: ' + dados.midia.data_expira;
+    statusText.textContent = '✓ Enviado! Expira: ' + (dados[tipo === 'fotos' ? 'midia' : tipo === 'videos' ? 'video' : 'musica'].data_expira);
     statusText.className = 'text-xs text-verde status-text';
-    atualizarContador();
-    const lim = limites[estado.plano];
-    const total = document.getElementById('preview-area').children.length + document.querySelectorAll('#lista-fotos .foto-item').length;
-    if (total >= lim.fotos) setTimeout(() => mostrarMsg('sucesso', '🎉 Limite de fotos atingido!'), 500);
+    atualizarContador(tipo);
   } catch (erro) {
     statusText.textContent = '❌ ' + erro.message;
     statusText.className = 'text-xs text-vermelho status-text';
@@ -263,20 +338,56 @@ async function carregarFotosExistentes() {
     if (dados.midias.length === 0) {
       lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhuma foto enviada ainda.</div>';
     } else {
-      lista.innerHTML = '<div class="text-sm font-bold text-amarelo mb-2">Fotos ativas:</div>' + dados.midias.map(m => '<div class="foto-item bg-black rounded-lg p-3 flex items-center gap-3"><img src="' + m.url + '" class="w-16 h-16 object-cover rounded" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%22 font-size=%2240%22>📷</text></svg>\'"><div class="flex-1"><div class="text-sm font-bold">Foto</div><div class="text-xs text-gray-400">Upload: ' + (m.data_upload || '--') + '</div><div class="text-xs ' + (m.data_expira ? 'text-amarelo' : 'text-verde') + '">Expira: ' + (m.data_expira || 'Nunca') + '</div></div><button onclick="deletarFoto(\'' + m.id + '\')" class="bg-vermelho px-3 py-1 rounded text-xs font-bold hover:bg-red-600">Excluir</button></div>').join('');
+      lista.innerHTML = '<div class="text-sm font-bold text-amarelo mb-2">Fotos ativas:</div>' + dados.midias.map(m => '<div class="item-midia bg-black rounded-lg p-3 flex items-center gap-3"><img src="' + m.url + '" class="w-16 h-16 object-cover rounded"><div class="flex-1"><div class="text-sm font-bold">Foto</div><div class="text-xs text-gray-400">Upload: ' + (m.data_upload || '--') + '</div><div class="text-xs ' + (m.data_expira ? 'text-amarelo' : 'text-verde') + '">Expira: ' + (m.data_expira || 'Nunca') + '</div></div><button onclick="deletarMidia(\'' + m.id + '\', \'fotos\')" class="bg-vermelho px-3 py-1 rounded text-xs font-bold hover:bg-red-600">Excluir</button></div>').join('');
     }
-    atualizarContador();
+    atualizarContador('fotos');
   } catch (erro) { console.error('Erro ao carregar fotos:', erro); }
 }
 
-async function deletarFoto(midiaId) {
-  if (!confirm('Tem certeza que quer excluir esta foto?')) return;
+async function carregarVideosExistentes() {
+  if (!estado.lojaId) return;
   try {
-    const resposta = await fetch(WORKER_URL + '/api/deletar-foto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ midia_id: midiaId, loja_id: estado.lojaId }) });
+    const resposta = await fetch(WORKER_URL + '/api/listar-videos?loja_id=' + estado.lojaId);
+    const dados = await resposta.json();
+    if (!dados.sucesso) return;
+    const lista = document.getElementById('lista-videos');
+    if (dados.videos.length === 0) {
+      lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhum vídeo enviado ainda.</div>';
+    } else {
+      lista.innerHTML = '<div class="text-sm font-bold text-amarelo mb-2">Vídeos ativos:</div>' + dados.videos.map(v => '<div class="item-midia bg-black rounded-lg p-3 flex items-center gap-3"><video src="' + v.url + '" class="w-16 h-16 object-cover rounded"></video><div class="flex-1"><div class="text-sm font-bold">' + (v.titulo || 'Vídeo') + '</div><div class="text-xs text-gray-400">Upload: ' + (v.data_upload || '--') + '</div><div class="text-xs ' + (v.data_expira ? 'text-amarelo' : 'text-verde') + '">Expira: ' + (v.data_expira || 'Nunca') + '</div></div><button onclick="deletarMidia(\'' + v.id + '\', \'videos\')" class="bg-vermelho px-3 py-1 rounded text-xs font-bold hover:bg-red-600">Excluir</button></div>').join('');
+    }
+    atualizarContador('videos');
+  } catch (erro) { console.error('Erro ao carregar vídeos:', erro); }
+}
+
+async function carregarMusicasExistentes() {
+  if (!estado.lojaId) return;
+  try {
+    const resposta = await fetch(WORKER_URL + '/api/listar-musicas?loja_id=' + estado.lojaId);
+    const dados = await resposta.json();
+    if (!dados.sucesso) return;
+    const lista = document.getElementById('lista-musicas');
+    if (dados.musicas.length === 0) {
+      lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhuma música enviada ainda.</div>';
+    } else {
+      lista.innerHTML = '<div class="text-sm font-bold text-amarelo mb-2">Músicas ativas:</div>' + dados.musicas.map(m => '<div class="item-midia bg-black rounded-lg p-3 flex items-center gap-3"><div class="w-16 h-16 bg-black rounded flex items-center justify-center text-2xl"></div><div class="flex-1"><div class="text-sm font-bold">' + (m.titulo || 'Música') + '</div><div class="text-xs text-gray-400">' + (m.artista || '--') + '</div><div class="text-xs ' + (m.data_expira ? 'text-amarelo' : 'text-verde') + '">Expira: ' + (m.data_expira || 'Nunca') + '</div></div><button onclick="deletarMidia(\'' + m.id + '\', \'musicas\')" class="bg-vermelho px-3 py-1 rounded text-xs font-bold hover:bg-red-600">Excluir</button></div>').join('');
+    }
+    atualizarContador('musicas');
+  } catch (erro) { console.error('Erro ao carregar músicas:', erro); }
+}
+
+async function deletarMidia(id, tipo) {
+  if (!confirm('Tem certeza que quer excluir?')) return;
+  try {
+    const endpoint = tipo === 'fotos' ? '/api/deletar-foto' : tipo === 'videos' ? '/api/deletar-video' : '/api/deletar-musica';
+    const campoId = tipo === 'fotos' ? 'midia_id' : tipo === 'videos' ? 'video_id' : 'musica_id';
+    const resposta = await fetch(WORKER_URL + endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ [campoId]: id, loja_id: estado.lojaId }) });
     const dados = await resposta.json();
     if (!resposta.ok) throw new Error(dados.erro);
-    carregarFotosExistentes();
-    mostrarMsg('sucesso', '✅ Foto excluída!');
+    if (tipo === 'fotos') carregarFotosExistentes();
+    else if (tipo === 'videos') carregarVideosExistentes();
+    else carregarMusicasExistentes();
+    mostrarMsg('sucesso', '✅ Excluído!');
   } catch (erro) { mostrarMsg('erro', '❌ ' + erro.message); }
 }
 
