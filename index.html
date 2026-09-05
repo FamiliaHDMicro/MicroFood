@@ -43,10 +43,13 @@
   @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   .msg-erro { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
   .msg-sucesso { background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+  .btn-autoral { cursor: default; }
+  .btn-autoral:hover { transform: none; }
 </style>
 </head>
 <body class="min-h-screen">
 
+<!-- TELA 1: LANDING -->
 <div id="tela-landing" class="min-h-screen flex items-center justify-center p-4">
   <div class="max-w-5xl w-full fade-in">
     <div class="text-center mb-10">
@@ -59,25 +62,25 @@
         <div class="text-xs text-gray-500 uppercase mb-2">Teste grátis</div>
         <div class="text-3xl font-black text-white mb-1">FREE</div>
         <div class="text-laranja font-bold mb-4">R$ 0</div>
-        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 3 fotos</li><li>✓ 1 vídeo</li><li>✓ 15 dias grátis</li><li>✗ Sem músicas</li></ul>
+        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 3 fotos</li><li>✓ 1 vídeo autoral</li><li>✓ 15 dias grátis</li><li>✗ Sem músicas</li></ul>
       </div>
       <div class="bg-card rounded-xl p-6 card-hover border-2 border-laranja glow">
         <div class="text-xs text-laranja uppercase mb-2 font-bold">Mais popular</div>
         <div class="text-3xl font-black text-white mb-1">BASIC</div>
         <div class="text-laranja font-bold mb-4">R$ 79 + R$ 29/mês</div>
-        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 10 fotos</li><li>✓ 3 vídeos</li><li>✓ 1 música</li><li>✓ Business (90 dias)</li></ul>
+        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 10 fotos</li><li>✓ 3 vídeos autorais</li><li>✓ 1 música autoral</li><li>✓ Business (90 dias)</li></ul>
       </div>
       <div class="bg-card rounded-xl p-6 card-hover">
         <div class="text-xs text-gray-500 uppercase mb-2">Serviços</div>
         <div class="text-3xl font-black text-white mb-1">PLUS</div>
         <div class="text-laranja font-bold mb-4">R$ 99 + R$ 39/mês</div>
-        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 13 fotos</li><li>✓ 3 vídeos</li><li>✓ 2 músicas</li><li>✓ Rotação 15 dias</li></ul>
+        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 13 fotos</li><li>✓ 3 vídeos autorais</li><li>✓ 2 músicas autorais</li><li>✓ Rotação 15 dias</li></ul>
       </div>
       <div class="bg-card rounded-xl p-6 card-hover">
         <div class="text-xs text-gray-500 uppercase mb-2">Alimentos</div>
         <div class="text-3xl font-black text-white mb-1">PRO</div>
         <div class="text-laranja font-bold mb-4">R$ 120 + R$ 55/mês</div>
-        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 16 fotos</li><li>✓ 4 vídeos</li><li>✓ 3 músicas</li><li>✓ Rotação livre</li></ul>
+        <ul class="text-sm text-gray-400 space-y-2"><li>✓ 16 fotos</li><li>✓ 4 vídeos autorais</li><li>✓ 3 músicas autorais</li><li>✓ Rotação livre</li></ul>
       </div>
     </div>
     <button onclick="irPara('tela-cadastro')" class="btn-laranja w-full md:w-auto px-12 py-4 rounded-lg font-bold text-lg uppercase">Começar agora →</button>
@@ -85,6 +88,7 @@
   </div>
 </div>
 
+<!-- TELA 2: CADASTRO (7 passos) -->
 <div id="tela-cadastro" class="tela-oculta min-h-screen flex items-center justify-center p-4">
   <div class="max-w-2xl w-full bg-card rounded-2xl p-8 glow fade-in">
     <button onclick="irPara('tela-landing')" class="text-gray-500 hover:text-white mb-4 text-sm">← Voltar</button>
@@ -99,6 +103,7 @@
     <p class="text-gray-400 mb-6" id="subtitulo-passo">Vamos começar pelo básico.</p>
     <div id="area-msg"></div>
 
+    <!-- PASSO 1: Dados -->
     <div id="passo-1" class="passo-ativo">
       <div class="space-y-4">
         <div><label class="block text-sm font-bold mb-2 text-amarelo uppercase">Seu nome</label><input type="text" id="inp-nome" placeholder="Ex: Maria Silva" class="w-full p-3 rounded-lg"></div>
@@ -116,10 +121,11 @@
       <button onclick="proximoPasso(2)" class="btn-laranja w-full py-4 rounded-lg font-bold text-lg uppercase mt-6">Continuar →</button>
     </div>
 
+    <!-- PASSO 2: Plano -->
     <div id="passo-2" class="passo-inativo">
       <label class="block text-sm font-bold mb-2 text-amarelo uppercase">Escolha seu plano</label>
       <div class="grid grid-cols-2 gap-3">
-        <button onclick="escolherPlano('FREE', 0, 0, this)" class="btn-plano bg-roxo p-4 rounded-lg text-left border border-transparent"><div class="font-bold text-lg">FREE</div><div class="text-xs text-gray-400">R$ 0 • 15 dias grátis</div><div class="text-xs text-gray-500 mt-2">3 fotos • 1 vídeo</div></button>
+        <button onclick="escolherPlano('FREE', 0, 0, this)" class="btn-plano bg-roxo p-4 rounded-lg text-left border border-transparent"><div class="font-bold text-lg">FREE</div><div class="text-xs text-gray-400">R$ 0 • 15 dias grátis</div><div class="text-xs text-gray-500 mt-2">3 fotos • 1 vídeo autoral</div></button>
         <button onclick="escolherPlano('BASIC', 79, 29, this)" class="btn-plano bg-roxo p-4 rounded-lg text-left border border-transparent"><div class="font-bold text-lg">BASIC</div><div class="text-xs text-laranja">R$ 79 + R$ 29/mês</div><div class="text-xs text-gray-500 mt-2">10 fotos • 3 vídeos • 1 música</div></button>
         <button onclick="escolherPlano('PLUS', 99, 39, this)" class="btn-plano bg-roxo p-4 rounded-lg text-left border border-transparent"><div class="font-bold text-lg">PLUS</div><div class="text-xs text-laranja">R$ 99 + R$ 39/mês</div><div class="text-xs text-gray-500 mt-2">13 fotos • 3 vídeos • 2 músicas</div></button>
         <button onclick="escolherPlano('PRO', 120, 55, this)" class="btn-plano bg-roxo p-4 rounded-lg text-left border border-transparent"><div class="font-bold text-lg">PRO</div><div class="text-xs text-laranja">R$ 120 + R$ 55/mês</div><div class="text-xs text-gray-500 mt-2">16 fotos • 4 vídeos • 3 músicas</div></button>
@@ -131,8 +137,9 @@
       </div>
     </div>
 
+    <!-- PASSO 3: Domínio -->
     <div id="passo-3" class="passo-inativo">
-      <label class="block text-sm font-bold mb-2 text-amarelo uppercase">Qual nome você gostaria para seu domínio GRÁTIS no SiteOne?</label>
+      <label class="block text-sm font-bold mb-2 text-amarelo uppercase">Qual nome você gostaria para seu domínio GRÁTIS?</label>
       <p class="text-gray-400 text-sm mb-4">Este será o endereço da sua loja.</p>
       <input type="text" id="inp-dominio" placeholder="Ex: marmitasdmaria" class="w-full p-4 rounded-lg text-lg" oninput="atualizarPreviewDominio()">
       <div class="mt-4 bg-roxo rounded-lg p-4 border-l-4 border-laranja">
@@ -145,6 +152,7 @@
       </div>
     </div>
 
+    <!-- PASSO 4: Confirma domínio -->
     <div id="passo-4" class="passo-inativo">
       <div class="text-center">
         <div class="text-5xl mb-4">🔒</div>
@@ -161,13 +169,14 @@
       </div>
     </div>
 
+    <!-- PASSO 5: Termos -->
     <div id="passo-5" class="passo-inativo">
       <label class="block text-sm font-bold mb-4 text-amarelo uppercase">Termos e consentimentos</label>
       <p class="text-gray-400 text-sm mb-4">Aceite todos os termos:</p>
       <div class="space-y-2 mb-6">
-        <div class="termo-item"><input type="checkbox" id="termo-1" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-1" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Autoria:</strong> Fotos e vídeos são de minha autoria.</label></div>
+        <div class="termo-item"><input type="checkbox" id="termo-1" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-1" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Autoria:</strong> As fotos que enviar são de minha autoria.</label></div>
         <div class="termo-item"><input type="checkbox" id="termo-2" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-2" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Responsabilidade:</strong> Assumo responsabilidade legal pelo conteúdo.</label></div>
-        <div class="termo-item"><input type="checkbox" id="termo-3" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-3" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Rotação:</strong> Mídias duram 30 dias e serão removidas.</label></div>
+        <div class="termo-item"><input type="checkbox" id="termo-3" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-3" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Rotação:</strong> Minhas fotos duram conforme o plano e serão removidas após o período.</label></div>
         <div class="termo-item"><input type="checkbox" id="termo-4" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-4" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Pagamento:</strong> Sem mensalidade = loja desativada.</label></div>
         <div class="termo-item"><input type="checkbox" id="termo-5" class="checkbox-termo mt-1" onchange="verificarTermos()"><label for="termo-5" class="text-sm text-gray-300 cursor-pointer"><strong class="text-white">Domínio:</strong> Nome não pode ser alterado depois.</label></div>
       </div>
@@ -177,6 +186,7 @@
       </div>
     </div>
 
+    <!-- PASSO 6: Pagamento -->
     <div id="passo-6" class="passo-inativo">
       <div class="text-center">
         <div class="text-5xl mb-4">💳</div>
@@ -194,9 +204,9 @@
         <div class="bg-black rounded-lg p-4 mb-6">
           <div class="text-xs text-gray-400 uppercase mb-2">Chave PIX</div>
           <div class="text-lg font-mono text-amarelo break-all">5517992644042</div>
-          <button onclick="copiarPix()" class="mt-3 text-xs bg-roxo px-4 py-2 rounded hover:bg-laranja"> Copiar chave</button>
+          <button onclick="copiarPix()" class="mt-3 text-xs bg-roxo px-4 py-2 rounded hover:bg-laranja">📋 Copiar chave</button>
         </div>
-        <div class="text-sm text-gray-400 mb-6">Após o pagamento, você recebe o link do painel no WhatsApp em até 5 minutos.</div>
+        <div class="text-sm text-gray-400 mb-6">Após o pagamento, você escolhe o modelo da sua loja.</div>
       </div>
       <div class="flex gap-3">
         <button onclick="voltarPasso(5)" class="flex-1 bg-roxo py-4 rounded-lg font-bold">← Voltar</button>
@@ -204,6 +214,7 @@
       </div>
     </div>
 
+    <!-- PASSO 7: Escolher Template -->
     <div id="passo-7" class="passo-inativo">
       <label class="block text-sm font-bold mb-2 text-amarelo uppercase">Escolha o modelo da sua loja</label>
       <p class="text-gray-400 text-sm mb-4">Selecione o estilo que mais combina com seu negócio:</p>
@@ -217,6 +228,7 @@
   </div>
 </div>
 
+<!-- TELA 3: DASHBOARD -->
 <div id="tela-dashboard" class="tela-oculta min-h-screen">
   <header class="bg-card border-b border-roxo p-4 flex justify-between items-center">
     <div>
@@ -241,9 +253,9 @@
         <div class="text-xs text-amarelo mt-2 pulse-dot">⏳ Rotação em 30 dias</div>
       </div>
       <div class="bg-card rounded-xl p-5 border border-roxo">
-        <div class="text-xs text-gray-500 uppercase mb-1">Vídeos</div>
+        <div class="text-xs text-gray-500 uppercase mb-1">Vídeos autorais</div>
         <div class="text-2xl font-black text-white" id="dash-videos">0/1</div>
-        <div class="text-xs text-gray-400 mt-2">Autorais ✓</div>
+        <div class="text-xs text-verde mt-2">✓ Incluídos no plano</div>
       </div>
       <div class="bg-card rounded-xl p-5 border border-roxo">
         <div class="text-xs text-gray-500 uppercase mb-1">Próxima cobrança</div>
@@ -255,9 +267,21 @@
       <h3 class="text-xl font-bold mb-2">Aprovar em 3 cliques</h3>
       <p class="text-gray-400 mb-4">Upload • Rotação • Distribuição em sequência</p>
       <div class="grid md:grid-cols-3 gap-3">
-        <button class="bg-black p-4 rounded-lg text-left hover:border-laranja border border-transparent"><div class="text-2xl mb-1">📸</div><div class="font-bold">1. Upload de Fotos</div><div class="text-xs text-gray-400">Arraste ou selecione</div></button>
-        <button class="bg-black p-4 rounded-lg text-left hover:border-laranja border border-transparent"><div class="text-2xl mb-1"></div><div class="font-bold">2. Upload de Vídeos</div><div class="text-xs text-gray-400">Link do YouTube</div></button>
-        <button class="bg-black p-4 rounded-lg text-left hover:border-laranja border border-transparent"><div class="text-2xl mb-1">🎵</div><div class="font-bold">3. Adicionar Música</div><div class="text-xs text-gray-400">Link do Spotify</div></button>
+        <button class="bg-black p-4 rounded-lg text-left hover:border-laranja border border-transparent cursor-pointer">
+          <div class="text-2xl mb-1">📸</div>
+          <div class="font-bold">1. Upload de Fotos</div>
+          <div class="text-xs text-gray-400">Arraste ou selecione</div>
+        </button>
+        <button class="bg-black p-4 rounded-lg text-left border border-verde opacity-75 btn-autoral">
+          <div class="text-2xl mb-1"></div>
+          <div class="font-bold">2. Vídeos Autorais</div>
+          <div class="text-xs text-verde">✓ Já inclusos no seu plano</div>
+        </button>
+        <button class="bg-black p-4 rounded-lg text-left border border-verde opacity-75 btn-autoral">
+          <div class="text-2xl mb-1">🎵</div>
+          <div class="font-bold">3. Músicas Autorais</div>
+          <div class="text-xs text-verde">✓ Já inclusas no seu plano</div>
+        </button>
       </div>
     </div>
     <div class="bg-card rounded-xl p-6 border border-roxo mb-8">
@@ -268,8 +292,8 @@
       </div>
       <div class="flex gap-3 flex-wrap">
         <button onclick="abrirLoja()" class="bg-laranja px-6 py-2 rounded-lg font-bold">👁️ Ver minha loja</button>
-        <button onclick="copiarLink()" class="bg-roxo px-6 py-2 rounded-lg font-bold hover:bg-laranja"> Copiar link</button>
-        <button onclick="compartilharZap()" class="bg-verde px-6 py-2 rounded-lg font-bold text-black">💬 Compartilhar no Zap</button>
+        <button onclick="copiarLink()" class="bg-roxo px-6 py-2 rounded-lg font-bold hover:bg-laranja">📋 Copiar link</button>
+        <button onclick="compartilharZap()" class="bg-verde px-6 py-2 rounded-lg font-bold text-black"> Compartilhar no Zap</button>
       </div>
     </div>
     <div class="bg-roxo rounded-xl p-5 border-l-4 border-amarelo">
@@ -281,6 +305,8 @@
 
 <script>
 const WORKER_URL = 'https://microfood.hdmicro.workers.dev';
+const SITE_URL = 'https://microfood.pages.dev';
+
 let estado = { nicho: null, plano: null, setup: 0, mensal: 0, nome: '', zap: '', subdomain: '', nomeLoja: '', lojaId: null, passoAtual: 1 };
 const limites = { FREE: { fotos: 3, videos: 1, musicas: 0, rotacao: 15 }, BASIC: { fotos: 10, videos: 3, musicas: 1, rotacao: 90 }, PLUS: { fotos: 13, videos: 3, musicas: 2, rotacao: 15 }, PRO: { fotos: 16, videos: 4, musicas: 3, rotacao: 0 } };
 const dicasPorNicho = { alimentacao: 'Lanchonetes do PRO podem trocar fotos todo dia. Use isso a seu favor!', beleza: 'Barbeiros e tatuadores: troque a vitrine a cada 15 dias para atrair clientes novos.', servico: 'Serviços locais: fotos de antes/depois convertem 3x mais.', business: 'Advogados e contadores: sua rotação é trimestral. Aproveite para atualizar promoções.' };
@@ -298,7 +324,7 @@ const templatesPorNicho = {
   ],
   servico: [
     { id: 'mao-na-massa', nome: 'MãoNaMassa', emoji: '🔧', desc: 'Prático e direto. Ideal para eletricista, encanador.' },
-    { id: 'tech-solutions', nome: 'TechSolutions', emoji: '', desc: 'Corporativo. Ideal para TI, manutenção.' },
+    { id: 'tech-solutions', nome: 'TechSolutions', emoji: '💻', desc: 'Corporativo. Ideal para TI, manutenção.' },
     { id: 'limpeza-total', nome: 'LimpezaTotal', emoji: '🧹', desc: 'Fresco e organizado. Ideal para diaristas.' }
   ],
   business: [
@@ -316,7 +342,7 @@ function mostrarPasso(num) { for (let i = 1; i <= 7; i++) { const passo = docume
 function proximoPasso(num) { if (num === 2) { if (!document.getElementById('inp-nome').value.trim()) return mostrarMsg('erro', 'Preencha seu nome'); if (!document.getElementById('inp-zap').value.trim()) return mostrarMsg('erro', 'Preencha seu WhatsApp'); if (!estado.nicho) return mostrarMsg('erro', 'Escolha um nicho'); estado.nome = document.getElementById('inp-nome').value.trim(); estado.zap = document.getElementById('inp-zap').value.trim(); } if (num === 3) { if (!estado.plano) return mostrarMsg('erro', 'Escolha um plano'); } if (num === 4) { const dominio = document.getElementById('inp-dominio').value.trim(); if (!dominio) return mostrarMsg('erro', 'Digite o nome do domínio'); if (dominio.length < 3) return mostrarMsg('erro', 'Domínio muito curto'); estado.subdomain = dominio.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30); estado.nomeLoja = document.getElementById('inp-nome').value.trim(); document.getElementById('confirm-dominio').textContent = estado.subdomain + '.pages.dev'; } if (num === 6) { document.getElementById('pag-plano').textContent = estado.plano; document.getElementById('pag-valor').textContent = 'R$ ' + estado.setup; document.getElementById('pag-mensal').textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias'; document.getElementById('pag-dominio').textContent = estado.subdomain + '.pages.dev'; } mostrarPasso(num); }
 function voltarPasso(num) { mostrarPasso(num); }
 function escolherNicho(nicho, elemento) { estado.nicho = nicho; document.querySelectorAll('.btn-nicho').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); }
-function escolherPlano(plano, setup, mensal, elemento) { estado.plano = plano; estado.setup = setup; estado.mensal = mensal; document.querySelectorAll('.btn-plano').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); const info = document.getElementById('info-plano'); info.classList.remove('hidden'); const lim = limites[plano]; info.innerHTML = '<strong class="text-laranja">' + plano + ':</strong> ' + lim.fotos + ' fotos • ' + lim.videos + ' vídeos • ' + lim.musicas + ' músicas • Rotação: ' + (lim.rotacao === 0 ? 'Livre' : lim.rotacao + ' dias'); }
+function escolherPlano(plano, setup, mensal, elemento) { estado.plano = plano; estado.setup = setup; estado.mensal = mensal; document.querySelectorAll('.btn-plano').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); const info = document.getElementById('info-plano'); info.classList.remove('hidden'); const lim = limites[plano]; info.innerHTML = '<strong class="text-laranja">' + plano + ':</strong> ' + lim.fotos + ' fotos • ' + lim.videos + ' vídeos autorais • ' + lim.musicas + ' músicas autorais • Rotação: ' + (lim.rotacao === 0 ? 'Livre' : lim.rotacao + ' dias'); }
 function atualizarPreviewDominio() { const nome = document.getElementById('inp-dominio').value; const sub = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30); document.getElementById('preview-dominio').textContent = (sub || 'seuloja') + '.pages.dev'; }
 function verificarTermos() { const todos = ['termo-1','termo-2','termo-3','termo-4','termo-5'].map(id => document.getElementById(id).checked); document.getElementById('btn-ir-pagamento').disabled = !todos.every(t => t); }
 
@@ -375,9 +401,9 @@ async function finalizarCadastro() {
 }
 
 function copiarPix() { navigator.clipboard.writeText('5517992644042'); mostrarMsg('sucesso', '✅ Chave PIX copiada!'); }
-function copiarLink() { navigator.clipboard.writeText('https://' + estado.subdomain + '.pages.dev'); mostrarMsg('sucesso', '✅ Link copiado!'); }
-function abrirLoja() { window.open('https://microfood.pages.dev/loja.html?subdomain=' + estado.subdomain, '_blank'); }
-function compartilharZap() { const texto = 'Olá! Veja minha loja: https://microfood.pages.dev/loja.html?subdomain=' + estado.subdomain; window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank'); }
+function copiarLink() { navigator.clipboard.writeText(SITE_URL + '/loja.html?subdomain=' + estado.subdomain); mostrarMsg('sucesso', '✅ Link copiado!'); }
+function abrirLoja() { window.open(SITE_URL + '/loja.html?subdomain=' + estado.subdomain, '_blank'); }
+function compartilharZap() { const texto = 'Olá! Veja minha loja: ' + SITE_URL + '/loja.html?subdomain=' + estado.subdomain; window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank'); }
 document.addEventListener('DOMContentLoaded', () => { console.log('SiteOne carregado.'); });
 </script>
 </body>
