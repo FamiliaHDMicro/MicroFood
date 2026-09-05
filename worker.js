@@ -26,6 +26,8 @@ export default {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
+    if (url.pathname === '/api/registrar-visita' && request.method === 'POST') return await registrarVisita(request, env);
+    if (url.pathname === '/api/analytics' && request.method === 'GET') return await getAnalytics(request, env);
 
     return new Response('Microfood API Online - SiteOne v1.0', {
       headers: { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' }
@@ -184,41 +186,85 @@ async function deletarFoto(request, env) {
   }
 }
 
+async function registrarVisita(request, env) {
+  try {
+    const dados = await request.json();
+    const { loja_id, referer, user_agent } = dados;
+    
+    if (!loja_id) return new Response(JSON.stringify({ erro: 'loja_id ausente' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    const agora = new Date();
+    const data = agora.toISOString().split('T')[0];
+    const hora = agora.toTimeString().split(' ')[0];
+    const idVisita = 'vis_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+    await env.DB.prepare(`
+      INSERT INTO visitas (id, loja_id, data, hora, referer, user_agent)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).bind(idVisita, loja_id, data, hora, referer || '', user_agent || '').run();
+
+    return new Response(JSON.stringify({ sucesso: true, visita_id: idVisita }), { status: 201, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  } catch (erro) {
+    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  }
+}
+
+async function getAnalytics(request, env) {
+  try {
+    const url = new URL(request.url);
+    const lojaId = url.searchParams.get('loja_id');
+    if (!lojaId) return new Response(JSON.stringify({ erro: 'loja_id ausente' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+    const hoje = new Date().toISOString().split('T')[0];
+    const semanaAtras = new Date(); semanaAtras.setDate(semanaAtras.getDate() - 7);
+    const dataSemana = semanaAtras.toISOString().split('T')[0];
+
+    const totalVisitas = await env.DB.prepare('SELECT COUNT(*) as total FROM visitas WHERE loja_id = ?').bind(lojaId).first();
+    const visitasHoje = await env.DB.prepare('SELECT COUNT(*) as total FROM visitas WHERE loja_id = ? AND data = ?').bind(lojaId, hoje).first();
+    const visitasSemana = await env.DB.prepare('SELECT COUNT(*) as total FROM visitas WHERE loja_id = ? AND data >= ?').bind(lojaId, dataSemana).first();
+    const ultimasVisitas = await env.DB.prepare('SELECT * FROM visitas WHERE loja_id = ? ORDER BY data DESC, hora DESC LIMIT 10').bind(lojaId).all();
+
+    return new Response(JSON.stringify({
+      sucesso: true,
+      analytics: {
+        total: totalVisitas.total,
+        hoje: visitasHoje.total,
+        semana: visitasSemana.total,
+        ultimas: ultimasVisitas.results || []
+      }
+    }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  } catch (erro) {
+    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+  }
+}
+
 async function rotacionarFotosExpiradas(env) {
   try {
     const hoje = new Date().toISOString().split('T')[0];
-    
-    const fotosExpiradas = await env.DB.prepare(
-      'SELECT * FROM midias WHERE tipo = ? AND ativa = 1 AND data_expira < ?'
-    ).bind('foto', hoje).all();
+    const fotosExpiradas = await env.DB.prepare('SELECT * FROM midias WHERE tipo = ? AND ativa = 1 AND data_expira < ?').bind('foto', hoje).all();
     
     if (!fotosExpiradas.results || fotosExpiradas.results.length === 0) {
-      console.log('✅ Nenhuma foto expirada hoje');
+      console.log('Nenhuma foto expirada hoje');
       return;
     }
     
-    console.log(`🗑️ Apagando ${fotosExpiradas.results.length} fotos expiradas`);
+    console.log('Apagando ' + fotosExpiradas.results.length + ' fotos expiradas');
     
     for (const foto of fotosExpiradas.results) {
       if (foto.r2_key) {
         try {
           await env.FOTOS.delete(foto.r2_key);
-          console.log(`  ✓ Deletada do R2: ${foto.r2_key}`);
+          console.log('Deletada do R2: ' + foto.r2_key);
         } catch (erro) {
-          console.error(`  ✗ Erro ao deletar do R2: ${foto.r2_key}`, erro);
+          console.error('Erro ao deletar do R2: ' + foto.r2_key, erro);
         }
       }
-      
-      await env.DB.prepare(
-        'UPDATE midias SET ativa = 0 WHERE id = ?'
-      ).bind(foto.id).run();
-      
-      console.log(`  ✓ Marcada como inativa: ${foto.id}`);
+      await env.DB.prepare('UPDATE midias SET ativa = 0 WHERE id = ?').bind(foto.id).run();
+      console.log('Marcada como inativa: ' + foto.id);
     }
     
-    console.log('✅ Rotação concluída!');
-    
+    console.log('Rotacao concluida!');
   } catch (erro) {
-    console.error('❌ Erro na rotação:', erro);
+    console.error('Erro na rotacao:', erro);
   }
 }
