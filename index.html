@@ -7,6 +7,413 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <style>
+                body {
+                  background-color: white; /* Ensure the iframe has a white background */
+                }
+
+                
+              </style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="titulo-loja">Carregando...</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#0d0d0d', card: '#121212', roxo: '#1a0f2b',
+          laranja: '#ff5500', amarelo: '#ffcc00', verde: '#10b981'
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { background: #0d0d0d; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; }
+  .fade-in { animation: fadeIn 0.6s ease-out; }
+  @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+  .card-hover { transition: all 0.3s; }
+  .card-hover:hover { transform: translateY(-5px); }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading" class="min-h-screen flex items-center justify-center">
+  <div class="text-center">
+    <div class="text-6xl mb-4">🍽️</div>
+    <div class="text-2xl font-bold text-laranja">Carregando loja...</div>
+  </div>
+</div>
+
+<!-- ERRO -->
+<div id="erro" class="tela-oculta min-h-screen flex items-center justify-center">
+  <div class="text-center">
+    <div class="text-6xl mb-4">😕</div>
+    <div class="text-2xl font-bold text-vermelho mb-2">Loja não encontrada</div>
+    <div class="text-gray-400">Este endereço não existe ou foi desativado.</div>
+    <a href="https://microfood.pages.dev" class="inline-block mt-6 bg-laranja px-6 py-3 rounded-lg font-bold">Voltar ao SiteOne</a>
+  </div>
+</div>
+
+<!-- CONTEÚDO DA LOJA (injetado via JS) -->
+<div id="conteudo-loja" class="tela-oculta"></div>
+
+<script>
+const WORKER_URL = 'https://microfood.hdmicro.workers.dev';
+
+// Templates HTML (serão expandidos no futuro)
+const templatesHTML = {
+  'sabor-caseiro': renderSaborCaseiro,
+  'delivery-rapido': renderDeliveryRapido,
+  'mesa-farta': renderMesaFarta,
+  'glamour-studio': renderGlamourStudio,
+  'beauty-express': renderBeautyExpress,
+  'barber-shop': renderBarberShop,
+  'mao-na-massa': renderMaoNaMassa,
+  'tech-solutions': renderTechSolutions,
+  'limpeza-total': renderLimpezaTotal,
+  'consult-pro': renderConsultPro,
+  'loja-virtual': renderLojaVirtual,
+  'eventos-plus': renderEventosPlus
+};
+
+// ============================================================
+// TEMPLATE: SaborCaseiro (Alimentação - Quente e Acolhedor)
+// ============================================================
+function renderSaborCaseiro(loja, midias) {
+  const fotos = (midias || []).filter(m => m.tipo === 'foto');
+  const videos = (midias || []).filter(m => m.tipo === 'video');
+  
+  let galeria = '';
+  if (fotos.length > 0) {
+    galeria = fotos.map(f => `
+      <div class="card-hover rounded-2xl overflow-hidden shadow-2xl">
+        <img src="${f.url}" alt="Foto" class="w-full h-64 object-cover">
+      </div>
+    `).join('');
+  } else {
+    galeria = `
+      <div class="col-span-full text-center py-12 bg-roxo rounded-2xl">
+        <div class="text-6xl mb-4"></div>
+        <div class="text-xl text-gray-400">Fotos em breve!</div>
+        <div class="text-sm text-gray-500 mt-2">O vendedor ainda não adicionou fotos.</div>
+      </div>
+    `;
+  }
+
+  return `
+    <!-- HERO -->
+    <div class="relative h-96 bg-gradient-to-br from-orange-900 via-red-900 to-amber-900 flex items-center justify-center overflow-hidden">
+      <div class="absolute inset-0 opacity-30" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%22 font-size=%2280%22>🍽️</text></svg>'); background-size: 100px;"></div>
+      <div class="relative text-center px-4 fade-in">
+        <div class="text-6xl mb-4">🍲</div>
+        <h1 class="text-5xl md:text-6xl font-black text-white mb-2">${loja.nome_loja}</h1>
+        <p class="text-xl text-amber-200">Feito com amor, entregue com carinho</p>
+        <a href="https://wa.me/${loja.zap}" target="_blank" class="inline-block mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl transition">
+          💬 Pedir pelo WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <!-- SOBRE -->
+    <div class="max-w-4xl mx-auto px-4 py-12">
+      <div class="bg-card rounded-2xl p-8 border border-roxo">
+        <h2 class="text-3xl font-black text-laranja mb-4">Sobre nós</h2>
+        <p class="text-gray-300 text-lg leading-relaxed">
+          Bem-vindo à <strong class="text-white">${loja.nome_loja}</strong>! 
+          Preparamos cada prato com ingredientes frescos e muito carinho. 
+          Nosso compromisso é entregar sabor de verdade na sua mesa.
+        </p>
+      </div>
+    </div>
+
+    <!-- GALERIA -->
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6 text-center">Nossas delícias</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        ${galeria}
+      </div>
+    </div>
+
+    <!-- VÍDEOS -->
+    ${videos.length > 0 ? `
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+      <h2 class="text-3xl font-black text-laranja mb-6 text-center">Vídeos</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        ${videos.map(v => `
+          <div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo">
+            <iframe src="${v.url}" class="w-full h-64" frameborder="0" allowfullscreen></iframe>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    ` : ''}
+
+    <!-- CONTATO -->
+    <div class="bg-gradient-to-r from-orange-900 to-red-900 py-12">
+      <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-3xl font-black text-white mb-4">Faça seu pedido!</h2>
+        <p class="text-amber-200 mb-6">Atendimento rápido pelo WhatsApp</p>
+        <a href="https://wa.me/${loja.zap}" target="_blank" class="inline-block bg-green-500 hover:bg-green-600 text-white px-10 py-5 rounded-full font-bold text-xl shadow-2xl transition">
+          💬 Chamar no WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-black py-6 text-center text-gray-500 text-sm">
+      <div>Powered by <strong class="text-laranja">SiteOne</strong> • microfood.pages.dev</div>
+    </footer>
+  `;
+}
+
+// ============================================================
+// TEMPLATE: LojaVirtual (Business - E-commerce)
+// ============================================================
+function renderLojaVirtual(loja, midias) {
+  const fotos = (midias || []).filter(m => m.tipo === 'foto');
+  
+  let produtos = '';
+  if (fotos.length > 0) {
+    produtos = fotos.map(f => `
+      <div class="card-hover bg-card rounded-2xl overflow-hidden border border-roxo">
+        <img src="${f.url}" alt="Produto" class="w-full h-48 object-cover">
+        <div class="p-4">
+          <div class="font-bold text-lg">Produto</div>
+          <div class="text-laranja font-black text-xl mt-2">R$ --</div>
+          <a href="https://wa.me/${loja.zap}" target="_blank" class="block mt-3 bg-laranja text-white text-center py-2 rounded-lg font-bold">Comprar</a>
+        </div>
+      </div>
+    `).join('');
+  } else {
+    produtos = `
+      <div class="col-span-full text-center py-12 bg-roxo rounded-2xl">
+        <div class="text-6xl mb-4">🛒</div>
+        <div class="text-xl text-gray-400">Produtos em breve!</div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="bg-gradient-to-r from-blue-900 to-purple-900 py-16 text-center">
+      <h1 class="text-5xl font-black text-white mb-4">${loja.nome_loja}</h1>
+      <p class="text-xl text-blue-200">Sua loja online completa</p>
+    </div>
+    <div class="max-w-6xl mx-auto px-4 py-12">
+      <h2 class="text-3xl font-black text-laranja mb-6">Produtos</h2>
+      <div class="grid md:grid-cols-3 gap-6">${produtos}</div>
+    </div>
+    <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
+  `;
+}
+
+// ============================================================
+// TEMPLATES PLACEHOLDER (os outros 10)
+// ============================================================
+function renderDefault(loja, midias, emoji, cor1, cor2) {
+  return `
+    <div class="bg-gradient-to-r ${cor1} ${cor2} py-16 text-center">
+      <div class="text-6xl mb-4">${emoji}</div>
+      <h1 class="text-5xl font-black text-white mb-4">${loja.nome_loja}</h1>
+      <p class="text-xl text-gray-200">Template em desenvolvimento</p>
+      <a href="https://wa.me/${loja.zap}" target="_blank" class="inline-block mt-6 bg-green-500 text-white px-8 py-4 rounded-full font-bold">💬 WhatsApp</a>
+    </div>
+    <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
+  `;
+}
+
+function renderDeliveryRapido(loja, midias) { return renderDefault(loja, midias, '🚀', 'from-red-900', 'to-orange-900'); }
+function renderMesaFarta(loja, midias) { return renderDefault(loja, midias, '🍽️', 'from-amber-900', 'to-yellow-900'); }
+function renderGlamourStudio(loja, midias) { return renderDefault(loja, midias, '✨', 'from-purple-900', 'to-pink-900'); }
+function renderBeautyExpress(loja, midias) { return renderDefault(loja, midias, '💅', 'from-pink-900', 'to-rose-900'); }
+function renderBarberShop(loja, midias) { return renderDefault(loja, midias, '💈', 'from-gray-900', 'to-black'); }
+function renderMaoNaMassa(loja, midias) { return renderDefault(loja, midias, '🔧', 'from-orange-900', 'to-amber-900'); }
+function renderTechSolutions(loja, midias) { return renderDefault(loja, midias, '💻', 'from-blue-900', 'to-cyan-900'); }
+function renderLimpezaTotal(loja, midias) { return renderDefault(loja, midias, '🧹', 'from-green-900', 'to-teal-900'); }
+function renderConsultPro(loja, midias) { return renderDefault(loja, midias, '', 'from-slate-900', 'to-gray-900'); }
+function renderEventosPlus(loja, midias) { return renderDefault(loja, midias, '🎉', 'from-fuchsia-900', 'to-purple-900'); }
+
+// ============================================================
+// CARREGAR LOJA
+// ============================================================
+async function carregarLoja() {
+  const params = new URLSearchParams(window.location.search);
+  const subdomain = params.get('subdomain');
+  
+  if (!subdomain) {
+    document.getElementById('loading').classList.add('tela-oculta');
+    document.getElementById('erro').classList.remove('tela-oculta');
+    return;
+  }
+
+  try {
+    const resposta = await fetch(WORKER_URL + '/api/ver?subdomain=' + subdomain);
+    const dados = await resposta.json();
+    
+    if (!resposta.ok || !dados.sucesso) {
+      throw new Error('Loja não encontrada');
+    }
+
+    const loja = dados.loja;
+    const midias = dados.midias || [];
+    const templateId = loja.template_id || 'consult-pro';
+    const renderFn = templatesHTML[templateId] || renderDefault;
+
+    document.getElementById('titulo-loja').textContent = loja.nome_loja;
+    document.getElementById('conteudo-loja').innerHTML = renderFn(loja, midias);
+    document.getElementById('loading').classList.add('tela-oculta');
+    document.getElementById('conteudo-loja').classList.remove('tela-oculta');
+
+  } catch (erro) {
+    document.getElementById('loading').classList.add('tela-oculta');
+    document.getElementById('erro').classList.remove('tela-oculta');
+  }
+}
+
+carregarLoja();
+</script>
+</body>
+</html>
+
+
+              <script>
+                              export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Max-Age': '86400',
+        },
+      });
+    }
+
+    if (url.pathname === '/api/criar-loja' && request.method === 'POST') {
+      return await criarLoja(request, env);
+    }
+
+    if (url.pathname === '/api/ver' && request.method === 'GET') {
+      return await verLoja(request, env);
+    }
+
+    return new Response('Microfood API Online - SiteOne v1.0', {
+      headers: { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' }
+    });
+  },
+};
+
+async function criarLoja(request, env) {
+  try {
+    const dados = await request.json();
+    const { nome, nome_loja, subdomain, nicho, plano, zap, template_id } = dados;
+
+    if (!nome || !nome_loja || !subdomain || !nicho || !plano) {
+      return new Response(JSON.stringify({ erro: 'Campos obrigatórios ausentes' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+
+    const subdomainLimpo = subdomain.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '').substring(0, 30);
+
+    if (subdomainLimpo.length < 3) {
+      return new Response(JSON.stringify({ erro: 'Domínio muito curto' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+
+    const existente = await env.DB.prepare('SELECT id FROM lojas WHERE subdomain = ?').bind(subdomainLimpo).first();
+    if (existente) {
+      return new Response(JSON.stringify({ erro: 'Domínio já em uso' }), {
+        status: 409,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+
+    const idLoja = 'loja_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const dataExpira = new Date(); dataExpira.setDate(dataExpira.getDate() + 30);
+    const dataCobranca = new Date(); dataCobranca.setDate(dataCobranca.getDate() + 30);
+
+    await env.DB.prepare(`
+      INSERT INTO lojas (id, nome, nome_loja, subdomain, nicho, plano, template_id, setup_pago, mensal_pago, ativa, zap, data_expira_midia, data_proxima_cobranca)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0, 1, ?, ?, ?)
+    `).bind(idLoja, nome, nome_loja, subdomainLimpo, nicho, plano, template_id || null, zap || '', dataExpira.toISOString().split('T')[0], dataCobranca.toISOString().split('T')[0]).run();
+
+    return new Response(JSON.stringify({
+      sucesso: true,
+      loja: { id: idLoja, nome: nome_loja, subdomain: subdomainLimpo, plano, nicho, template_id: template_id || null }
+    }), {
+      status: 201,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
+
+  } catch (erro) {
+    return new Response(JSON.stringify({ erro: erro.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
+  }
+}
+
+async function verLoja(request, env) {
+  try {
+    const url = new URL(request.url);
+    const subdomain = url.searchParams.get('subdomain');
+    
+    if (!subdomain) {
+      return new Response(JSON.stringify({ erro: 'Subdomínio não fornecido' }), { 
+        status: 400, 
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } 
+      });
+    }
+
+    const loja = await env.DB.prepare('SELECT * FROM lojas WHERE subdomain = ?').bind(subdomain).first();
+    if (!loja) {
+      return new Response(JSON.stringify({ erro: 'Loja não encontrada' }), { 
+        status: 404, 
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } 
+      });
+    }
+
+    const midias = await env.DB.prepare('SELECT * FROM midias WHERE loja_id = ? AND ativa = 1').bind(loja.id).all();
+
+    return new Response(JSON.stringify({ sucesso: true, loja, midias: midias.results || [] }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
+  } catch (erro) {
+    return new Response(JSON.stringify({ erro: erro.message }), { 
+      status: 500, 
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } 
+    });
+  }
+}
+
+
+              </script>
+                        </body>
+                        </html>
+                    
     theme: {
       extend: {
         colors: {
