@@ -45,6 +45,8 @@
   .msg-sucesso { background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
   .btn-autoral { cursor: default; }
   .btn-autoral:hover { transform: none; }
+  .dominio-valido { border-color: #10b981 !important; }
+  .dominio-invalido { border-color: #ef4444 !important; }
 </style>
 </head>
 <body class="min-h-screen">
@@ -137,19 +139,20 @@
       <label class="block text-sm font-bold mb-2 text-amarelo uppercase">Qual nome você gostaria para seu domínio GRÁTIS?</label>
       <p class="text-gray-400 text-sm mb-4">Este será o endereço da sua loja.</p>
       <input type="text" id="inp-dominio" placeholder="Ex: marmitasdmaria" class="w-full p-4 rounded-lg text-lg" oninput="atualizarPreviewDominio()">
+      <div id="dominio-status" class="mt-2 text-sm hidden"></div>
       <div class="mt-4 bg-roxo rounded-lg p-4 border-l-4 border-laranja">
         <div class="text-xs text-amarelo uppercase font-bold mb-2">Seu link será:</div>
         <div class="text-xl font-bold text-white break-all" id="preview-dominio">seuloja.pages.dev</div>
       </div>
       <div class="flex gap-3 mt-6">
         <button onclick="voltarPasso(2)" class="flex-1 bg-roxo py-4 rounded-lg font-bold">← Voltar</button>
-        <button onclick="proximoPasso(4)" class="flex-1 btn-laranja py-4 rounded-lg font-bold uppercase">Continuar →</button>
+        <button id="btn-validar-dominio" onclick="validarEDominios()" class="flex-1 btn-laranja py-4 rounded-lg font-bold uppercase">Verificar domínio →</button>
       </div>
     </div>
 
     <div id="passo-4" class="passo-inativo">
       <div class="text-center">
-        <div class="text-5xl mb-4">🔒</div>
+        <div class="text-5xl mb-4"></div>
         <h3 class="text-2xl font-black text-amarelo mb-3">Confirme seu domínio</h3>
         <p class="text-gray-300 mb-6">Este nome <strong class="text-laranja">NÃO poderá ser trocado depois</strong>.</p>
         <div class="bg-roxo rounded-lg p-6 mb-6 border-2 border-laranja">
@@ -226,7 +229,7 @@
       <div class="font-bold text-laranja">SEU NEGÓCIO NO TURBO</div>
     </div>
     <div class="text-right">
-      <div class="text-sm font-bold" id="dash-nome">Olá, Vendedor </div>
+      <div class="text-sm font-bold" id="dash-nome">Olá, Vendedor 👋</div>
       <div class="text-xs text-gray-500" id="dash-link">seuloja.pages.dev</div>
     </div>
   </header>
@@ -240,7 +243,7 @@
       <div class="bg-card rounded-xl p-5 border border-roxo">
         <div class="text-xs text-gray-500 uppercase mb-1">Fotos ativas</div>
         <div class="text-2xl font-black text-white" id="dash-fotos">0/3</div>
-        <div class="text-xs text-amarelo mt-2 pulse-dot">⏳ Rotação em 30 dias</div>
+        <div class="text-xs text-amarelo mt-2 pulse-dot"> Rotação em 30 dias</div>
       </div>
       <div class="bg-card rounded-xl p-5 border border-roxo">
         <div class="text-xs text-gray-500 uppercase mb-1">Vídeos autorais</div>
@@ -258,7 +261,7 @@
       <p class="text-gray-400 mb-4">Upload • Rotação • Distribuição em sequência</p>
       <div class="grid md:grid-cols-3 gap-3">
         <button onclick="abrirModalUpload()" class="bg-black p-4 rounded-lg text-left hover:border-laranja border border-transparent cursor-pointer">
-          <div class="text-2xl mb-1"></div>
+          <div class="text-2xl mb-1">📸</div>
           <div class="font-bold">1. Upload de Fotos</div>
           <div class="text-xs text-gray-400">Arraste ou selecione</div>
         </button>
@@ -275,7 +278,7 @@
       </div>
     </div>
     <div class="bg-card rounded-xl p-6 border border-roxo mb-8">
-      <h3 class="text-lg font-bold mb-4 text-amarelo"> Terminal de Controle</h3>
+      <h3 class="text-lg font-bold mb-4 text-amarelo">🌐 Terminal de Controle</h3>
       <div class="bg-black rounded-lg p-4 mb-4">
         <div class="text-xs text-gray-500 uppercase mb-1">LINK DA SUA LOJA</div>
         <div class="text-lg font-mono text-laranja break-all" id="dash-link-final">seuloja.pages.dev</div>
@@ -297,7 +300,7 @@
   <div class="bg-card rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
     <div class="flex justify-between items-center mb-6">
       <h3 class="text-2xl font-black text-laranja">Upload de Fotos</h3>
-      <button onclick="fecharModalUpload()" class="text-gray-400 hover:text-white text-2xl"></button>
+      <button onclick="fecharModalUpload()" class="text-gray-400 hover:text-white text-2xl">✕</button>
     </div>
     <div class="mb-4">
       <div class="flex justify-between text-sm text-gray-400 mb-2">
@@ -327,7 +330,7 @@
 const WORKER_URL = 'https://microfood.hdmicro.workers.dev';
 const SITE_URL = 'https://microfood.pages.dev';
 
-let estado = { nicho: null, plano: null, setup: 0, mensal: 0, nome: '', zap: '', subdomain: '', nomeLoja: '', lojaId: null, passoAtual: 1 };
+let estado = { nicho: null, plano: null, setup: 0, mensal: 0, nome: '', zap: '', subdomain: '', nomeLoja: '', lojaId: null, passoAtual: 1, dominioValido: false };
 const limites = { FREE: { fotos: 3, videos: 1, musicas: 0, rotacao: 15 }, BASIC: { fotos: 10, videos: 3, musicas: 1, rotacao: 90 }, PLUS: { fotos: 13, videos: 3, musicas: 2, rotacao: 15 }, PRO: { fotos: 16, videos: 4, musicas: 3, rotacao: 0 } };
 const dicasPorNicho = { alimentacao: 'Lanchonetes do PRO podem trocar fotos todo dia. Use isso a seu favor!', beleza: 'Barbeiros e tatuadores: troque a vitrine a cada 15 dias para atrair clientes novos.', servico: 'Serviços locais: fotos de antes/depois convertem 3x mais.', business: 'Advogados e contadores: sua rotação é trimestral. Aproveite para atualizar promoções.' };
 
@@ -356,15 +359,82 @@ const templatesPorNicho = {
 
 let templateEscolhido = null;
 let fotosParaUpload = [];
+let debounceTimer = null;
 
 function irPara(idTela) { document.querySelectorAll('[id^="tela-"]').forEach(t => t.classList.add('tela-oculta')); const tela = document.getElementById(idTela); if (tela) { tela.classList.remove('tela-oculta'); window.scrollTo(0, 0); } }
 function mostrarMsg(tipo, texto) { const area = document.getElementById('area-msg'); if (!area) return; const classe = tipo === 'erro' ? 'msg-erro' : 'msg-sucesso'; area.innerHTML = '<div class="' + classe + '">' + texto + '</div>'; setTimeout(() => { area.innerHTML = ''; }, 5000); }
 function mostrarPasso(num) { for (let i = 1; i <= 7; i++) { const passo = document.getElementById('passo-' + i); if (passo) { passo.classList.remove('passo-ativo'); passo.classList.add('passo-inativo'); } } const passoAtual = document.getElementById('passo-' + num); if (passoAtual) { passoAtual.classList.remove('passo-inativo'); passoAtual.classList.add('passo-ativo'); } const percent = Math.round((num / 7) * 100); document.getElementById('barra-fill').style.width = percent + '%'; document.getElementById('label-passo').textContent = 'Passo ' + num + ' de 7'; document.getElementById('percent-passo').textContent = percent + '%'; const titulos = { 1: ['Seus dados', 'Vamos começar pelo básico.'], 2: ['Escolha seu plano', 'Selecione o que faz mais sentido.'], 3: ['Escolha seu domínio', 'Este será o endereço da sua loja.'], 4: ['Confirme o domínio', 'Atenção: não poderá ser trocado.'], 5: ['Termos de uso', 'Leia e aceite.'], 6: ['Pagamento', 'Ative sua loja.'], 7: ['Escolha o modelo', 'Selecione o estilo da sua loja.'] }; document.getElementById('titulo-passo').textContent = titulos[num][0]; document.getElementById('subtitulo-passo').textContent = titulos[num][1]; estado.passoAtual = num; window.scrollTo(0, 0); }
-function proximoPasso(num) { if (num === 2) { if (!document.getElementById('inp-nome').value.trim()) return mostrarMsg('erro', 'Preencha seu nome'); if (!document.getElementById('inp-zap').value.trim()) return mostrarMsg('erro', 'Preencha seu WhatsApp'); if (!estado.nicho) return mostrarMsg('erro', 'Escolha um nicho'); estado.nome = document.getElementById('inp-nome').value.trim(); estado.zap = document.getElementById('inp-zap').value.trim(); } if (num === 3) { if (!estado.plano) return mostrarMsg('erro', 'Escolha um plano'); } if (num === 4) { const dominio = document.getElementById('inp-dominio').value.trim(); if (!dominio) return mostrarMsg('erro', 'Digite o nome do domínio'); if (dominio.length < 3) return mostrarMsg('erro', 'Domínio muito curto'); estado.subdomain = dominio.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30); estado.nomeLoja = document.getElementById('inp-nome').value.trim(); document.getElementById('confirm-dominio').textContent = estado.subdomain + '.pages.dev'; } if (num === 6) { document.getElementById('pag-plano').textContent = estado.plano; document.getElementById('pag-valor').textContent = 'R$ ' + estado.setup; document.getElementById('pag-mensal').textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias'; document.getElementById('pag-dominio').textContent = estado.subdomain + '.pages.dev'; } mostrarPasso(num); }
+function proximoPasso(num) { if (num === 2) { if (!document.getElementById('inp-nome').value.trim()) return mostrarMsg('erro', 'Preencha seu nome'); if (!document.getElementById('inp-zap').value.trim()) return mostrarMsg('erro', 'Preencha seu WhatsApp'); if (!estado.nicho) return mostrarMsg('erro', 'Escolha um nicho'); estado.nome = document.getElementById('inp-nome').value.trim(); estado.zap = document.getElementById('inp-zap').value.trim(); } if (num === 3) { if (!estado.plano) return mostrarMsg('erro', 'Escolha um plano'); } if (num === 5) { if (!estado.dominioValido) return mostrarMsg('erro', 'Valide o domínio primeiro'); } if (num === 6) { document.getElementById('pag-plano').textContent = estado.plano; document.getElementById('pag-valor').textContent = 'R$ ' + estado.setup; document.getElementById('pag-mensal').textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias'; document.getElementById('pag-dominio').textContent = estado.subdomain + '.pages.dev'; } mostrarPasso(num); }
 function voltarPasso(num) { mostrarPasso(num); }
 function escolherNicho(nicho, elemento) { estado.nicho = nicho; document.querySelectorAll('.btn-nicho').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); }
 function escolherPlano(plano, setup, mensal, elemento) { estado.plano = plano; estado.setup = setup; estado.mensal = mensal; document.querySelectorAll('.btn-plano').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); const info = document.getElementById('info-plano'); info.classList.remove('hidden'); const lim = limites[plano]; info.innerHTML = '<strong class="text-laranja">' + plano + ':</strong> ' + lim.fotos + ' fotos • ' + lim.videos + ' vídeos autorais • ' + lim.musicas + ' músicas autorais • Rotação: ' + (lim.rotacao === 0 ? 'Livre' : lim.rotacao + ' dias'); }
-function atualizarPreviewDominio() { const nome = document.getElementById('inp-dominio').value; const sub = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30); document.getElementById('preview-dominio').textContent = (sub || 'seuloja') + '.pages.dev'; }
+
+function atualizarPreviewDominio() {
+  const nome = document.getElementById('inp-dominio').value;
+  const sub = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30);
+  document.getElementById('preview-dominio').textContent = (sub || 'seuloja') + '.pages.dev';
+  
+  const statusDiv = document.getElementById('dominio-status');
+  const btn = document.getElementById('btn-validar-dominio');
+  
+  if (sub.length < 3) {
+    statusDiv.className = 'mt-2 text-sm hidden';
+    btn.disabled = true;
+    estado.dominioValido = false;
+    return;
+  }
+  
+  statusDiv.className = 'mt-2 text-sm text-gray-400';
+  statusDiv.textContent = 'Digitando...';
+  btn.disabled = true;
+  
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => validarDominio(sub), 800);
+}
+
+async function validarDominio(sub) {
+  const statusDiv = document.getElementById('dominio-status');
+  const btn = document.getElementById('btn-validar-dominio');
+  
+  try {
+    statusDiv.textContent = 'Verificando...';
+    const resposta = await fetch(WORKER_URL + '/api/ver?subdomain=' + encodeURIComponent(sub));
+    const dados = await resposta.json();
+    
+    if (dados.sucesso) {
+      statusDiv.className = 'mt-2 text-sm text-vermelho';
+      statusDiv.textContent = '❌ Domínio já está em uso! Escolha outro.';
+      btn.disabled = true;
+      estado.dominioValido = false;
+      document.getElementById('inp-dominio').classList.add('dominio-invalido');
+      document.getElementById('inp-dominio').classList.remove('dominio-valido');
+    } else {
+      statusDiv.className = 'mt-2 text-sm text-verde';
+      statusDiv.textContent = '✅ Domínio disponível!';
+      btn.disabled = false;
+      estado.dominioValido = true;
+      document.getElementById('inp-dominio').classList.add('dominio-valido');
+      document.getElementById('inp-dominio').classList.remove('dominio-invalido');
+    }
+  } catch (erro) {
+    statusDiv.className = 'mt-2 text-sm text-verde';
+    statusDiv.textContent = '✅ Domínio disponível!';
+    btn.disabled = false;
+    estado.dominioValido = true;
+  }
+}
+
+function validarEDominios() {
+  if (!estado.dominioValido) {
+    return mostrarMsg('erro', 'Valide o domínio primeiro');
+  }
+  const dominio = document.getElementById('inp-dominio').value.trim();
+  estado.subdomain = dominio.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30);
+  estado.nomeLoja = document.getElementById('inp-nome').value.trim();
+  document.getElementById('confirm-dominio').textContent = estado.subdomain + '.pages.dev';
+  mostrarPasso(4);
+}
+
 function verificarTermos() { const todos = ['termo-1','termo-2','termo-3','termo-4','termo-5'].map(id => document.getElementById(id).checked); document.getElementById('btn-ir-pagamento').disabled = !todos.every(t => t); }
 
 function confirmarPagamento() {
@@ -434,6 +504,7 @@ function abrirModalUpload() {
   document.getElementById('modal-rotacao').textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
   fotosParaUpload = [];
   document.getElementById('preview-area').innerHTML = '';
+  document.getElementById('lista-fotos').innerHTML = '';
   carregarFotosExistentes();
 }
 
@@ -448,14 +519,21 @@ function handleDrop(e) {
 }
 
 function handleFiles(files) {
+  const lim = limites[estado.plano];
   const previewArea = document.getElementById('preview-area');
+  const fotosNoPreview = previewArea.children.length;
+  
   Array.from(files).forEach((file, idx) => {
+    if (fotosNoPreview + idx >= lim.fotos) {
+      mostrarMsg('erro', '❌ Limite de ' + lim.fotos + ' fotos atingido!');
+      return;
+    }
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
       mostrarMsg('erro', '❌ ' + file.name + ': formato inválido');
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      mostrarMsg('erro', '❌ ' + file.name + ': muito grande (máx 5MB)');
+      mostrarMsg('erro', ' ' + file.name + ': muito grande (máx 5MB)');
       return;
     }
     const reader = new FileReader();
@@ -467,6 +545,7 @@ function handleFiles(files) {
       div.className = 'bg-roxo rounded-lg p-3 flex items-center gap-3';
       div.innerHTML = '<img src="' + e.target.result + '" class="w-16 h-16 object-cover rounded"><div class="flex-1"><div class="text-sm font-bold truncate">' + file.name + '</div><div class="text-xs text-gray-400">' + (file.size / 1024).toFixed(1) + ' KB</div><div class="text-xs text-amarelo status-text">Aguardando upload...</div></div><button onclick="removerPreview(\'' + id + '\')" class="text-vermelho hover:text-white">✕</button>';
       previewArea.appendChild(div);
+      atualizarContador();
       uploadFotoAutomatico(id, file);
     };
     reader.readAsDataURL(file);
@@ -477,6 +556,16 @@ function removerPreview(id) {
   fotosParaUpload = fotosParaUpload.filter(f => f.id !== id);
   const el = document.getElementById(id);
   if (el) el.remove();
+  atualizarContador();
+}
+
+function atualizarContador() {
+  const lim = limites[estado.plano];
+  const fotosNoPreview = document.getElementById('preview-area').children.length;
+  const fotosExistentes = document.querySelectorAll('#lista-fotos .foto-item').length;
+  const total = fotosNoPreview + fotosExistentes;
+  document.getElementById('modal-contador').textContent = total + '/' + lim.fotos;
+  document.getElementById('dash-fotos').textContent = total + '/' + lim.fotos;
 }
 
 async function uploadFotoAutomatico(id, file) {
@@ -484,6 +573,7 @@ async function uploadFotoAutomatico(id, file) {
   formData.append('foto', file);
   formData.append('loja_id', estado.lojaId);
   const el = document.getElementById(id);
+  if (!el) return;
   const statusText = el.querySelector('.status-text');
   try {
     statusText.textContent = 'Enviando...';
@@ -493,10 +583,15 @@ async function uploadFotoAutomatico(id, file) {
     if (!resposta.ok) throw new Error(dados.erro || 'Erro no upload');
     statusText.textContent = '✓ Enviada! Expira: ' + dados.midia.data_expira;
     statusText.className = 'text-xs text-verde status-text';
+    atualizarContador();
+    
     const lim = limites[estado.plano];
-    const atuais = document.querySelectorAll('#lista-fotos .foto-item').length + 1;
-    document.getElementById('modal-contador').textContent = atuais + '/' + lim.fotos;
-    document.getElementById('dash-fotos').textContent = atuais + '/' + lim.fotos;
+    const total = document.getElementById('preview-area').children.length + document.querySelectorAll('#lista-fotos .foto-item').length;
+    if (total >= lim.fotos) {
+      setTimeout(() => {
+        mostrarMsg('sucesso', '🎉 Limite de fotos atingido!');
+      }, 500);
+    }
   } catch (erro) {
     statusText.textContent = '❌ ' + erro.message;
     statusText.className = 'text-xs text-vermelho status-text';
@@ -512,7 +607,6 @@ async function carregarFotosExistentes() {
     const lista = document.getElementById('lista-fotos');
     const lim = limites[estado.plano];
     
-    // CORREÇÃO 2: Mostra as fotos existentes corretamente
     if (dados.midias.length === 0) {
       lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhuma foto enviada ainda.</div>';
     } else {
@@ -520,14 +614,12 @@ async function carregarFotosExistentes() {
         dados.midias.map(m => '<div class="foto-item bg-black rounded-lg p-3 flex items-center gap-3"><img src="' + m.url + '" class="w-16 h-16 object-cover rounded" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%22 font-size=%2240%22>📷</text></svg>\'"><div class="flex-1"><div class="text-sm font-bold">Foto</div><div class="text-xs text-gray-400">Upload: ' + (m.data_upload || '--') + '</div><div class="text-xs ' + (m.data_expira ? 'text-amarelo' : 'text-verde') + '">Expira: ' + (m.data_expira || 'Nunca') + '</div></div><button onclick="deletarFoto(\'' + m.id + '\')" class="bg-vermelho px-3 py-1 rounded text-xs font-bold hover:bg-red-600">Excluir</button></div>').join('');
     }
     
-    // CORREÇÃO 1: Atualiza contador com fotos existentes + novas
-    const totalFotos = dados.midias.length + document.querySelectorAll('#preview-area > div').length;
-    document.getElementById('modal-contador').textContent = totalFotos + '/' + lim.fotos;
-    document.getElementById('dash-fotos').textContent = totalFotos + '/' + lim.fotos;
+    atualizarContador();
   } catch (erro) {
     console.error('Erro ao carregar fotos:', erro);
   }
 }
+
 async function deletarFoto(midiaId) {
   if (!confirm('Tem certeza que quer excluir esta foto?')) return;
   try {
