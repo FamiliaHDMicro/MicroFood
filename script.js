@@ -1,0 +1,259 @@
+const WORKER_URL = 'https://microfood.hdmicro.workers.dev';
+const SITE_URL = 'https://microfood.pages.dev';
+
+let estado = { nicho: null, plano: null, setup: 0, mensal: 0, nome: '', zap: '', subdomain: '', nomeLoja: '', lojaId: null, passoAtual: 1, dominioValido: false };
+const limites = { FREE: { fotos: 3, videos: 1, musicas: 0, rotacao: 15 }, BASIC: { fotos: 10, videos: 3, musicas: 1, rotacao: 90 }, PLUS: { fotos: 13, videos: 3, musicas: 2, rotacao: 15 }, PRO: { fotos: 16, videos: 4, musicas: 3, rotacao: 0 } };
+const dicasPorNicho = { alimentacao: 'Lanchonetes do PRO podem trocar fotos todo dia. Use isso a seu favor!', beleza: 'Barbeiros e tatuadores: troque a vitrine a cada 15 dias para atrair clientes novos.', servico: 'Serviços locais: fotos de antes/depois convertem 3x mais.', business: 'Advogados e contadores: sua rotação é trimestral. Aproveite para atualizar promoções.' };
+
+const templatesPorNicho = {
+  alimentacao: [
+    { id: 'sabor-caseiro', nome: 'SaborCaseiro', emoji: '🍲', desc: 'Quente e acolhedor. Ideal para marmitas, doces, bolos.' },
+    { id: 'delivery-rapido', nome: 'DeliveryRápido', emoji: '🚀', desc: 'Moderno e ágil. Ideal para lanches, pizza, açaí.' },
+    { id: 'mesa-farta', nome: 'MesaFarta', emoji: '🍽️', desc: 'Elegante e completo. Ideal para restaurantes e buffets.' }
+  ],
+  beleza: [
+    { id: 'glamour-studio', nome: 'GlamourStudio', emoji: '✨', desc: 'Luxo e sofisticação. Ideal para salões premium.' },
+    { id: 'beauty-express', nome: 'BeautyExpress', emoji: '💅', desc: 'Clean e rápido. Ideal para manicure, sobrancelha.' },
+    { id: 'barber-shop', nome: 'BarberShop', emoji: '💈', desc: 'Masculino e vintage. Ideal para barbearias.' }
+  ],
+  servico: [
+    { id: 'mao-na-massa', nome: 'MãoNaMassa', emoji: '', desc: 'Prático e direto. Ideal para eletricista, encanador.' },
+    { id: 'tech-solutions', nome: 'TechSolutions', emoji: '💻', desc: 'Corporativo. Ideal para TI, manutenção.' },
+    { id: 'limpeza-total', nome: 'LimpezaTotal', emoji: '🧹', desc: 'Fresco e organizado. Ideal para diaristas.' }
+  ],
+  business: [
+    { id: 'consult-pro', nome: 'ConsultPro', emoji: '💼', desc: 'Minimalista e profissional. Ideal para consultores.' },
+    { id: 'loja-virtual', nome: 'LojaVirtual', emoji: '🛒', desc: 'E-commerce completo. Ideal para varejo.' },
+    { id: 'eventos-plus', nome: 'EventosPlus', emoji: '🎉', desc: 'Vibrante. Ideal para festas, DJ, fotografia.' }
+  ]
+};
+
+let templateEscolhido = null;
+let fotosParaUpload = [];
+let debounceTimer = null;
+
+function irPara(idTela) { document.querySelectorAll('[id^="tela-"]').forEach(t => t.classList.add('tela-oculta')); const tela = document.getElementById(idTela); if (tela) { tela.classList.remove('tela-oculta'); window.scrollTo(0, 0); } }
+function mostrarMsg(tipo, texto) { const area = document.getElementById('area-msg'); if (!area) return; const classe = tipo === 'erro' ? 'msg-erro' : 'msg-sucesso'; area.innerHTML = '<div class="' + classe + '">' + texto + '</div>'; setTimeout(() => { area.innerHTML = ''; }, 5000); }
+function mostrarPasso(num) { for (let i = 1; i <= 7; i++) { const passo = document.getElementById('passo-' + i); if (passo) { passo.classList.remove('passo-ativo'); passo.classList.add('passo-inativo'); } } const passoAtual = document.getElementById('passo-' + num); if (passoAtual) { passoAtual.classList.remove('passo-inativo'); passoAtual.classList.add('passo-ativo'); } const percent = Math.round((num / 7) * 100); document.getElementById('barra-fill').style.width = percent + '%'; document.getElementById('label-passo').textContent = 'Passo ' + num + ' de 7'; document.getElementById('percent-passo').textContent = percent + '%'; const titulos = { 1: ['Seus dados', 'Vamos começar pelo básico.'], 2: ['Escolha seu plano', 'Selecione o que faz mais sentido.'], 3: ['Escolha seu domínio', 'Este será o endereço da sua loja.'], 4: ['Confirme o domínio', 'Atenção: não poderá ser trocado.'], 5: ['Termos de uso', 'Leia e aceite.'], 6: ['Pagamento', 'Ative sua loja.'], 7: ['Escolha o modelo', 'Selecione o estilo da sua loja.'] }; document.getElementById('titulo-passo').textContent = titulos[num][0]; document.getElementById('subtitulo-passo').textContent = titulos[num][1]; estado.passoAtual = num; window.scrollTo(0, 0); }
+function proximoPasso(num) { if (num === 2) { if (!document.getElementById('inp-nome').value.trim()) return mostrarMsg('erro', 'Preencha seu nome'); if (!document.getElementById('inp-zap').value.trim()) return mostrarMsg('erro', 'Preencha seu WhatsApp'); if (!estado.nicho) return mostrarMsg('erro', 'Escolha um nicho'); estado.nome = document.getElementById('inp-nome').value.trim(); estado.zap = document.getElementById('inp-zap').value.trim(); } if (num === 3) { if (!estado.plano) return mostrarMsg('erro', 'Escolha um plano'); } if (num === 5) { if (!estado.dominioValido) return mostrarMsg('erro', 'Valide o domínio primeiro'); } if (num === 6) { document.getElementById('pag-plano').textContent = estado.plano; document.getElementById('pag-valor').textContent = 'R$ ' + estado.setup; document.getElementById('pag-mensal').textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias'; document.getElementById('pag-dominio').textContent = estado.subdomain + '.pages.dev'; } mostrarPasso(num); }
+function voltarPasso(num) { mostrarPasso(num); }
+function escolherNicho(nicho, elemento) { estado.nicho = nicho; document.querySelectorAll('.btn-nicho').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); }
+function escolherPlano(plano, setup, mensal, elemento) { estado.plano = plano; estado.setup = setup; estado.mensal = mensal; document.querySelectorAll('.btn-plano').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); const info = document.getElementById('info-plano'); info.classList.remove('hidden'); const lim = limites[plano]; info.innerHTML = '<strong class="text-laranja">' + plano + ':</strong> ' + lim.fotos + ' fotos • ' + lim.videos + ' vídeos autorais • ' + lim.musicas + ' músicas autorais • Rotação: ' + (lim.rotacao === 0 ? 'Livre' : lim.rotacao + ' dias'); }
+
+function atualizarPreviewDominio() {
+  const nome = document.getElementById('inp-dominio').value;
+  const sub = nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30);
+  document.getElementById('preview-dominio').textContent = (sub || 'seuloja') + '.pages.dev';
+  const statusDiv = document.getElementById('dominio-status');
+  const btn = document.getElementById('btn-validar-dominio');
+  if (sub.length < 3) { statusDiv.className = 'mt-2 text-sm hidden'; btn.disabled = true; estado.dominioValido = false; return; }
+  statusDiv.className = 'mt-2 text-sm text-gray-400';
+  statusDiv.textContent = 'Digitando...';
+  btn.disabled = true;
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => validarDominio(sub), 800);
+}
+
+async function validarDominio(sub) {
+  const statusDiv = document.getElementById('dominio-status');
+  const btn = document.getElementById('btn-validar-dominio');
+  try {
+    statusDiv.textContent = 'Verificando...';
+    const resposta = await fetch(WORKER_URL + '/api/ver?subdomain=' + encodeURIComponent(sub));
+    const dados = await resposta.json();
+    if (dados.sucesso) {
+      statusDiv.className = 'mt-2 text-sm text-vermelho';
+      statusDiv.textContent = '❌ Domínio já está em uso! Escolha outro.';
+      btn.disabled = true;
+      estado.dominioValido = false;
+      document.getElementById('inp-dominio').classList.add('dominio-invalido');
+      document.getElementById('inp-dominio').classList.remove('dominio-valido');
+    } else {
+      statusDiv.className = 'mt-2 text-sm text-verde';
+      statusDiv.textContent = '✅ Domínio disponível!';
+      btn.disabled = false;
+      estado.dominioValido = true;
+      document.getElementById('inp-dominio').classList.add('dominio-valido');
+      document.getElementById('inp-dominio').classList.remove('dominio-invalido');
+    }
+  } catch (erro) {
+    statusDiv.className = 'mt-2 text-sm text-verde';
+    statusDiv.textContent = '✅ Domínio disponível!';
+    btn.disabled = false;
+    estado.dominioValido = true;
+  }
+}
+
+function validarEDominios() {
+  if (!estado.dominioValido) return mostrarMsg('erro', 'Valide o domínio primeiro');
+  const dominio = document.getElementById('inp-dominio').value.trim();
+  estado.subdomain = dominio.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30);
+  estado.nomeLoja = document.getElementById('inp-nome').value.trim();
+  document.getElementById('confirm-dominio').textContent = estado.subdomain + '.pages.dev';
+  mostrarPasso(4);
+}
+
+function verificarTermos() { const todos = ['termo-1','termo-2','termo-3','termo-4','termo-5'].map(id => document.getElementById(id).checked); document.getElementById('btn-ir-pagamento').disabled = !todos.every(t => t); }
+
+function confirmarPagamento() {
+  document.getElementById('pag-plano').textContent = estado.plano;
+  document.getElementById('pag-valor').textContent = 'R$ ' + estado.setup;
+  document.getElementById('pag-mensal').textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias';
+  document.getElementById('pag-dominio').textContent = estado.subdomain + '.pages.dev';
+  renderizarTemplates();
+  mostrarPasso(7);
+}
+
+function renderizarTemplates() {
+  const lista = document.getElementById('lista-templates');
+  const templates = templatesPorNicho[estado.nicho] || [];
+  lista.innerHTML = templates.map(t => '<button onclick="escolherTemplate(\'' + t.id + '\', this)" class="btn-template bg-roxo p-4 rounded-lg text-left hover:border-laranja border border-transparent flex items-center gap-4"><div class="text-4xl">' + t.emoji + '</div><div class="flex-1"><div class="font-bold text-lg">' + t.nome + '</div><div class="text-xs text-gray-400">' + t.desc + '</div></div></button>').join('');
+}
+
+function escolherTemplate(id, elemento) {
+  templateEscolhido = id;
+  document.querySelectorAll('.btn-template').forEach(b => b.classList.remove('item-selecionado'));
+  elemento.classList.add('item-selecionado');
+  document.getElementById('btn-finalizar').disabled = false;
+}
+
+async function finalizarCadastro() {
+  const btn = document.getElementById('btn-finalizar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Criando sua loja...';
+  try {
+    const resposta = await fetch(WORKER_URL + '/api/criar-loja', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome: estado.nome, nome_loja: estado.nomeLoja, subdomain: estado.subdomain, nicho: estado.nicho, plano: estado.plano, zap: estado.zap, template_id: templateEscolhido })
+    });
+    const dados = await resposta.json();
+    if (!resposta.ok) throw new Error(dados.erro || 'Erro ao criar loja');
+    estado.lojaId = dados.loja.id;
+    const lim = limites[estado.plano];
+    document.getElementById('dash-nome').textContent = 'Olá, ' + estado.nome + ' 👋';
+    document.getElementById('dash-link').textContent = estado.subdomain + '.pages.dev';
+    document.getElementById('dash-plano').textContent = estado.plano;
+    document.getElementById('dash-fotos').textContent = '0/' + lim.fotos;
+    document.getElementById('dash-videos').textContent = '0/' + lim.videos;
+    document.getElementById('dash-link-final').textContent = estado.subdomain + '.pages.dev';
+    document.getElementById('dash-mensal').textContent = 'R$ ' + estado.mensal + '/mês';
+    document.getElementById('dash-dica').textContent = dicasPorNicho[estado.nicho] || dicasPorNicho.alimentacao;
+    const hoje = new Date(); hoje.setDate(hoje.getDate() + 30);
+    document.getElementById('dash-cobranca').textContent = hoje.toLocaleDateString('pt-BR');
+    irPara('tela-dashboard');
+  } catch (erro) {
+    mostrarMsg('erro', '❌ ' + erro.message);
+    btn.disabled = false;
+    btn.innerHTML = 'Finalizar ✓';
+  }
+}
+
+function copiarPix() { navigator.clipboard.writeText('5517992644042'); mostrarMsg('sucesso', '✅ Chave PIX copiada!'); }
+function copiarLink() { navigator.clipboard.writeText(SITE_URL + '/loja.html?subdomain=' + estado.subdomain); mostrarMsg('sucesso', '✅ Link copiado!'); }
+function abrirLoja() { window.open(SITE_URL + '/loja.html?subdomain=' + estado.subdomain, '_blank'); }
+function compartilharZap() { const texto = 'Olá! Veja minha loja: ' + SITE_URL + '/loja.html?subdomain=' + estado.subdomain; window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(texto), '_blank'); }
+
+function abrirModalUpload() {
+  document.getElementById('modal-upload').classList.remove('tela-oculta');
+  const lim = limites[estado.plano];
+  document.getElementById('modal-contador').textContent = '0/' + lim.fotos;
+  const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[estado.plano] || 30;
+  document.getElementById('modal-rotacao').textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
+  fotosParaUpload = [];
+  document.getElementById('preview-area').innerHTML = '';
+  document.getElementById('lista-fotos').innerHTML = '';
+  carregarFotosExistentes();
+}
+
+function fecharModalUpload() { document.getElementById('modal-upload').classList.add('tela-oculta'); }
+function handleDrop(e) { e.preventDefault(); e.currentTarget.classList.remove('border-laranja'); handleFiles(e.dataTransfer.files); }
+
+function handleFiles(files) {
+  const lim = limites[estado.plano];
+  const previewArea = document.getElementById('preview-area');
+  const fotosNoPreview = previewArea.children.length;
+  Array.from(files).forEach((file, idx) => {
+    if (fotosNoPreview + idx >= lim.fotos) { mostrarMsg('erro', '❌ Limite de ' + lim.fotos + ' fotos atingido!'); return; }
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) { mostrarMsg('erro', '❌ ' + file.name + ': formato inválido'); return; }
+    if (file.size > 5 * 1024 * 1024) { mostrarMsg('erro', '❌ ' + file.name + ': muito grande (máx 5MB)'); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const id = 'preview-' + Date.now() + '-' + idx;
+      fotosParaUpload.push({ id, file, dataUrl: e.target.result });
+      const div = document.createElement('div');
+      div.id = id;
+      div.className = 'bg-roxo rounded-lg p-3 flex items-center gap-3';
+      div.innerHTML = '<img src="' + e.target.result + '" class="w-16 h-16 object-cover rounded"><div class="flex-1"><div class="text-sm font-bold truncate">' + file.name + '</div><div class="text-xs text-gray-400">' + (file.size / 1024).toFixed(1) + ' KB</div><div class="text-xs text-amarelo status-text">Aguardando upload...</div></div><button onclick="removerPreview(\'' + id + '\')" class="text-vermelho hover:text-white">✕</button>';
+      previewArea.appendChild(div);
+      atualizarContador();
+      uploadFotoAutomatico(id, file);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function removerPreview(id) { fotosParaUpload = fotosParaUpload.filter(f => f.id !== id); const el = document.getElementById(id); if (el) el.remove(); atualizarContador(); }
+
+function atualizarContador() {
+  const lim = limites[estado.plano];
+  const fotosNoPreview = document.getElementById('preview-area').children.length;
+  const fotosExistentes = document.querySelectorAll('#lista-fotos .foto-item').length;
+  const total = fotosNoPreview + fotosExistentes;
+  document.getElementById('modal-contador').textContent = total + '/' + lim.fotos;
+  document.getElementById('dash-fotos').textContent = total + '/' + lim.fotos;
+}
+
+async function uploadFotoAutomatico(id, file) {
+  const formData = new FormData();
+  formData.append('foto', file);
+  formData.append('loja_id', estado.lojaId);
+  const el = document.getElementById(id);
+  if (!el) return;
+  const statusText = el.querySelector('.status-text');
+  try {
+    statusText.textContent = 'Enviando...';
+    statusText.className = 'text-xs text-amarelo status-text';
+    const resposta = await fetch(WORKER_URL + '/api/upload-foto', { method: 'POST', body: formData });
+    const dados = await resposta.json();
+    if (!resposta.ok) throw new Error(dados.erro || 'Erro no upload');
+    statusText.textContent = '✓ Enviada! Expira: ' + dados.midia.data_expira;
+    statusText.className = 'text-xs text-verde status-text';
+    atualizarContador();
+    const lim = limites[estado.plano];
+    const total = document.getElementById('preview-area').children.length + document.querySelectorAll('#lista-fotos .foto-item').length;
+    if (total >= lim.fotos) setTimeout(() => mostrarMsg('sucesso', '🎉 Limite de fotos atingido!'), 500);
+  } catch (erro) {
+    statusText.textContent = '❌ ' + erro.message;
+    statusText.className = 'text-xs text-vermelho status-text';
+  }
+}
+
+async function carregarFotosExistentes() {
+  if (!estado.lojaId) return;
+  try {
+    const resposta = await fetch(WORKER_URL + '/api/listar-fotos?loja_id=' + estado.lojaId);
+    const dados = await resposta.json();
+    if (!dados.sucesso) return;
+    const lista = document.getElementById('lista-fotos');
+    if (dados.midias.length === 0) {
+      lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhuma foto enviada ainda.</div>';
+    } else {
+      lista.innerHTML = '<div class="text-sm font-bold text-amarelo mb-2">Fotos ativas:</div>' + dados.midias.map(m => '<div class="foto-item bg-black rounded-lg p-3 flex items-center gap-3"><img src="' + m.url + '" class="w-16 h-16 object-cover rounded" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%22 font-size=%2240%22></text></svg>\'"><div class="flex-1"><div class="text-sm font-bold">Foto</div><div class="text-xs text-gray-400">Upload: ' + (m.data_upload || '--') + '</div><div class="text-xs ' + (m.data_expira ? 'text-amarelo' : 'text-verde') + '">Expira: ' + (m.data_expira || 'Nunca') + '</div></div><button onclick="deletarFoto(\'' + m.id + '\')" class="bg-vermelho px-3 py-1 rounded text-xs font-bold hover:bg-red-600">Excluir</button></div>').join('');
+    }
+    atualizarContador();
+  } catch (erro) { console.error('Erro ao carregar fotos:', erro); }
+}
+
+async function deletarFoto(midiaId) {
+  if (!confirm('Tem certeza que quer excluir esta foto?')) return;
+  try {
+    const resposta = await fetch(WORKER_URL + '/api/deletar-foto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ midia_id: midiaId, loja_id: estado.lojaId }) });
+    const dados = await resposta.json();
+    if (!resposta.ok) throw new Error(dados.erro);
+    carregarFotosExistentes();
+    mostrarMsg('sucesso', '✅ Foto excluída!');
+  } catch (erro) { mostrarMsg('erro', '❌ ' + erro.message); }
+}
+
+document.addEventListener('DOMContentLoaded', () => { console.log('SiteOne carregado.'); });
