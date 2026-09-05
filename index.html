@@ -511,18 +511,23 @@ async function carregarFotosExistentes() {
     if (!dados.sucesso) return;
     const lista = document.getElementById('lista-fotos');
     const lim = limites[estado.plano];
+    
+    // CORREÇÃO 2: Mostra as fotos existentes corretamente
     if (dados.midias.length === 0) {
       lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhuma foto enviada ainda.</div>';
-      return;
+    } else {
+      lista.innerHTML = '<div class="text-sm font-bold text-amarelo mb-2">Fotos ativas:</div>' + 
+        dados.midias.map(m => '<div class="foto-item bg-black rounded-lg p-3 flex items-center gap-3"><img src="' + m.url + '" class="w-16 h-16 object-cover rounded" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%22 font-size=%2240%22>📷</text></svg>\'"><div class="flex-1"><div class="text-sm font-bold">Foto</div><div class="text-xs text-gray-400">Upload: ' + (m.data_upload || '--') + '</div><div class="text-xs ' + (m.data_expira ? 'text-amarelo' : 'text-verde') + '">Expira: ' + (m.data_expira || 'Nunca') + '</div></div><button onclick="deletarFoto(\'' + m.id + '\')" class="bg-vermelho px-3 py-1 rounded text-xs font-bold hover:bg-red-600">Excluir</button></div>').join('');
     }
-    lista.innerHTML = '<div class="text-sm font-bold text-amarelo mb-2">Fotos ativas:</div>' + dados.midias.map(m => '<div class="foto-item bg-black rounded-lg p-3 flex items-center gap-3"><img src="' + m.url + '" class="w-16 h-16 object-cover rounded" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%22 font-size=%2240%22>📷</text></svg>\'"><div class="flex-1"><div class="text-sm font-bold">Foto</div><div class="text-xs text-gray-400">Upload: ' + (m.data_upload || '--') + '</div><div class="text-xs ' + (m.data_expira ? 'text-amarelo' : 'text-verde') + '">Expira: ' + (m.data_expira || 'Nunca') + '</div></div><button onclick="deletarFoto(\'' + m.id + '\')" class="bg-vermelho px-3 py-1 rounded text-xs font-bold hover:bg-red-600">Excluir</button></div>').join('');
-    document.getElementById('modal-contador').textContent = dados.midias.length + '/' + lim.fotos;
-    document.getElementById('dash-fotos').textContent = dados.midias.length + '/' + lim.fotos;
+    
+    // CORREÇÃO 1: Atualiza contador com fotos existentes + novas
+    const totalFotos = dados.midias.length + document.querySelectorAll('#preview-area > div').length;
+    document.getElementById('modal-contador').textContent = totalFotos + '/' + lim.fotos;
+    document.getElementById('dash-fotos').textContent = totalFotos + '/' + lim.fotos;
   } catch (erro) {
     console.error('Erro ao carregar fotos:', erro);
   }
 }
-
 async function deletarFoto(midiaId) {
   if (!confirm('Tem certeza que quer excluir esta foto?')) return;
   try {
