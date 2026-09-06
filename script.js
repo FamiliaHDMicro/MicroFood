@@ -22,7 +22,7 @@ const templatesPorNicho = {
     { id: 'limpeza-total', nome: 'LimpezaTotal', emoji: '🧹', desc: 'Fresco e organizado. Ideal para diaristas.' }
   ],
   business: [
-    { id: 'consult-pro', nome: 'ConsultPro', emoji: '', desc: 'Minimalista e profissional. Ideal para consultores.' },
+    { id: 'consult-pro', nome: 'ConsultPro', emoji: '💼', desc: 'Minimalista e profissional. Ideal para consultores.' },
     { id: 'loja-virtual', nome: 'LojaVirtual', emoji: '🛒', desc: 'E-commerce completo. Ideal para varejo.' },
     { id: 'eventos-plus', nome: 'EventosPlus', emoji: '🎉', desc: 'Vibrante. Ideal para festas, DJ, fotografia.' }
   ]
@@ -37,7 +37,7 @@ let debounceTimer = null;
 function irPara(idTela) { document.querySelectorAll('[id^="tela-"]').forEach(t => t.classList.add('tela-oculta')); const tela = document.getElementById(idTela); if (tela) { tela.classList.remove('tela-oculta'); window.scrollTo(0, 0); } }
 function mostrarMsg(tipo, texto) { const area = document.getElementById('area-msg'); if (!area) return; const classe = tipo === 'erro' ? 'msg-erro' : 'msg-sucesso'; area.innerHTML = '<div class="' + classe + '">' + texto + '</div>'; setTimeout(() => { area.innerHTML = ''; }, 5000); }
 function mostrarPasso(num) { for (let i = 1; i <= 7; i++) { const passo = document.getElementById('passo-' + i); if (passo) { passo.classList.remove('passo-ativo'); passo.classList.add('passo-inativo'); } } const passoAtual = document.getElementById('passo-' + num); if (passoAtual) { passoAtual.classList.remove('passo-inativo'); passoAtual.classList.add('passo-ativo'); } const percent = Math.round((num / 7) * 100); document.getElementById('barra-fill').style.width = percent + '%'; document.getElementById('label-passo').textContent = 'Passo ' + num + ' de 7'; document.getElementById('percent-passo').textContent = percent + '%'; const titulos = { 1: ['Seus dados', 'Vamos começar pelo básico.'], 2: ['Escolha seu plano', 'Selecione o que faz mais sentido.'], 3: ['Escolha seu domínio', 'Este será o endereço da sua loja.'], 4: ['Confirme o domínio', 'Atenção: não poderá ser trocado.'], 5: ['Termos de uso', 'Leia e aceite.'], 6: ['Pagamento', 'Ative sua loja.'], 7: ['Escolha o modelo', 'Selecione o estilo da sua loja.'] }; document.getElementById('titulo-passo').textContent = titulos[num][0]; document.getElementById('subtitulo-passo').textContent = titulos[num][1]; estado.passoAtual = num; window.scrollTo(0, 0); }
-function proximoPasso(num) { if (num === 2) { if (!document.getElementById('inp-nome').value.trim()) return mostrarMsg('erro', 'Preencha seu nome'); if (!document.getElementById('inp-zap').value.trim()) return mostrarMsg('erro', 'Preencha seu WhatsApp'); if (!estado.nicho) return mostrarMsg('erro', 'Escolha um nicho'); estado.nome = document.getElementById('inp-nome').value.trim(); estado.zap = document.getElementById('inp-zap').value.trim(); } if (num === 3) { if (!estado.plano) return mostrarMsg('erro', 'Escolha um plano'); } if (num === 5) { if (!estado.dominioValido) return mostrarMsg('erro', 'Valide o domínio primeiro'); } if (num === 6) { document.getElementById('pag-plano').textContent = estado.plano; document.getElementById('pag-valor').textContent = 'R$ ' + estado.setup; document.getElementById('pag-mensal').textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias'; document.getElementById('pag-dominio').textContent = estado.subdomain + '.pages.dev'; } mostrarPasso(num); }
+function proximoPasso(num) { if (num === 2) { if (!document.getElementById('inp-nome').value.trim()) return mostrarMsg('erro', 'Preencha seu nome'); if (!document.getElementById('inp-zap').value.trim()) return mostrarMsg('erro', 'Preencha seu WhatsApp'); if (!estado.nicho) return mostrarMsg('erro', 'Escolha um nicho'); estado.nome = document.getElementById('inp-nome').value.trim(); estado.zap = document.getElementById('inp-zap').value.trim(); } if (num === 3) { if (!estado.plano) return mostrarMsg('erro', 'Escolha um plano'); } if (num === 5) { if (!estado.dominioValido) return mostrarMsg('erro', 'Valide o domínio primeiro'); } if (num === 6) { const pagPlano = document.getElementById('pag-plano'); if (pagPlano) pagPlano.textContent = estado.plano; const pagValor = document.getElementById('pag-valor'); if (pagValor) pagValor.textContent = 'R$ ' + estado.setup; const pagMensal = document.getElementById('pag-mensal'); if (pagMensal) pagMensal.textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias'; const pagDominio = document.getElementById('pag-dominio'); if (pagDominio) pagDominio.textContent = estado.subdomain + '.pages.dev'; } mostrarPasso(num); }
 function voltarPasso(num) { mostrarPasso(num); }
 function escolherNicho(nicho, elemento) { estado.nicho = nicho; document.querySelectorAll('.btn-nicho').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); }
 function escolherPlano(plano, setup, mensal, elemento) { estado.plano = plano; estado.setup = setup; estado.mensal = mensal; document.querySelectorAll('.btn-plano').forEach(b => b.classList.remove('item-selecionado')); elemento.classList.add('item-selecionado'); const info = document.getElementById('info-plano'); info.classList.remove('hidden'); const lim = limites[plano]; info.innerHTML = '<strong class="text-laranja">' + plano + ':</strong> ' + lim.fotos + ' fotos • ' + lim.videos + ' vídeos • ' + lim.musicas + ' músicas • Rotação: ' + (lim.rotacao === 0 ? 'Livre' : lim.rotacao + ' dias'); }
@@ -91,17 +91,22 @@ function validarEDominios() {
   const dominio = document.getElementById('inp-dominio').value.trim();
   estado.subdomain = dominio.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30);
   estado.nomeLoja = document.getElementById('inp-nome').value.trim();
-  document.getElementById('confirm-dominio').textContent = estado.subdomain + '.pages.dev';
+  const confirmDominio = document.getElementById('confirm-dominio');
+  if (confirmDominio) confirmDominio.textContent = estado.subdomain + '.pages.dev';
   mostrarPasso(4);
 }
 
 function verificarTermos() { const todos = ['termo-1','termo-2','termo-3','termo-4','termo-5'].map(id => document.getElementById(id).checked); document.getElementById('btn-ir-pagamento').disabled = !todos.every(t => t); }
 
 function confirmarPagamento() {
-  document.getElementById('pag-plano').textContent = estado.plano;
-  document.getElementById('pag-valor').textContent = 'R$ ' + estado.setup;
-  document.getElementById('pag-mensal').textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias';
-  document.getElementById('pag-dominio').textContent = estado.subdomain + '.pages.dev';
+  const pagPlano = document.getElementById('pag-plano');
+  if (pagPlano) pagPlano.textContent = estado.plano;
+  const pagValor = document.getElementById('pag-valor');
+  if (pagValor) pagValor.textContent = 'R$ ' + estado.setup;
+  const pagMensal = document.getElementById('pag-mensal');
+  if (pagMensal) pagMensal.textContent = estado.mensal > 0 ? '+ R$ ' + estado.mensal + '/mês' : 'Grátis por 15 dias';
+  const pagDominio = document.getElementById('pag-dominio');
+  if (pagDominio) pagDominio.textContent = estado.subdomain + '.pages.dev';
   renderizarTemplates();
   mostrarPasso(7);
   revalidarDominioNoPasso7();
@@ -114,17 +119,17 @@ async function revalidarDominioNoPasso7() {
     const resposta = await fetch(WORKER_URL + '/api/ver?subdomain=' + encodeURIComponent(estado.subdomain));
     const dados = await resposta.json();
     if (dados.sucesso) {
-      areaMsg.innerHTML = '<div class="msg-erro"> Domínio "' + estado.subdomain + '" já está em uso! Volte e escolha outro.</div>';
-      btnFinalizar.disabled = true;
+      if (areaMsg) areaMsg.innerHTML = '<div class="msg-erro">❌ Domínio "' + estado.subdomain + '" já está em uso! Volte e escolha outro.</div>';
+      if (btnFinalizar) btnFinalizar.disabled = true;
       estado.dominioValido = false;
     } else {
-      areaMsg.innerHTML = '';
-      btnFinalizar.disabled = !templateEscolhido;
+      if (areaMsg) areaMsg.innerHTML = '';
+      if (btnFinalizar) btnFinalizar.disabled = !templateEscolhido;
       estado.dominioValido = true;
     }
   } catch (erro) {
-    areaMsg.innerHTML = '';
-    btnFinalizar.disabled = !templateEscolhido;
+    if (areaMsg) areaMsg.innerHTML = '';
+    if (btnFinalizar) btnFinalizar.disabled = !templateEscolhido;
   }
 }
 
@@ -138,7 +143,10 @@ function escolherTemplate(id, elemento) {
   templateEscolhido = id;
   document.querySelectorAll('.btn-template').forEach(b => b.classList.remove('item-selecionado'));
   elemento.classList.add('item-selecionado');
-  if (estado.dominioValido) document.getElementById('btn-finalizar').disabled = false;
+  if (estado.dominioValido) {
+    const btnFinalizar = document.getElementById('btn-finalizar');
+    if (btnFinalizar) btnFinalizar.disabled = false;
+  }
 }
 
 async function finalizarCadastro() {
@@ -156,17 +164,27 @@ async function finalizarCadastro() {
     if (!resposta.ok) throw new Error(dados.erro || 'Erro ao criar loja');
     estado.lojaId = dados.loja.id;
     const lim = limites[estado.plano];
-    document.getElementById('dash-nome').textContent = 'Olá, ' + estado.nome + ' 👋';
-    document.getElementById('dash-link').textContent = estado.subdomain + '.pages.dev';
-    document.getElementById('dash-plano').textContent = estado.plano;
-    document.getElementById('dash-fotos').textContent = '0/' + lim.fotos;
-    document.getElementById('dash-videos').textContent = '0/' + lim.videos;
-    document.getElementById('dash-musicas').textContent = '0/' + lim.musicas;
-    document.getElementById('dash-link-final').textContent = estado.subdomain + '.pages.dev';
-    document.getElementById('dash-mensal').textContent = 'R$ ' + estado.mensal + '/mês';
-    document.getElementById('dash-dica').textContent = dicasPorNicho[estado.nicho] || dicasPorNicho.alimentacao;
+    const dashNome = document.getElementById('dash-nome');
+    if (dashNome) dashNome.textContent = 'Olá, ' + estado.nome + ' 👋';
+    const dashLink = document.getElementById('dash-link');
+    if (dashLink) dashLink.textContent = estado.subdomain + '.pages.dev';
+    const dashPlano = document.getElementById('dash-plano');
+    if (dashPlano) dashPlano.textContent = estado.plano;
+    const dashFotos = document.getElementById('dash-fotos');
+    if (dashFotos) dashFotos.textContent = '0/' + lim.fotos;
+    const dashVideos = document.getElementById('dash-videos');
+    if (dashVideos) dashVideos.textContent = '0/' + lim.videos;
+    const dashMusicas = document.getElementById('dash-musicas');
+    if (dashMusicas) dashMusicas.textContent = '0/' + lim.musicas;
+    const dashLinkFinal = document.getElementById('dash-link-final');
+    if (dashLinkFinal) dashLinkFinal.textContent = estado.subdomain + '.pages.dev';
+    const dashMensal = document.getElementById('dash-mensal');
+    if (dashMensal) dashMensal.textContent = 'R$ ' + estado.mensal + '/mês';
+    const dashDica = document.getElementById('dash-dica');
+    if (dashDica) dashDica.textContent = dicasPorNicho[estado.nicho] || dicasPorNicho.alimentacao;
     const hoje = new Date(); hoje.setDate(hoje.getDate() + 30);
-    document.getElementById('dash-cobranca').textContent = hoje.toLocaleDateString('pt-BR');
+    const dashCobranca = document.getElementById('dash-cobranca');
+    if (dashCobranca) dashCobranca.textContent = hoje.toLocaleDateString('pt-BR');
     irPara('tela-dashboard');
     carregarAnalytics();
   } catch (erro) {
@@ -188,14 +206,17 @@ async function carregarAnalytics() {
     const dados = await resposta.json();
     if (!dados.sucesso) return;
     const a = dados.analytics;
-    document.getElementById('dash-visitas-total').textContent = a.total;
-    document.getElementById('dash-visitas-hoje').textContent = a.hoje;
-    document.getElementById('dash-visitas-semana').textContent = a.semana;
+    const dashVisitasTotal = document.getElementById('dash-visitas-total');
+    if (dashVisitasTotal) dashVisitasTotal.textContent = a.total;
+    const dashVisitasHoje = document.getElementById('dash-visitas-hoje');
+    if (dashVisitasHoje) dashVisitasHoje.textContent = a.hoje;
+    const dashVisitasSemana = document.getElementById('dash-visitas-semana');
+    if (dashVisitasSemana) dashVisitasSemana.textContent = a.semana;
     const lista = document.getElementById('lista-ultimas-visitas');
     if (a.ultimas.length === 0) {
-      lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhuma visita ainda. Compartilhe sua loja!</div>';
+      if (lista) lista.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Nenhuma visita ainda. Compartilhe sua loja!</div>';
     } else {
-      lista.innerHTML = a.ultimas.map(v => '<div class="bg-black rounded-lg p-3 flex items-center gap-3"><div class="text-2xl">👤</div><div class="flex-1"><div class="text-sm font-bold">Visita registrada</div><div class="text-xs text-gray-400">' + v.data + ' às ' + (v.hora || '--') + '</div></div></div>').join('');
+      if (lista) lista.innerHTML = a.ultimas.map(v => '<div class="bg-black rounded-lg p-3 flex items-center gap-3"><div class="text-2xl">👤</div><div class="flex-1"><div class="text-sm font-bold">Visita registrada</div><div class="text-xs text-gray-400">' + v.data + ' às ' + (v.hora || '--') + '</div></div></div>').join('');
     }
   } catch (erro) { console.error('Erro ao carregar analytics:', erro); }
 }
@@ -204,27 +225,33 @@ function abrirModalUpload(tipo) {
   const lim = limites[estado.plano];
   if (tipo === 'fotos') {
     document.getElementById('modal-fotos').classList.remove('tela-oculta');
-    document.getElementById('modal-fotos-contador').textContent = '0/' + lim.fotos;
+    const modalFotosContador = document.getElementById('modal-fotos-contador');
+    if (modalFotosContador) modalFotosContador.textContent = '0/' + lim.fotos;
     const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[estado.plano] || 30;
-    document.getElementById('modal-fotos-rotacao').textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
+    const modalFotosRotacao = document.getElementById('modal-fotos-rotacao');
+    if (modalFotosRotacao) modalFotosRotacao.textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
     fotosParaUpload = [];
     document.getElementById('preview-fotos').innerHTML = '';
     document.getElementById('lista-fotos').innerHTML = '';
     carregarFotosExistentes();
   } else if (tipo === 'videos') {
     document.getElementById('modal-videos').classList.remove('tela-oculta');
-    document.getElementById('modal-videos-contador').textContent = '0/' + lim.videos;
+    const modalVideosContador = document.getElementById('modal-videos-contador');
+    if (modalVideosContador) modalVideosContador.textContent = '0/' + lim.videos;
     const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[estado.plano] || 30;
-    document.getElementById('modal-videos-rotacao').textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
+    const modalVideosRotacao = document.getElementById('modal-videos-rotacao');
+    if (modalVideosRotacao) modalVideosRotacao.textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
     videosParaUpload = [];
     document.getElementById('preview-videos').innerHTML = '';
     document.getElementById('lista-videos').innerHTML = '';
     carregarVideosExistentes();
   } else if (tipo === 'musicas') {
     document.getElementById('modal-musicas').classList.remove('tela-oculta');
-    document.getElementById('modal-musicas-contador').textContent = '0/' + lim.musicas;
+    const modalMusicasContador = document.getElementById('modal-musicas-contador');
+    if (modalMusicasContador) modalMusicasContador.textContent = '0/' + lim.musicas;
     const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[estado.plano] || 30;
-    document.getElementById('modal-musicas-rotacao').textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
+    const modalMusicasRotacao = document.getElementById('modal-musicas-rotacao');
+    if (modalMusicasRotacao) modalMusicasRotacao.textContent = rotacao === 0 ? 'Nunca expira' : rotacao + ' dias';
     musicasParaUpload = [];
     document.getElementById('preview-musicas').innerHTML = '';
     document.getElementById('lista-musicas').innerHTML = '';
@@ -244,9 +271,9 @@ function handleFiles(files, tipo) {
   const campo = tipo === 'fotos' ? 'fotos' : tipo === 'videos' ? 'videos' : 'musicas';
   const itensNoPreview = previewArea.children.length;
   Array.from(files).forEach((file, idx) => {
-    if (itensNoPreview + idx >= lim[campo]) { mostrarMsg('erro', ' Limite de ' + lim[campo] + ' atingido!'); return; }
+    if (itensNoPreview + idx >= lim[campo]) { mostrarMsg('erro', '❌ Limite de ' + lim[campo] + ' atingido!'); return; }
     if (!tiposValidos.includes(file.type)) { mostrarMsg('erro', '❌ ' + file.name + ': formato inválido'); return; }
-    if (file.size > maxTamanho) { mostrarMsg('erro', ' ' + file.name + ': muito grande (máx ' + (maxTamanho / 1024 / 1024) + 'MB)'); return; }
+    if (file.size > maxTamanho) { mostrarMsg('erro', '❌ ' + file.name + ': muito grande (máx ' + (maxTamanho / 1024 / 1024) + 'MB)'); return; }
     const reader = new FileReader();
     reader.onload = (e) => {
       const id = 'preview-' + tipo + '-' + Date.now() + '-' + idx;
@@ -259,8 +286,8 @@ function handleFiles(files, tipo) {
       let previewHtml = '';
       if (tipo === 'fotos') previewHtml = '<img src="' + e.target.result + '" class="w-16 h-16 object-cover rounded">';
       else if (tipo === 'videos') previewHtml = '<video src="' + e.target.result + '" class="w-16 h-16 object-cover rounded"></video>';
-      else previewHtml = '<div class="w-16 h-16 bg-black rounded flex items-center justify-center text-2xl">🎵</div>';
-      div.innerHTML = previewHtml + '<div class="flex-1"><div class="text-sm font-bold truncate">' + file.name + '</div><div class="text-xs text-gray-400">' + (file.size / 1024).toFixed(1) + ' KB</div><div class="text-xs text-amarelo status-text">Aguardando upload...</div></div><button onclick="removerPreview(\'' + id + '\', \'' + tipo + '\')" class="text-vermelho hover:text-white">✕</button>';
+      else previewHtml = '<div class="w-16 h-16 bg-black rounded flex items-center justify-center text-2xl"></div>';
+      div.innerHTML = previewHtml + '<div class="flex-1"><div class="text-sm font-bold truncate">' + file.name + '</div><div class="text-xs text-gray-400">' + (file.size / 1024).toFixed(1) + ' KB</div><div class="text-xs text-amarelo status-text">Aguardando upload...</div></div><button onclick="removerPreview(\'' + id + '\', \'' + tipo + '\')" class="text-vermelho hover:text-white"></button>';
       previewArea.appendChild(div);
       atualizarContador(tipo);
       uploadAutomatico(id, file, tipo);
@@ -368,7 +395,7 @@ async function deletarMidia(id, tipo) {
     else if (tipo === 'videos') carregarVideosExistentes();
     else carregarMusicasExistentes();
     mostrarMsg('sucesso', '✅ Excluído!');
-  } catch (erro) { mostrarMsg('erro', '❌ ' + erro.message); }
+  } catch (erro) { mostrarMsg('erro', ' ' + erro.message); }
 }
 
 document.addEventListener('DOMContentLoaded', () => { console.log('SiteOne carregado.'); });
