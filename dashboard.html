@@ -2,747 +2,637 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blokinho - Protótipo com Personalidade</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MicroOne - Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-
-body {
-  background: linear-gradient(135deg, #0a2540 0%, #1a3a5c 100%);
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  overflow: hidden;
+* { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html, body { overscroll-behavior: none; }
+.phone-frame { width: 390px; height: 844px; }
+@media (max-width: 430px) {
+  .phone-frame { width: 100vw; height: 100dvh; border-radius: 0 !important; padding: 0 !important; }
+  body { padding: 0 !important; background: #f8fafc !important; }
 }
-
-.phone {
-  width: 390px;
-  height: 844px;
-  background: #f8fafc;
-  border-radius: 44px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.5);
-  border: 8px solid #1a1a1a;
-}
-
-.notch {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px;
-  height: 28px;
-  background: #1a1a1a;
-  border-radius: 0 0 18px 18px;
-  z-index: 100;
-}
-
-/* HEADER */
-.header {
-  background: linear-gradient(135deg, #146EF5 0%, #00D1FF 100%);
-  padding: 40px 20px 25px;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.header::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 200px;
-  height: 200px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 50%;
-}
-
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.user-info h1 { font-size: 20px; font-weight: 700; }
-.user-info p { font-size: 12px; opacity: 0.9; }
-
-.voice-toggle {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  border: 2px solid rgba(255,255,255,0.3);
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  transition: all 0.3s;
-  position: relative;
-}
-
-.voice-toggle.active {
-  background: #00ff88;
-  border-color: #00ff88;
-  animation: pulse-ring 2s infinite;
-}
-
-@keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(0,255,136,0.7); }
-  70% { box-shadow: 0 0 0 12px rgba(0,255,136,0); }
-  100% { box-shadow: 0 0 0 0 rgba(0,255,136,0); }
-}
-
-/* BLOKINHO CONTAINER */
-.blokinho-stage {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  min-height: 320px;
-}
-
-.blokinho-wrapper {
-  position: relative;
-  width: 160px;
-  height: 180px;
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.blokinho-wrapper:hover { transform: scale(1.05); }
-.blokinho-wrapper.talking { animation: talk-bounce 0.5s infinite; }
-
-@keyframes talk-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-/* BLOKINHO SVG */
-.blokinho-svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 10px 20px rgba(20,110,245,0.4));
-}
-
-/* Expressions */
-.expr-happy .mouth { d: path("M 55 110 Q 80 130 105 110"); }
-.expr-smile .mouth { d: path("M 60 115 Q 80 125 100 115"); }
-.expr-worried .mouth { d: path("M 60 120 Q 80 110 100 120"); }
-.expr-angry .mouth { d: path("M 55 118 L 105 118"); stroke-width: 4; }
-.expr-thinking .mouth { d: path("M 70 118 L 90 118"); }
-
-/* Speech Bubble */
-.speech-bubble {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  padding: 12px 16px;
-  border-radius: 20px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  max-width: 280px;
-  font-size: 14px;
-  color: #0a2540;
-  font-weight: 500;
-  line-height: 1.4;
-  opacity: 0;
-  transform: translateX(-50%) translateY(10px) scale(0.9);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  pointer-events: none;
-  z-index: 50;
-}
-
-.speech-bubble.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0) scale(1);
-  pointer-events: auto;
-}
-
-.speech-bubble::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid white;
-}
-
-.speech-bubble .emoji-mood {
-  display: inline-block;
-  margin-right: 4px;
-}
-
-/* Action Buttons */
-.action-buttons {
-  display: flex;
-  gap: 8px;
-  margin-top: 15px;
-  flex-wrap: wrap;
-  justify-content: center;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.4s;
-  max-height: 0;
-  overflow: hidden;
-}
-
-.action-buttons.show {
-  opacity: 1;
-  transform: translateY(0);
-  max-height: 200px;
-}
-
-.action-btn {
-  padding: 10px 16px;
-  background: white;
-  border: 2px solid #146EF5;
-  color: #146EF5;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.action-btn:hover {
-  background: #146EF5;
-  color: white;
-  transform: translateY(-2px);
-}
-
-.action-btn.primary {
-  background: #146EF5;
-  color: white;
-}
-
-.action-btn.primary:hover {
-  background: #0d5bd6;
-}
-
-/* Dashboard Cards */
-.dashboard {
-  padding: 0 20px 20px;
-  overflow-y: auto;
-  max-height: 400px;
-}
-
-.stat-card {
-  background: white;
-  border-radius: 20px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
-  border: 2px solid transparent;
-}
-
-.stat-card:hover {
-  transform: translateX(4px);
-  border-color: #146EF5;
-}
-
-.stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-}
-
-.stat-icon.photo { background: #ffe0e8; }
-.stat-icon.visit { background: #e0f4ff; }
-.stat-icon.sales { background: #e0ffe8; }
-
-.stat-info { flex: 1; }
-.stat-info h3 { font-size: 14px; color: #0a2540; font-weight: 600; }
-.stat-info p { font-size: 12px; color: #666; margin-top: 2px; }
-
-.stat-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: #146EF5;
-}
-
-/* Mood indicator */
-.mood-indicator {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 4px 10px;
-  background: rgba(255,255,255,0.9);
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #146EF5;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* Typing indicator */
-.typing-dots {
-  display: inline-flex;
-  gap: 3px;
-  margin-left: 4px;
-}
-
-.typing-dots span {
-  width: 4px;
-  height: 4px;
-  background: #146EF5;
-  border-radius: 50%;
-  animation: typing 1.4s infinite;
-}
-
-.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes typing {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
-  30% { transform: translateY(-4px); opacity: 1; }
-}
-
-/* Notification badge */
-.notif-badge {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 20px;
-  height: 20px;
-  background: #ff4757;
-  color: white;
-  border-radius: 50%;
-  font-size: 11px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid white;
-  animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-}
-
-/* Scrollbar */
-.dashboard::-webkit-scrollbar { width: 4px; }
-.dashboard::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
-
-/* Bottom nav */
-.bottom-nav {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  padding: 12px 20px 20px;
-  display: flex;
-  justify-content: space-around;
-  border-top: 1px solid #eee;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  color: #999;
-  font-size: 11px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.nav-item.active { color: #146EF5; }
-.nav-item span { font-size: 20px; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.screen { transition: opacity 0.28s ease, transform 0.28s ease; }
+.screen.hidden { opacity: 0; transform: translateX(16px); pointer-events: none; position: absolute; inset: 0; }
+.screen.active { opacity: 1; transform: translateX(0); pointer-events: auto; position: absolute; inset: 0; }
+.drag-over { background: rgba(0,194,168,0.08) !important; border-color: #00c2a8 !important; }
+.toast-show { transform: translateY(0) !important; opacity: 1 !important; }
+.no-tap { -webkit-tap-highlight-color: transparent; }
 </style>
 </head>
-<body>
+<body class="bg-[#0f172a] min-h-screen flex items-center justify-center p-3 lg:p-6">
 
-<div class="phone">
-  <div class="notch"></div>
-  
-  <div class="header">
-    <div class="header-top">
-      <div class="user-info">
-        <h1>Olá, Maria 👋</h1>
-        <p>MicroOne • maria.microone.app</p>
+<div class="phone-frame bg-black p-[10px] rounded-[56px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)] relative">
+  <div class="w-full h-full bg-[#f8fafc] rounded-[44px] overflow-hidden relative flex flex-col">
+    <!-- Status Bar -->
+    <div class="absolute top-0 left-0 right-0 h-[44px] z-[60] flex items-center justify-between px-8 pt-1 pointer-events-none">
+      <span class="text-[15px] font-semibold text-black">9:41</span>
+      <div class="w-[100px] h-[30px] bg-black rounded-b-[16px] absolute left-1/2 -translate-x-1/2 top-0"></div>
+      <div class="flex items-center gap-1.5">
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><path d="M0 8.5H2.5V11H0V8.5ZM4 5.5H6.5V11H4V5.5ZM8 2.5H10.5V11H8V2.5ZM12 0H14.5V11H12V0Z" fill="black"/></svg>
+        <svg width="15" height="11" viewBox="0 0 15 11" fill="none"><path d="M1.5 5.5C2.5 3.5 4.5 2 7.5 2C10.5 2 12.5 3.5 13.5 5.5" stroke="black" stroke-width="1.2" stroke-linecap="round"/><path d="M3.5 7.5C4.2 6.3 5.6 5.5 7.5 5.5C9.4 5.5 10.8 6.3 11.5 7.5" stroke="black" stroke-width="1.2" stroke-linecap="round"/><circle cx="7.5" cy="8.5" r="1.2" fill="black"/></svg>
+        <div class="w-[24px] h-[11px] border border-black rounded-[3px] relative"><div class="absolute left-[2px] top-[2px] bottom-[2px] w-[16px] bg-black rounded-[1px]"></div><div class="absolute -right-[2px] top-[3px] w-[1.5px] h-[4px] bg-black rounded-r"></div></div>
       </div>
-      <button class="voice-toggle" id="voiceToggle" title="Ativar/Desativar voz">
-        
-      </button>
-    </div>
-  </div>
-
-  <div class="blokinho-stage">
-    <div class="mood-indicator" id="moodIndicator">
-      <span id="moodEmoji">😊</span>
-      <span id="moodText">Feliz</span>
     </div>
 
-    <div class="speech-bubble" id="speechBubble">
-      <span class="emoji-mood" id="bubbleEmoji">👋</span>
-      <span id="bubbleText">Oi Maria! Sou o Blokinho!</span>
-    </div>
-
-    <div class="blokinho-wrapper expr-happy" id="blokinho">
-      <svg class="blokinho-svg" viewBox="0 0 160 180">
-        <!-- Glow -->
-        <ellipse cx="80" cy="170" rx="50" ry="8" fill="rgba(20,110,245,0.2)">
-          <animate attributeName="rx" values="50;55;50" dur="3s" repeatCount="indefinite"/>
-        </ellipse>
-        
-        <!-- Body -->
-        <rect x="20" y="30" width="120" height="120" rx="30" fill="#146EF5">
-          <animate attributeName="y" values="30;28;30" dur="3s" repeatCount="indefinite"/>
-        </rect>
-        
-        <!-- Body highlight -->
-        <rect x="20" y="30" width="120" height="60" rx="30" fill="rgba(255,255,255,0.15)"/>
-        
-        <!-- Antenna -->
-        <line x1="80" y1="30" x2="80" y2="10" stroke="#146EF5" stroke-width="4" stroke-linecap="round"/>
-        <circle cx="80" cy="8" r="7" fill="#00D1FF">
-          <animate attributeName="r" values="7;9;7" dur="2s" repeatCount="indefinite"/>
-          <animate attributeName="fill" values="#00D1FF;#00ff88;#00D1FF" dur="4s" repeatCount="indefinite"/>
-        </circle>
-        
-        <!-- Eyes -->
-        <ellipse cx="55" cy="80" rx="18" ry="20" fill="white"/>
-        <ellipse cx="105" cy="80" rx="18" ry="20" fill="white"/>
-        
-        <!-- Pupils -->
-        <circle cx="60" cy="82" r="10" fill="#0a2540" id="leftPupil"/>
-        <circle cx="110" cy="82" r="10" fill="#0a2540" id="rightPupil"/>
-        
-        <!-- Eye shine -->
-        <circle cx="64" cy="78" r="3" fill="white"/>
-        <circle cx="114" cy="78" r="3" fill="white"/>
-        
-        <!-- Eyebrows (for expressions) -->
-        <path id="leftBrow" d="M 42 62 Q 55 58 68 62" stroke="#0a2540" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <path id="rightBrow" d="M 92 62 Q 105 58 118 62" stroke="#0a2540" stroke-width="3" fill="none" stroke-linecap="round"/>
-        
-        <!-- Mouth -->
-        <path class="mouth" id="mouth" d="M 55 110 Q 80 130 105 110" stroke="#0a2540" stroke-width="4" fill="none" stroke-linecap="round"/>
-        
-        <!-- Cheeks -->
-        <circle cx="35" cy="100" r="6" fill="rgba(255,150,150,0.5)"/>
-        <circle cx="125" cy="100" r="6" fill="rgba(255,150,150,0.5)"/>
-        
-        <!-- Arms -->
-        <rect x="5" y="85" width="20" height="12" rx="6" fill="#146EF5">
-          <animateTransform attributeName="transform" type="rotate" values="-10 15 91; 15 15 91; -10 15 91" dur="2s" repeatCount="indefinite"/>
-        </rect>
-        <rect x="135" y="85" width="20" height="12" rx="6" fill="#146EF5"/>
-      </svg>
-    </div>
-
-    <div class="action-buttons" id="actionButtons">
-      <!-- Dynamic buttons -->
-    </div>
-  </div>
-
-  <div class="dashboard">
-    <div class="stat-card" onclick="blokinhoReact('photo')">
-      <div class="stat-icon photo">📸</div>
-      <div class="stat-info">
-        <h3>Galeria de Fotos</h3>
-        <p>6 fotos ativas • Última há 15 dias</p>
+    <!-- APP CONTENT -->
+    <div class="relative flex-1 overflow-hidden pt-[44px] bg-[#f8fafc]">
+      <!-- SPLASH -->
+      <div id="screen-splash" class="screen active w-full h-full bg-[#0a2540] flex flex-col items-center justify-center">
+        <div class="relative">
+          <div class="absolute -inset-10 bg-[#00c2a8]/20 rounded-full blur-3xl"></div>
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='176' height='176' viewBox='0 0 176 176'%3E%3Crect width='176' height='176' rx='40' fill='%2300c2a8'/%3E%3Cpath d='M50 88 L88 50 L126 88 L88 126 Z' fill='white' opacity='0.9'/%3E%3Cpath d='M65 88 L88 65 L111 88 L88 111 Z' fill='%230a2540' opacity='0.3'/%3E%3C/svg%3E" class="w-44 h-44 object-contain relative z-10" alt="MicroOne">
+        </div>
+        <div class="mt-10 flex flex-col items-center">
+          <div class="w-9 h-9 border-[3px] border-white/20 border-t-[#00c2a8] rounded-full animate-spin"></div>
+          <p class="text-white/70 text-[13px] mt-4 font-medium tracking-wide">CARREGANDO SUA LOJA</p>
+        </div>
+        <p class="absolute bottom-12 text-white/40 text-xs">v1.0.0 • MicroOne</p>
       </div>
-      <div class="stat-value">6</div>
-    </div>
 
-    <div class="stat-card" onclick="blokinhoReact('visit')">
-      <div class="stat-icon visit">👁️</div>
-      <div class="stat-info">
-        <h3>Visitas Hoje</h3>
-        <p>+47% vs ontem</p>
+      <!-- HOME -->
+      <div id="screen-home" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+        <div class="px-5 pt-3 pb-28">
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-[#0a2540] flex items-center justify-center shadow-sm">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' rx='6' fill='%2300c2a8'/%3E%3Cpath d='M8 14 L14 8 L20 14 L14 20 Z' fill='white'/%3E%3C/svg%3E" class="w-7 h-7 object-contain" alt="">
+              </div>
+              <div>
+                <h1 class="text-[22px] font-bold text-[#0a2540] leading-tight">Olá, Maria 👋</h1>
+                <p class="text-[12px] text-slate-500 -mt-0.5">Plano Plus • maria.microone.app</p>
+              </div>
+            </div>
+            <button class="w-10 h-10 rounded-full bg-white shadow-sm border border-slate-100 flex items-center justify-center no-tap active:scale-95 transition">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            </button>
+          </div>
+
+          <!-- PLANO CARD -->
+          <div class="bg-[#0a2540] rounded-[28px] p-5 text-white relative overflow-hidden mb-5 shadow-lg shadow-[#0a2540]/20">
+            <div class="absolute -right-8 -top-8 w-36 h-36 bg-[#00c2a8]/25 rounded-full blur-3xl"></div>
+            <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-[#00c2a8]/15 rounded-full blur-2xl"></div>
+            <div class="relative z-10">
+              <div class="flex items-center justify-between">
+                <p class="text-[11px] font-semibold text-[#00c2a8] uppercase tracking-widest">Plano Plus</p>
+                <span class="text-[10px] px-2 py-1 rounded-full bg-white/10 text-white/80">Ativo</span>
+              </div>
+              <p class="text-[34px] font-extrabold mt-2 tracking-tight">R$ 39,00</p>
+              <p class="text-[13px] text-white/70">Próxima cobrança em 12 dias • 15/10/2026</p>
+              <button id="btn-turbo" class="mt-4 w-full bg-[#00c2a8] text-[#0a2540] font-bold py-[14px] rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-[#00c2a8]/25 active:scale-[0.98] transition no-tap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Otimizar Loja em 3 cliques
+              </button>
+              <p class="text-center text-[11px] text-white/50 mt-2.5">Vitrine • Analytics • Telegram em sequência</p>
+            </div>
+          </div>
+
+          <!-- QUICK STATS -->
+          <div class="grid grid-cols-3 gap-2.5 mb-5">
+            <div class="bg-white rounded-2xl p-3 border border-slate-100">
+              <p class="text-[11px] text-slate-500">Visitas</p>
+              <p class="text-[18px] font-bold text-[#0a2540]">127</p>
+            </div>
+            <div class="bg-white rounded-2xl p-3 border border-slate-100">
+              <p class="text-[11px] text-slate-500">Cliques</p>
+              <p class="text-[18px] font-bold text-[#00c2a8]">47</p>
+            </div>
+            <div class="bg-white rounded-2xl p-3 border border-slate-100">
+              <p class="text-[11px] text-slate-500">Fotos</p>
+              <p class="text-[18px] font-bold text-[#146EF5]">6</p>
+            </div>
+          </div>
+
+          <!-- MODULES -->
+          <div class="space-y-3">
+            <button data-goto="loja" class="group w-full bg-white rounded-[24px] p-[18px] shadow-sm border border-slate-100 text-left flex items-center gap-4 active:scale-[0.99] transition no-tap">
+              <div class="w-[48px] h-[48px] rounded-2xl bg-[#0a2540]/5 flex items-center justify-center group-active:bg-[#0a2540]/10 transition">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-[15px] text-[#0a2540]">Minha Loja</h3>
+                <p class="text-[13px] text-slate-500 mt-0.5">Ver e editar vitrine</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-bold flex items-center justify-center">6</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
+
+            <button data-goto="analytics" class="group w-full bg-white rounded-[24px] p-[18px] shadow-sm border border-slate-100 text-left flex items-center gap-4 active:scale-[0.99] transition no-tap">
+              <div class="w-[48px] h-[48px] rounded-2xl bg-[#00c2a8]/10 flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00a08a" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-[15px] text-[#0a2540]">Analytics</h3>
+                <p class="text-[13px] text-slate-500 mt-0.5">Visitas e cliques</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[12px] font-semibold text-emerald-600">+23%</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
+
+            <button data-goto="telegram" class="group w-full bg-white rounded-[24px] p-[18px] shadow-sm border border-slate-100 text-left flex items-center gap-4 active:scale-[0.99] transition no-tap">
+              <div class="w-[48px] h-[48px] rounded-2xl bg-[#146EF5]/10 flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#146EF5" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-[15px] text-[#0a2540]">Telegram Bot</h3>
+                <p class="text-[13px] text-slate-500 mt-0.5">Notificações ativas</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[#00c2a8] animate-pulse"></span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
+
+            <button data-goto="plano" class="group w-full bg-white rounded-[24px] p-[18px] shadow-sm border border-slate-100 text-left flex items-center gap-4 active:scale-[0.99] transition no-tap">
+              <div class="w-[48px] h-[48px] rounded-2xl bg-[#0a2540]/5 flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-[15px] text-[#0a2540]">Meu Plano</h3>
+                <p class="text-[13px] text-slate-500 mt-0.5">Plus • R$ 39/mês</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="stat-value">127</div>
-    </div>
 
-    <div class="stat-card" onclick="blokinhoReact('sales')">
-      <div class="stat-icon sales">💰</div>
-      <div class="stat-info">
-        <h3>Cliques no WhatsApp</h3>
-        <p>23 cliques esta semana</p>
+      <!-- LOJA -->
+      <div id="screen-loja" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+        <div class="px-5 pt-3 pb-28">
+          <div class="flex items-center gap-3 mb-5">
+            <button data-goto="home" class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center no-tap active:scale-95">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <h2 class="text-[20px] font-bold text-[#0a2540]">Minha Loja</h2>
+          </div>
+
+          <!-- PREVIEW -->
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100 mb-4">
+            <h3 class="font-semibold text-[16px] text-[#0a2540] mb-4">Preview da Vitrine</h3>
+            <div class="bg-gradient-to-br from-[#146EF5] to-[#00D1FF] rounded-2xl p-6 text-white text-center">
+              <div class="w-16 h-16 rounded-full bg-white/20 mx-auto mb-3 flex items-center justify-center text-2xl">👩</div>
+              <h4 class="text-xl font-bold">Maria Studio</h4>
+              <p class="text-sm opacity-90">💅 Unhas, cabelo e make</p>
+              <div class="mt-4 grid grid-cols-3 gap-2">
+                <div class="aspect-square bg-white/20 rounded-lg"></div>
+                <div class="aspect-square bg-white/20 rounded-lg"></div>
+                <div class="aspect-square bg-white/20 rounded-lg"></div>
+              </div>
+            </div>
+            <button class="mt-4 w-full bg-[#00c2a8] text-[#0a2540] font-semibold py-3 rounded-xl">Ver Loja Pública</button>
+          </div>
+
+          <!-- UPLOAD -->
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
+            <h3 class="font-semibold text-[16px] text-[#0a2540] mb-4">Upload de Fotos</h3>
+            <div id="dropzone-loja" class="border-2 border-dashed border-slate-300 rounded-[20px] p-7 text-center cursor-pointer hover:border-[#00c2a8] transition bg-slate-50/50 no-tap">
+              <div class="w-12 h-12 mx-auto bg-[#00c2a8]/10 rounded-2xl flex items-center justify-center mb-3">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00a08a" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <p class="font-medium text-[#0a2540] text-[14px]">Arraste suas fotos aqui</p>
+              <p class="text-[12px] text-slate-500 mt-0.5">ou clique para selecionar</p>
+              <input type="file" id="foto-input" accept="image/*" multiple hidden>
+            </div>
+            <div id="foto-list" class="mt-4 space-y-2 hidden"></div>
+          </div>
+        </div>
       </div>
-      <div class="stat-value">23</div>
-    </div>
-  </div>
 
-  <div class="bottom-nav">
-    <div class="nav-item active"><span>🏠</span>Início</div>
-    <div class="nav-item"><span></span>Analytics</div>
-    <div class="nav-item"><span>⚙️</span>Config</div>
+      <!-- ANALYTICS -->
+      <div id="screen-analytics" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+        <div class="px-5 pt-3 pb-28">
+          <div class="flex items-center gap-3 mb-5">
+            <button data-goto="home" class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center no-tap active:scale-95">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <h2 class="text-[20px] font-bold text-[#0a2540]">Analytics</h2>
+          </div>
+
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100 mb-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="font-semibold text-[16px] text-[#0a2540]">Visitas da Loja</h3>
+                <p class="text-[13px] text-slate-500">Últimos 7 dias</p>
+              </div>
+              <div class="text-right">
+                <p class="text-[28px] font-extrabold text-[#00c2a8] leading-none">127</p>
+                <p class="text-[11px] text-slate-500 -mt-0.5">visitas</p>
+              </div>
+            </div>
+            <div class="mt-3 h-[8px] bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full w-[78%] bg-[#00c2a8] rounded-full"></div>
+            </div>
+            <p class="text-[12px] text-slate-500 mt-2">+23% vs semana anterior</p>
+          </div>
+
+          <div class="space-y-2.5" id="visitas-list"></div>
+
+          <button id="btn-exportar-analytics" class="mt-4 w-full bg-[#0a2540] text-white font-semibold py-[14px] rounded-2xl active:scale-[0.99] transition no-tap flex items-center justify-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar Relatório
+          </button>
+        </div>
+      </div>
+
+      <!-- TELEGRAM -->
+      <div id="screen-telegram" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+        <div class="px-5 pt-3 pb-28">
+          <div class="flex items-center gap-3 mb-5">
+            <button data-goto="home" class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center no-tap active:scale-95">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <h2 class="text-[20px] font-bold text-[#0a2540]">Telegram Bot</h2>
+          </div>
+
+          <div class="bg-[#146EF5] rounded-[28px] p-5 text-white relative overflow-hidden mb-4 shadow-lg">
+            <div class="absolute -right-8 -top-8 w-36 h-36 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-2xl">🤖</div>
+                <div>
+                  <h3 class="font-bold text-lg">Bot Conectado</h3>
+                  <p class="text-sm opacity-90">@MicroOneBot</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 mt-4">
+                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                <span class="text-sm">Ativo desde 01/09/2026</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
+            <h3 class="font-semibold text-[16px] text-[#0a2540] mb-4">Notificações Ativas</h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div>
+                  <p class="text-[14px] font-medium text-[#0a2540]">Nova visita na loja</p>
+                  <p class="text-[12px] text-slate-500">Avisar quando alguém visitar</p>
+                </div>
+                <div class="w-12 h-6 bg-[#00c2a8] rounded-full relative cursor-pointer">
+                  <div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div>
+                  <p class="text-[14px] font-medium text-[#0a2540]">Novo clique no WhatsApp</p>
+                  <p class="text-[12px] text-slate-500">Avisar quando clicarem</p>
+                </div>
+                <div class="w-12 h-6 bg-[#00c2a8] rounded-full relative cursor-pointer">
+                  <div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div>
+                  <p class="text-[14px] font-medium text-[#0a2540]">Relatório semanal</p>
+                  <p class="text-[12px] text-slate-500">Toda segunda-feira</p>
+                </div>
+                <div class="w-12 h-6 bg-[#00c2a8] rounded-full relative cursor-pointer">
+                  <div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLANO -->
+      <div id="screen-plano" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+        <div class="px-5 pt-3 pb-28">
+          <div class="flex items-center gap-3 mb-5">
+            <button data-goto="home" class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center no-tap active:scale-95">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <h2 class="text-[20px] font-bold text-[#0a2540]">Meu Plano</h2>
+          </div>
+
+          <div class="bg-[#0a2540] rounded-[28px] p-5 text-white relative overflow-hidden mb-4 shadow-lg">
+            <div class="absolute -right-8 -top-8 w-36 h-36 bg-[#00c2a8]/25 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+              <div class="flex items-center justify-between">
+                <p class="text-[11px] font-semibold text-[#00c2a8] uppercase tracking-widest">Plano Atual</p>
+                <span class="text-[10px] px-2 py-1 rounded-full bg-white/10 text-white/80">Plus</span>
+              </div>
+              <p class="text-[34px] font-extrabold mt-2 tracking-tight">R$ 39,00</p>
+              <p class="text-[13px] text-white/70">Próxima cobrança: 15/10/2026</p>
+              <button class="mt-4 w-full bg-[#00c2a8] text-[#0a2540] font-bold py-[14px] rounded-2xl">Gerenciar Assinatura</button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
+            <h3 class="font-semibold text-[16px] text-[#0a2540] mb-4">Benefícios Inclusos</h3>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">3 lojas digitais</p>
+                  <p class="text-[12px] text-slate-500">Ativas no momento: 1</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">Fotos ilimitadas</p>
+                  <p class="text-[12px] text-slate-500">6 uploads feitos</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">Blokinho IA</p>
+                  <p class="text-[12px] text-slate-500">Dicas inteligentes ativas</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">Telegram Bot</p>
+                  <p class="text-[12px] text-slate-500">Notificações automáticas</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">QR Code personalizado</p>
+                  <p class="text-[12px] text-slate-500">Para imprimir e colar</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="mt-4 w-full bg-[#146EF5] text-white font-semibold py-[14px] rounded-2xl">Upgrade para Pro</button>
+        </div>
+      </div>
+
+      <!-- PERFIL -->
+      <div id="screen-perfil" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+        <div class="px-5 pt-3 pb-28">
+          <div class="flex items-center gap-3 mb-6">
+            <button data-goto="home" class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center no-tap active:scale-95">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <h2 class="text-[20px] font-bold text-[#0a2540]">Perfil</h2>
+          </div>
+          <div class="bg-white rounded-[28px] p-8 text-center border border-slate-100">
+            <div class="w-16 h-16 rounded-full bg-[#0a2540] mx-auto flex items-center justify-center text-white font-bold text-xl">M</div>
+            <h3 class="font-bold text-[18px] mt-3 text-[#0a2540]">Maria Silva</h3>
+            <p class="text-[13px] text-slate-500">maria@email.com</p>
+            <div class="mt-6 pt-6 border-t border-slate-100">
+              <p class="text-[13px] text-slate-500">Funcionalidades de perfil em breve no MicroOne.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="absolute left-5 right-5 bottom-[96px] bg-[#0a2540] text-white px-4 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 translate-y-[120px] opacity-0 transition-all duration-300 z-50">
+      <div class="w-8 h-8 rounded-full bg-[#00c2a8] flex items-center justify-center flex-shrink-0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-semibold text-[13px] leading-tight" id="toast-title">Sucesso!</p>
+        <p class="text-[12px] text-white/70 leading-tight truncate" id="toast-msg">Operação concluída</p>
+      </div>
+    </div>
+
+    <!-- TURBO MODAL -->
+    <div id="modal-turbo" class="absolute inset-0 bg-black/60 backdrop-blur-md z-[70] hidden items-center justify-center p-6">
+      <div class="bg-white rounded-[32px] w-full max-w-[330px] p-6 shadow-2xl">
+        <div class="text-center">
+          <div class="w-14 h-14 rounded-2xl bg-[#00c2a8]/15 mx-auto flex items-center justify-center mb-3">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00a08a" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <h3 class="text-[20px] font-bold text-[#0a2540]">Otimização Turbo</h3>
+          <p class="text-[13px] text-slate-500 mt-1">Executando 3 etapas automaticamente</p>
+        </div>
+        <div class="mt-5 space-y-3" id="turbo-steps">
+          <div data-step="1" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center step-icon"><span class="text-[12px] font-bold text-slate-500">1</span></div>
+            <div class="flex-1"><p class="text-[14px] font-medium text-[#0a2540]">Vitrine - Otimizar fotos</p><p class="text-[12px] text-slate-500 step-status">Aguardando...</p></div>
+          </div>
+          <div data-step="2" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center step-icon"><span class="text-[12px] font-bold text-slate-500">2</span></div>
+            <div class="flex-1"><p class="text-[14px] font-medium text-[#0a2540]">Analytics - Gerar relatório</p><p class="text-[12px] text-slate-500 step-status">Aguardando...</p></div>
+          </div>
+          <div data-step="3" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center step-icon"><span class="text-[12px] font-bold text-slate-500">3</span></div>
+            <div class="flex-1"><p class="text-[14px] font-medium text-[#0a2540]">Telegram - Enviar notificação</p><p class="text-[12px] text-slate-500 step-status">Aguardando...</p></div>
+          </div>
+        </div>
+        <button id="turbo-close" class="mt-5 w-full py-3 rounded-2xl font-semibold text-[14px] bg-slate-100 text-slate-600 hidden no-tap">Fechar</button>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div id="bottom-nav" class="absolute bottom-0 left-0 right-0 h-[84px] bg-white/95 backdrop-blur-xl border-t border-slate-200 z-40 hidden">
+      <div class="flex items-center justify-around h-full px-2 pb-[20px] pt-2">
+        <button data-nav="home" data-goto="home" class="nav-btn flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition no-tap text-[#00c2a8]">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span class="text-[11px] font-medium">Início</span>
+        </button>
+        <button data-nav="loja" data-goto="loja" class="nav-btn flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition no-tap text-slate-400">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+          <span class="text-[11px] font-medium">Loja</span>
+        </button>
+        <button data-nav="analytics" data-goto="analytics" class="nav-btn flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition no-tap text-slate-400">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          <span class="text-[11px] font-medium">Analytics</span>
+        </button>
+        <button data-nav="telegram" data-goto="telegram" class="nav-btn flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition no-tap text-slate-400">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          <span class="text-[11px] font-medium">Telegram</span>
+        </button>
+        <button data-nav="perfil" data-goto="perfil" class="nav-btn flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition no-tap text-slate-400">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span class="text-[11px] font-medium">Perfil</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-// ============================================
-// BLOKINHO - SISTEMA DE FRASES (36 frases)
-// ============================================
-
-const phrases = {
-  greeting: [
-    { text: "Oi Maria! Que bom te ver por aqui!", emoji: "", mood: "happy" },
-    { text: "E aí, Maria! Pronta pra bombar sua loja?", emoji: "✨", mood: "happy" },
-    { text: "Olá! Sua loja tá online e bombando!", emoji: "🚀", mood: "happy" },
-    { text: "Bem-vinda de volta! Sentiu minha falta?", emoji: "😊", mood: "happy" }
-  ],
-  
-  praise: [
-    { text: "Parabéns! Suas visitas aumentaram 47%!", emoji: "🎉", mood: "happy" },
-    { text: "Incrível! 127 visitas hoje. Você tá arrasando!", emoji: "🔥", mood: "happy" },
-    { text: "23 cliques no WhatsApp essa semana. Tá vendendo!", emoji: "💰", mood: "happy" },
-    { text: "Sua loja tá linda! Os clientes vão amar!", emoji: "✨", mood: "happy" },
-    { text: "Excelente trabalho! Continue assim!", emoji: "👏", mood: "happy" }
-  ],
-  
-  suggestion: [
-    { text: "Hey, sua última foto tem 15 dias. Que tal trocar?", emoji: "📸", mood: "thinking" },
-    { text: "Sugestão: adicione mais 2 fotos pra ficar top!", emoji: "💡", mood: "thinking" },
-    { text: "Que tal postar um vídeo novo? Engaja mais!", emoji: "🎬", mood: "thinking" },
-    { text: "Seus clientes adoram fotos de bastidores!", emoji: "🎨", mood: "thinking" },
-    { text: "Tenta uma foto com iluminação natural. Fica lindo!", emoji: "☀️", mood: "thinking" },
-    { text: "Adiciona seu WhatsApp direto na loja. Facilita!", emoji: "📱", mood: "thinking" }
-  ],
-  
-  urgent: [
-    { text: "Atenção! Suas visitas caíram essa semana!", emoji: "⚠️", mood: "worried" },
-    { text: "Precisamos de ação! Atualiza as fotos agora!", emoji: "🚨", mood: "worried" },
-    { text: "Alerta: 3 clientes tentaram contato e não acharam info!", emoji: "😰", mood: "worried" },
-    { text: "URGENTE! Seu plano renova em 3 dias!", emoji: "", mood: "worried" }
-  ],
-  
-  angry: [
-    { text: "Maria, sério? 15 dias sem atualizar? Vamos lá!", emoji: "😤", mood: "angry" },
-    { text: "Tá perdendo clientes! Atualiza essa loja AGORA!", emoji: "😠", mood: "angry" },
-    { text: "Para de enrolar! Bora trabalhar!", emoji: "💪", mood: "angry" }
-  ],
-  
-  achievement: [
-    { text: "CONQUISTA: Primeira loja com 100 visitas! 🏆", emoji: "🏆", mood: "happy" },
-    { text: "Você é TOP 10% da sua região! Parabéns!", emoji: "⭐", mood: "happy" },
-    { text: "Nova conquista: Loja Super Ativa desbloqueada!", emoji: "🎖️", mood: "happy" }
-  ],
-  
-  farewell: [
-    { text: "Até mais! Sua loja tá em boas mãos comigo!", emoji: "👋", mood: "happy" },
-    { text: "Volta logo! Vou sentir sua falta!", emoji: "😢", mood: "worried" },
-    { text: "Boa noite! Descansa que amanhã tem mais!", emoji: "🌙", mood: "happy" }
-  ]
-};
-
-// ============================================
-// ESTADO DO BLOKINHO
-// ============================================
-
-let voiceEnabled = false;
-let currentMood = 'happy';
-let speechSynth = window.speechSynthesis;
-let lastPhraseIndex = -1;
-
-// ============================================
-// FUNÇÕES PRINCIPAIS
-// ============================================
-
-function getRandomPhrase(category) {
-  const list = phrases[category];
-  let idx;
-  do {
-    idx = Math.floor(Math.random() * list.length);
-  } while (idx === lastPhraseIndex && list.length > 1);
-  lastPhraseIndex = idx;
-  return list[idx];
-}
-
-function setMood(mood) {
-  currentMood = mood;
-  const blokinho = document.getElementById('blokinho');
-  const moodEmoji = document.getElementById('moodEmoji');
-  const moodText = document.getElementById('moodText');
-  
-  // Remove todas as classes de expressão
-  blokinho.className = 'blokinho-wrapper expr-' + mood;
-  
-  const moodMap = {
-    happy: { emoji: '😊', text: 'Feliz' },
-    smile: { emoji: '🙂', text: 'Sorrindo' },
-    worried: { emoji: '😟', text: 'Preocupado' },
-    angry: { emoji: '😠', text: 'Bravo' },
-    thinking: { emoji: '🤔', text: 'Pensando' }
-  };
-  
-  moodEmoji.textContent = moodMap[mood].emoji;
-  moodText.textContent = moodMap[mood].text;
-}
-
-function showBubble(text, emoji, duration = 4000) {
-  const bubble = document.getElementById('speechBubble');
-  const bubbleText = document.getElementById('bubbleText');
-  const bubbleEmoji = document.getElementById('bubbleEmoji');
-  
-  bubbleEmoji.textContent = emoji;
-  bubbleText.textContent = text;
-  bubble.classList.add('show');
-  
-  if (voiceEnabled) {
-    speak(text);
-  }
-  
-  setTimeout(() => {
-    bubble.classList.remove('show');
-  }, duration);
-}
-
-function speak(text) {
-  if (!speechSynth) return;
-  speechSynth.cancel();
-  
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'pt-BR';
-  utterance.rate = 1.1;
-  utterance.pitch = 1.3; // Voz mais aguda = fofa
-  utterance.volume = 0.8;
-  
-  // Tenta achar voz feminina em PT-BR
-  const voices = speechSynth.getVoices();
-  const ptVoice = voices.find(v => v.lang.includes('pt-BR') && v.name.toLowerCase().includes('female')) 
-               || voices.find(v => v.lang.includes('pt'));
-  if (ptVoice) utterance.voice = ptVoice;
-  
-  speechSynth.speak(utterance);
-}
-
-function showActions(actions) {
-  const container = document.getElementById('actionButtons');
-  container.innerHTML = '';
-  
-  actions.forEach(action => {
-    const btn = document.createElement('button');
-    btn.className = 'action-btn ' + (action.primary ? 'primary' : '');
-    btn.innerHTML = action.icon + ' ' + action.label;
-    btn.onclick = () => action.onClick();
-    container.appendChild(btn);
+const showScreen = (id) => {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.classList.add('hidden');
   });
-  
-  container.classList.add('show');
-  setTimeout(() => container.classList.remove('show'), 8000);
+  const target = document.getElementById('screen-' + id);
+  if (target) {
+    target.classList.remove('hidden');
+    target.classList.add('active');
+  }
+  const nav = document.getElementById('bottom-nav');
+  nav.classList.toggle('hidden', id === 'splash');
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    const isActive = btn.dataset.nav === id;
+    btn.classList.toggle('text-[#00c2a8]', isActive);
+    btn.classList.toggle('text-slate-400', !isActive);
+  });
+};
+document.querySelectorAll('[data-goto]').forEach(btn => {
+  btn.addEventListener('click', () => showScreen(btn.dataset.goto));
+});
+setTimeout(() => showScreen('home'), 1800);
+
+function showToast(title, msg) {
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-msg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('toast-show');
+  setTimeout(() => t.classList.remove('toast-show'), 3000);
 }
 
-// ============================================
-// REAÇÕES CONTEXTUAIS
-// ============================================
+// LOJA UPLOAD
+const dropzoneLoja = document.getElementById('dropzone-loja');
+const fotoInput = document.getElementById('foto-input');
+const fotoList = document.getElementById('foto-list');
+let fotosUploaded = false;
 
-function blokinhoReact(context) {
-  const reactions = {
-    photo: {
-      phrase: getRandomPhrase('suggestion'),
-      actions: [
-        { icon: '', label: 'Carregar foto', primary: true, onClick: () => alert('Abrir upload de foto!') },
-        { icon: '🎨', label: 'Escolher template', onClick: () => alert('Abrir templates!') }
-      ]
-    },
-    visit: {
-      phrase: getRandomPhrase('praise'),
-      actions: [
-        { icon: '📊', label: 'Ver detalhes', primary: true, onClick: () => alert('Abrir analytics!') },
-        { icon: '📱', label: 'Compartilhar', onClick: () => alert('Compartilhar loja!') }
-      ]
-    },
-    sales: {
-      phrase: getRandomPhrase('achievement'),
-      actions: [
-        { icon: '💬', label: 'Ver mensagens', primary: true, onClick: () => alert('Abrir WhatsApp!') },
-        { icon: '🎯', label: 'Ver metas', onClick: () => alert('Ver metas!') }
-      ]
-    }
+const mockFotos = [
+  { name: 'unhas_decoradas.jpg', size: '2.4 MB' },
+  { name: 'corte_feminino.jpg', size: '1.8 MB' },
+  { name: 'maquiagem.jpg', size: '3.1 MB' }
+];
+
+function renderFotos() {
+  fotoList.innerHTML = mockFotos.map(f => `
+    <div class="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+      <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[13px] font-medium text-[#0a2540] truncate">${f.name}</p>
+        <p class="text-[11px] text-emerald-700">${f.size} • Upload completo</p>
+      </div>
+    </div>
+  `).join('');
+  fotoList.classList.remove('hidden');
+  fotosUploaded = true;
+}
+
+function handleFotos() {
+  dropzoneLoja.classList.add('opacity-50', 'pointer-events-none');
+  dropzoneLoja.innerHTML = `<div class="w-8 h-8 mx-auto border-[3px] border-[#00c2a8]/30 border-t-[#00c2a8] rounded-full animate-spin mb-2"></div><p class="text-[13px] text-[#0a2540] font-medium">Processando fotos...</p>`;
+  setTimeout(() => {
+    renderFotos();
+    dropzoneLoja.innerHTML = `<div class="w-12 h-12 mx-auto bg-emerald-100 rounded-2xl flex items-center justify-center mb-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><p class="font-medium text-emerald-700 text-[14px]">3 fotos enviadas</p><p class="text-[12px] text-slate-500">Toque para adicionar mais</p>`;
+    dropzoneLoja.classList.remove('opacity-50', 'pointer-events-none', 'drag-over');
+    dropzoneLoja.classList.add('border-emerald-300', 'bg-emerald-50/50');
+  }, 1200);
+}
+
+dropzoneLoja.addEventListener('click', () => fotoInput.click());
+dropzoneLoja.addEventListener('dragover', e => { e.preventDefault(); dropzoneLoja.classList.add('drag-over'); });
+dropzoneLoja.addEventListener('dragleave', () => dropzoneLoja.classList.remove('drag-over'));
+dropzoneLoja.addEventListener('drop', e => { e.preventDefault(); dropzoneLoja.classList.remove('drag-over'); handleFotos(); });
+fotoInput.addEventListener('change', handleFotos);
+
+// ANALYTICS
+const visitasData = [
+  { date: '08/09', source: 'Instagram', visits: 23 },
+  { date: '07/09', source: 'WhatsApp', visits: 18 },
+  { date: '06/09', source: 'Direto', visits: 12 },
+  { date: '05/09', source: 'Instagram', visits: 31 },
+  { date: '04/09', source: 'Google', visits: 8 },
+];
+
+function renderVisitas() {
+  const el = document.getElementById('visitas-list');
+  el.innerHTML = visitasData.map(v => `
+    <div class="bg-white rounded-2xl p-4 border border-slate-200">
+      <div class="flex items-start gap-3">
+        <div class="w-9 h-9 rounded-xl bg-white border-slate-200 flex items-center justify-center text-[11px] font-semibold text-slate-600 shrink-0">${v.date}</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-[14px] font-medium text-[#0a2540] truncate">${v.source}</p>
+          <p class="text-[12px] text-slate-500">Origem da visita</p>
+        </div>
+        <p class="text-[15px] font-bold text-[#00c2a8] shrink-0">${v.visits} visitas</p>
+      </div>
+    </div>
+  `).join('');
+}
+renderVisitas();
+
+document.getElementById('btn-exportar-analytics').addEventListener('click', () => {
+  showToast('Relatório exportado', 'PDF enviado para seu email');
+});
+
+// TURBO 3 CLIQUES
+const modal = document.getElementById('modal-turbo');
+const btnTurbo = document.getElementById('btn-turbo');
+const turboClose = document.getElementById('turbo-close');
+
+btnTurbo.addEventListener('click', () => {
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  turboClose.classList.add('hidden');
+  const steps = document.querySelectorAll('#turbo-steps [data-step]');
+  steps.forEach(step => {
+    const icon = step.querySelector('.step-icon');
+    const status = step.querySelector('.step-status');
+    icon.className = 'w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center step-icon';
+    icon.innerHTML = `<span class="text-[12px] font-bold text-slate-500">${step.dataset.step}</span>`;
+    status.textContent = 'Aguardando...';
+    status.className = 'text-[12px] text-slate-500 step-status';
+    step.classList.remove('bg-emerald-50', 'border-emerald-300');
+    step.classList.add('bg-slate-50', 'border-slate-200');
+  });
+  const runStep = (num, text, delay) => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const step = document.querySelector(`[data-step="${num}"]`);
+        const icon = step.querySelector('.step-icon');
+        const status = step.querySelector('.step-status');
+        icon.className = 'w-8 h-8 rounded-full bg-[#00c2a8] flex items-center justify-center step-icon';
+        icon.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`;
+        status.textContent = text;
+        status.className = 'text-[12px] text-emerald-700 font-medium step-status';
+        step.classList.remove('bg-slate-50', 'border-slate-200');
+        step.classList.add('bg-emerald-50', 'border-emerald-300');
+        resolve();
+      }, delay);
+    });
   };
-  
-  const reaction = reactions[context];
-  if (!reaction) return;
-  
-  setMood(reaction.phrase.mood);
-  showBubble(reaction.phrase.text, reaction.phrase.emoji);
-  showActions(reaction.actions);
-}
-
-// ============================================
-// CONTROLE DE VOZ
-// ============================================
-
-document.getElementById('voiceToggle').addEventListener('click', function() {
-  voiceEnabled = !voiceEnabled;
-  this.textContent = voiceEnabled ? '🔊' : '';
-  this.classList.toggle('active', voiceEnabled);
-  
-  if (voiceEnabled) {
-    // Carrega vozes
-    speechSynth.getVoices();
-    showBubble('Voz ativada! Agora eu falo com você!', '🔊', 3000);
-  } else {
-    speechSynth.cancel();
-    showBubble('Voz desativada. Modo silencioso!', '🔇', 2000);
-  }
+  runStep(1, '6 fotos otimizadas', 600)
+    .then(() => runStep(2, 'Relatório de 127 visitas', 800))
+    .then(() => runStep(3, 'Notificação enviada ao Telegram', 800))
+    .then(() => {
+      setTimeout(() => {
+        turboClose.classList.remove('hidden');
+        showToast('Otimização concluída!', 'Vitrine, Analytics e Telegram executados');
+      }, 400);
+    });
 });
 
-// ============================================
-// INICIALIZAÇÃO
-// ============================================
-
-window.addEventListener('load', () => {
-  // Carrega vozes do sistema
-  if (speechSynth) {
-    speechSynth.getVoices();
-    speechSynth.onvoiceschanged = () => speechSynth.getVoices();
-  }
-  
-  // Saudação inicial após 1s
-  setTimeout(() => {
-    const greeting = getRandomPhrase('greeting');
-    setMood(greeting.mood);
-    showBubble(greeting.text, greeting.emoji, 5000);
-  }, 1000);
-  
-  // Simula alerta urgente após 15s (demo)
-  setTimeout(() => {
-    const urgent = getRandomPhrase('urgent');
-    setMood(urgent.mood);
-    showBubble(urgent.text, urgent.emoji, 6000);
-    showActions([
-      { icon: '📸', label: 'Atualizar fotos', primary: true, onClick: () => alert('Abrir upload!') },
-      { icon: '❌', label: 'Depois', onClick: () => {} }
-    ]);
-  }, 15000);
+turboClose.addEventListener('click', () => {
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
 });
-
-// Previne scroll no phone
-document.querySelector('.phone').addEventListener('touchmove', e => e.preventDefault());
 </script>
-
 </body>
 </html>
