@@ -14,122 +14,20 @@ html { scroll-behavior: smooth; }
 
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 @keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(20,110,245,0.4)} 70%{box-shadow:0 0 0 15px rgba(20,110,245,0)} 100%{box-shadow:0 0 0 0 rgba(20,110,245,0)} }
-@keyframes blink { 0%,90%,100%{transform:scaleY(1)} 95%{transform:scaleY(0.1)} }
-@keyframes wave { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(15deg)} 75%{transform:rotate(-10deg)} }
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
-@keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
-@keyframes glowPulse { 0%,100%{opacity:0.6;transform:scaleX(1)} 50%{opacity:1;transform:scaleX(1.1)} }
+@keyframes wave { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(20deg)} 75%{transform:rotate(-10deg)} }
+@keyframes ringPulse { 0%,100%{opacity:0.4;transform:scaleX(1)} 50%{opacity:0.8;transform:scaleX(1.15)} }
+@keyframes antennaGlow { 0%,100%{opacity:0.6} 50%{opacity:1} }
+@keyframes shadowPulse { 0%,100%{opacity:0.3;transform:scaleX(1)} 50%{opacity:0.5;transform:scaleX(0.9)} }
 
 .blokinho-float { animation: float 3s ease-in-out infinite; }
 .blokinho-pulse { animation: pulse-ring 2s infinite; }
-.eye-blink { animation: blink 4s infinite; transform-origin: center; }
-.arm-wave { animation: wave 2s ease-in-out infinite; transform-origin: bottom right; }
-.glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
+.arm-wave { animation: wave 2s ease-in-out infinite; transform-origin: 15px 95px; }
+.ring-pulse { animation: ringPulse 3s ease-in-out infinite; transform-origin: center; }
+.antenna-glow { animation: antennaGlow 2s ease-in-out infinite; }
+.shadow-pulse { animation: shadowPulse 3s ease-in-out infinite; transform-origin: center; }
 
 .section-reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
 .section-reveal.visible { opacity: 1; transform: translateY(0); }
-
-.chat-bubble {
-  position: absolute;
-  background: white;
-  border-radius: 16px;
-  padding: 14px 18px;
-  font-size: 14px;
-  color: #0a2540;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  max-width: 260px;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.4s ease;
-  pointer-events: none;
-  z-index: 30;
-}
-.chat-bubble.show { opacity: 1; transform: translateY(0); }
-.chat-bubble::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 10px solid white;
-}
-
-.blokinho-btn {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, #146EF5, #00D1FF);
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 1000;
-  box-shadow: 0 8px 25px rgba(20,110,245,0.4);
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.blokinho-btn:hover { transform: scale(1.1); box-shadow: 0 12px 35px rgba(20,110,245,0.6); }
-
-.blokinho-popup {
-  position: fixed;
-  bottom: 100px;
-  right: 24px;
-  width: 320px;
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-  z-index: 1000;
-  opacity: 0;
-  transform: translateY(20px);
-  pointer-events: none;
-  transition: all 0.3s;
-}
-.blokinho-popup.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-
-.hero-blokinho-wrapper {
-  position: relative;
-  width: 320px;
-  height: 380px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-bubble {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: white;
-  border-radius: 16px;
-  padding: 14px 18px;
-  font-size: 14px;
-  color: #0a2540;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  max-width: 240px;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.5s ease;
-  z-index: 30;
-}
-.hero-bubble.show { opacity: 1; transform: translateY(0); }
-.hero-bubble::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 40px;
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 10px solid white;
-}
 
 .gradient-text {
   background: linear-gradient(135deg, #146EF5, #00D1FF);
@@ -163,8 +61,6 @@ html { scroll-behavior: smooth; }
 
 @media (max-width: 768px) {
   .pricing-featured { transform: scale(1); }
-  .hero-blokinho-wrapper { width: 260px; height: 320px; }
-  .hero-bubble { right: 0; max-width: 200px; font-size: 12px; padding: 10px 14px; }
 }
 </style>
 </head>
@@ -217,14 +113,9 @@ html { scroll-behavior: smooth; }
         Sua loja. Seu controle. <span class="gradient-text">Seu negócio.</span>
       </h1>
       
-      <!-- NOVA FRASE ADICIONADA -->
-      <p class="text-2xl md:text-3xl font-bold text-[#146EF5] mb-6">
+      <h2 class="text-2xl md:text-3xl font-bold text-[#146EF5] mb-6">
         MicroOne — Sua Loja em suas Mãos
-      </p>
-
-      <p class="text-xl text-slate-600 mb-8 leading-relaxed">
-        Pare de pagar R$300/mês pra quem não traz cliente. O MicroOne é tudo em um para o microempreendedor brasileiro.
-      </p>
+      </h2>
 
       <div class="flex flex-wrap gap-4 mb-10">
         <a href="#precos" class="px-8 py-4 bg-gradient-to-r from-[#146EF5] to-[#00D1FF] text-white rounded-2xl font-bold text-lg hover:shadow-xl hover:shadow-blue-500/30 transition transform hover:-translate-y-1">
@@ -251,70 +142,129 @@ html { scroll-behavior: smooth; }
       </div>
     </div>
 
+    <!-- BLOKINHO 3D no Hero (estilo dos prints 3 e 4) -->
     <div class="section-reveal flex justify-center">
-      <div class="hero-blokinho-wrapper">
-        <!-- BALÃO DE FALA CORRIGIDO - agora visível -->
-        <div class="hero-bubble show">
-          <span class="font-semibold">Oi! Eu sou o Blokinho!</span> 🤖<br>
-          <span class="text-sm text-slate-600">Vou te ajudar a criar sua loja digital!</span>
-        </div>
+      <div class="blokinho-float" style="width: 320px; height: 360px; position: relative;">
+        <!-- Sombra no chão -->
+        <div class="shadow-pulse absolute bottom-4 left-1/2 -translate-x-1/2 w-48 h-6 bg-gradient-to-r from-transparent via-blue-400/30 to-transparent rounded-full blur-md"></div>
+        
+        <svg viewBox="0 0 320 360" width="320" height="360" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Gradiente corpo 3D -->
+            <radialGradient id="bodyGrad" cx="35%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#4DA6FF"/>
+              <stop offset="50%" stop-color="#146EF5"/>
+              <stop offset="100%" stop-color="#0A4FC4"/>
+            </radialGradient>
+            <!-- Gradiente antena -->
+            <radialGradient id="antennaGrad" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#66D9FF"/>
+              <stop offset="100%" stop-color="#00D1FF"/>
+            </radialGradient>
+            <!-- Gradiente olhos -->
+            <radialGradient id="eyeGrad" cx="40%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#e8f4ff"/>
+            </radialGradient>
+            <!-- Gradiente pupilas -->
+            <radialGradient id="pupilGrad" cx="40%" cy="35%" r="60%">
+              <stop offset="0%" stop-color="#3a3a3a"/>
+              <stop offset="100%" stop-color="#000000"/>
+            </radialGradient>
+            <!-- Sombra corpo -->
+            <filter id="bodyShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+              <feOffset dx="0" dy="10" result="offsetblur"/>
+              <feComponentTransfer>
+                <feFuncA type="linear" slope="0.3"/>
+              </feComponentTransfer>
+              <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <!-- Brilho corpo -->
+            <radialGradient id="bodyShine" cx="30%" cy="25%" r="50%">
+              <stop offset="0%" stop-color="rgba(255,255,255,0.4)"/>
+              <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+            </radialGradient>
+            <!-- Anel de luz -->
+            <radialGradient id="ringGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="rgba(0,209,255,0.6)"/>
+              <stop offset="70%" stop-color="rgba(0,209,255,0.2)"/>
+              <stop offset="100%" stop-color="rgba(0,209,255,0)"/>
+            </radialGradient>
+          </defs>
 
-        <!-- BLOKINHO SVG -->
-        <div class="blokinho-float">
-          <svg width="260" height="300" viewBox="0 0 260 300" fill="none">
-            <!-- Glow na base -->
-            <ellipse cx="130" cy="285" rx="80" ry="12" fill="rgba(20,110,245,0.2)" class="glow-pulse"/>
-            
-            <!-- Antena -->
-            <line x1="130" y1="55" x2="130" y2="20" stroke="#146EF5" stroke-width="5" stroke-linecap="round"/>
-            <circle cx="130" cy="15" r="10" fill="#00D1FF">
-              <animate attributeName="r" values="10;12;10" dur="2s" repeatCount="indefinite"/>
-            </circle>
-            
-            <!-- Corpo - forma quadrada arredondada (como o original) -->
-            <rect x="40" y="55" width="180" height="180" rx="45" fill="#146EF5"/>
-            
-            <!-- Brilho no corpo -->
-            <rect x="40" y="55" width="180" height="90" rx="45" fill="rgba(255,255,255,0.15)"/>
-            
-            <!-- Olhos grandes e expressivos -->
-            <ellipse cx="95" cy="130" rx="32" ry="36" fill="white"/>
-            <ellipse cx="165" cy="130" rx="32" ry="36" fill="white"/>
-            
-            <!-- Pupilas -->
-            <circle cx="102" cy="135" r="16" fill="#0a2540" class="eye-blink"/>
-            <circle cx="172" cy="135" r="16" fill="#0a2540" class="eye-blink"/>
-            
-            <!-- Brilho dos olhos -->
-            <circle cx="108" cy="128" r="6" fill="white"/>
-            <circle cx="178" cy="128" r="6" fill="white"/>
-            <circle cx="96" cy="142" r="3" fill="white" opacity="0.6"/>
-            <circle cx="166" cy="142" r="3" fill="white" opacity="0.6"/>
-            
-            <!-- Sobrancelhas -->
-            <path d="M 70 95 Q 95 85 120 95" stroke="#0a2540" stroke-width="5" fill="none" stroke-linecap="round"/>
-            <path d="M 140 95 Q 165 85 190 95" stroke="#0a2540" stroke-width="5" fill="none" stroke-linecap="round"/>
-            
-            <!-- Boca sorridente -->
-            <path d="M 90 185 Q 130 210 170 185" stroke="#0a2540" stroke-width="6" fill="none" stroke-linecap="round"/>
-            
-            <!-- Língua -->
-            <ellipse cx="130" cy="195" rx="14" ry="9" fill="#e94560"/>
-            
-            <!-- Bochechas rosadas -->
-            <circle cx="65" cy="165" r="14" fill="rgba(255,150,150,0.5)"/>
-            <circle cx="195" cy="165" r="14" fill="rgba(255,150,150,0.5)"/>
-            
-            <!-- Braço esquerdo acenando -->
-            <g class="arm-wave" style="transform-origin: 40px 140px;">
-              <rect x="5" y="120" width="40" height="20" rx="10" fill="#146EF5"/>
-              <circle cx="10" cy="130" r="14" fill="#146EF5"/>
-            </g>
-            
-            <!-- Braço direito -->
-            <rect x="215" y="130" width="35" height="20" rx="10" fill="#146EF5"/>
-            <circle cx="245" cy="140" r="14" fill="#146EF5"/>
-          </svg>
+          <!-- Anel de luz flutuante embaixo -->
+          <ellipse cx="160" cy="320" rx="70" ry="12" fill="url(#ringGrad)" class="ring-pulse"/>
+          <ellipse cx="160" cy="320" rx="50" ry="6" fill="none" stroke="#00D1FF" stroke-width="2" opacity="0.6" class="ring-pulse"/>
+
+          <!-- Antena -->
+          <path d="M 160 85 Q 160 50 160 35" stroke="#146EF5" stroke-width="6" stroke-linecap="round" fill="none"/>
+          <circle cx="160" cy="25" r="14" fill="url(#antennaGrad)" filter="url(#bodyShadow)"/>
+          <circle cx="155" cy="20" r="4" fill="rgba(255,255,255,0.6)"/>
+
+          <!-- Corpo principal (quadrado arredondado 3D) -->
+          <rect x="70" y="85" width="180" height="180" rx="45" fill="url(#bodyGrad)" filter="url(#bodyShadow)"/>
+          
+          <!-- Brilho no corpo -->
+          <rect x="70" y="85" width="180" height="100" rx="45" fill="url(#bodyShine)"/>
+          
+          <!-- Contorno sutil -->
+          <rect x="70" y="85" width="180" height="180" rx="45" fill="none" stroke="#0A4FC4" stroke-width="2" opacity="0.3"/>
+
+          <!-- Braço esquerdo (acenando) -->
+          <g class="arm-wave" style="transform-origin: 70px 170px;">
+            <ellipse cx="45" cy="175" rx="22" ry="14" fill="url(#bodyGrad)" transform="rotate(-20 45 175)" filter="url(#bodyShadow)"/>
+            <circle cx="25" cy="165" r="14" fill="url(#bodyGrad)" filter="url(#bodyShadow)"/>
+            <circle cx="22" cy="162" r="4" fill="rgba(255,255,255,0.3)"/>
+          </g>
+
+          <!-- Braço direito -->
+          <ellipse cx="275" cy="185" rx="22" ry="14" fill="url(#bodyGrad)" transform="rotate(15 275 185)" filter="url(#bodyShadow)"/>
+          <circle cx="295" cy="175" r="14" fill="url(#bodyGrad)" filter="url(#bodyShadow)"/>
+          <circle cx="298" cy="172" r="4" fill="rgba(255,255,255,0.3)"/>
+
+          <!-- Olhos grandes -->
+          <ellipse cx="125" cy="155" rx="32" ry="36" fill="url(#eyeGrad)" filter="url(#bodyShadow)"/>
+          <ellipse cx="195" cy="155" rx="32" ry="36" fill="url(#eyeGrad)" filter="url(#bodyShadow)"/>
+          
+          <!-- Contorno olhos -->
+          <ellipse cx="125" cy="155" rx="32" ry="36" fill="none" stroke="#0A4FC4" stroke-width="1.5" opacity="0.3"/>
+          <ellipse cx="195" cy="155" rx="32" ry="36" fill="none" stroke="#0A4FC4" stroke-width="1.5" opacity="0.3"/>
+
+          <!-- Pupilas -->
+          <circle cx="132" cy="160" r="18" fill="url(#pupilGrad)"/>
+          <circle cx="202" cy="160" r="18" fill="url(#pupilGrad)"/>
+          
+          <!-- Brilho pupilas -->
+          <circle cx="138" cy="153" r="6" fill="white"/>
+          <circle cx="208" cy="153" r="6" fill="white"/>
+          <circle cx="128" cy="165" r="3" fill="rgba(255,255,255,0.5)"/>
+          <circle cx="198" cy="165" r="3" fill="rgba(255,255,255,0.5)"/>
+
+          <!-- Sobrancelhas -->
+          <path d="M 95 115 Q 125 105 155 115" stroke="#0A4FC4" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M 165 115 Q 195 105 225 115" stroke="#0A4FC4" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+          <!-- Boca sorridente -->
+          <path d="M 120 215 Q 160 240 200 215" stroke="#0A4FC4" stroke-width="6" fill="none" stroke-linecap="round"/>
+          
+          <!-- Língua -->
+          <ellipse cx="160" cy="225" rx="16" ry="10" fill="#e94560"/>
+          <ellipse cx="160" cy="222" rx="12" ry="6" fill="#ff6b8a"/>
+
+          <!-- Bochechas rosadas -->
+          <circle cx="90" cy="195" r="14" fill="rgba(255,150,170,0.5)"/>
+          <circle cx="230" cy="195" r="14" fill="rgba(255,150,170,0.5)"/>
+        </svg>
+
+        <!-- Balão de fala pequeno -->
+        <div class="absolute -top-4 right-0 bg-white rounded-2xl shadow-lg p-3 max-w-[180px]">
+          <p class="text-xs font-bold text-slate-900">Oi! Eu sou o Blokinho! 🤖</p>
+          <p class="text-xs text-slate-600 mt-1">Vou te ajudar a criar sua loja digital!</p>
+          <div class="absolute -bottom-2 left-8 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[10px] border-l-transparent border-r-transparent border-t-white"></div>
         </div>
       </div>
     </div>
@@ -346,7 +296,7 @@ html { scroll-behavior: smooth; }
       <div class="card-hover bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl p-8 border border-pink-100 section-reveal">
         <div class="text-5xl mb-4">💅</div>
         <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroBeauty</h3>
-        <p class="text-slate-600 mb-4">Salões de beleza, manicures e barbeiros com portfólio de trabalhos e agendamento online.</p>
+        <p class="text-slate-600 mb-4">Salões, manicures e barbeiros com portfólio de trabalhos e agendamento online.</p>
         <div class="flex gap-2">
           <button class="px-4 py-2 bg-[#146EF5] text-white rounded-xl text-sm font-semibold">Ver Demo</button>
           <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold">Testar 15 dias</button>
@@ -575,7 +525,7 @@ html { scroll-behavior: smooth; }
     <p class="text-xl mb-10 opacity-90">Junte-se a milhares de microempreendedores que já libertaram seu negócio.</p>
     <div class="flex flex-wrap justify-center gap-4">
       <a href="#precos" class="px-8 py-4 bg-white text-[#146EF5] rounded-2xl font-bold text-lg hover:shadow-xl transition transform hover:-translate-y-1">
-         Começar Grátis Agora
+        🚀 Começar Grátis Agora
       </a>
       <button class="px-8 py-4 bg-white/10 backdrop-blur border-2 border-white/30 text-white rounded-2xl font-bold text-lg hover:bg-white/20 transition">
         Entrar com Google
@@ -635,38 +585,93 @@ html { scroll-behavior: smooth; }
   </div>
 </footer>
 
-<!-- Floating Blokinho Button -->
-<div class="blokinho-btn blokinho-pulse" onclick="toggleBlokinho()">
-  <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
-    <rect x="15" y="20" width="70" height="70" rx="18" fill="white"/>
-    <ellipse cx="38" cy="50" rx="10" ry="12" fill="#146EF5"/>
-    <ellipse cx="62" cy="50" rx="10" ry="12" fill="#146EF5"/>
-    <circle cx="41" cy="52" r="4" fill="white"/>
-    <circle cx="65" cy="52" r="4" fill="white"/>
-    <path d="M 40 68 Q 50 76 60 68" stroke="#146EF5" stroke-width="4" fill="none" stroke-linecap="round"/>
-  </svg>
-</div>
+<!-- BLOKINHO PEQUENO FLUTUANTE (canto inferior direito) -->
+<div class="fixed bottom-6 right-6 z-50 blokinho-pulse" style="cursor: pointer;">
+  <div class="blokinho-float" style="width: 70px; height: 80px; position: relative;">
+    <!-- Sombra -->
+    <div class="shadow-pulse absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-3 bg-gradient-to-r from-transparent via-blue-400/40 to-transparent rounded-full blur-sm"></div>
+    
+    <svg viewBox="0 0 100 110" width="70" height="80" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="smallBodyGrad" cx="35%" cy="30%" r="70%">
+          <stop offset="0%" stop-color="#4DA6FF"/>
+          <stop offset="50%" stop-color="#146EF5"/>
+          <stop offset="100%" stop-color="#0A4FC4"/>
+        </radialGradient>
+        <radialGradient id="smallAntennaGrad" cx="40%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#66D9FF"/>
+          <stop offset="100%" stop-color="#00D1FF"/>
+        </radialGradient>
+        <radialGradient id="smallEyeGrad" cx="40%" cy="35%" r="60%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#e8f4ff"/>
+        </radialGradient>
+        <radialGradient id="smallPupilGrad" cx="40%" cy="35%" r="60%">
+          <stop offset="0%" stop-color="#3a3a3a"/>
+          <stop offset="100%" stop-color="#000000"/>
+        </radialGradient>
+        <filter id="smallShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+          <feOffset dx="0" dy="3" result="offsetblur"/>
+          <feComponentTransfer>
+            <feFuncA type="linear" slope="0.3"/>
+          </feComponentTransfer>
+          <feMerge>
+            <feMergeNode/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <radialGradient id="smallBodyShine" cx="30%" cy="25%" r="50%">
+          <stop offset="0%" stop-color="rgba(255,255,255,0.4)"/>
+          <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </radialGradient>
+      </defs>
 
-<!-- Blokinho Popup Chat -->
-<div class="blokinho-popup" id="blokinhoPopup">
-  <div class="flex items-start gap-3 mb-4">
-    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#146EF5] to-[#00D1FF] flex items-center justify-center flex-shrink-0">
-      <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
-        <rect x="15" y="20" width="70" height="70" rx="18" fill="white"/>
-        <ellipse cx="38" cy="50" rx="10" ry="12" fill="#146EF5"/>
-        <ellipse cx="62" cy="50" rx="10" ry="12" fill="#146EF5"/>
-      </svg>
-    </div>
-    <div>
-      <div class="font-bold text-slate-900">Oi! Sou o Blokinho! 🤖</div>
-      <div class="text-sm text-slate-600">Como posso te ajudar?</div>
-    </div>
-  </div>
-  <div class="space-y-2">
-    <button class="w-full text-left px-4 py-3 bg-slate-100 rounded-xl text-sm font-medium hover:bg-[#146EF5] hover:text-white transition">🚀 Começar minha loja grátis</button>
-    <button class="w-full text-left px-4 py-3 bg-slate-100 rounded-xl text-sm font-medium hover:bg-[#146EF5] hover:text-white transition">💰 Ver planos e preços</button>
-    <button class="w-full text-left px-4 py-3 bg-slate-100 rounded-xl text-sm font-medium hover:bg-[#146EF5] hover:text-white transition">❓ Tirar uma dúvida</button>
-    <button class="w-full text-left px-4 py-3 bg-slate-100 rounded-xl text-sm font-medium hover:bg-[#146EF5] hover:text-white transition">💬 Falar no WhatsApp</button>
+      <!-- Anel de luz -->
+      <ellipse cx="50" cy="100" rx="25" ry="4" fill="rgba(0,209,255,0.5)" class="ring-pulse"/>
+
+      <!-- Antena -->
+      <path d="M 50 28 Q 50 18 50 12" stroke="#146EF5" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <circle cx="50" cy="8" r="6" fill="url(#smallAntennaGrad)" filter="url(#smallShadow)"/>
+
+      <!-- Corpo -->
+      <rect x="20" y="28" width="60" height="60" rx="18" fill="url(#smallBodyGrad)" filter="url(#smallShadow)"/>
+      <rect x="20" y="28" width="60" height="35" rx="18" fill="url(#smallBodyShine)"/>
+
+      <!-- Braço esquerdo acenando -->
+      <g class="arm-wave" style="transform-origin: 20px 58px;">
+        <ellipse cx="10" cy="60" rx="8" ry="5" fill="url(#smallBodyGrad)" transform="rotate(-20 10 60)" filter="url(#smallShadow)"/>
+      </g>
+
+      <!-- Braço direito -->
+      <ellipse cx="90" cy="62" rx="8" ry="5" fill="url(#smallBodyGrad)" transform="rotate(15 90 62)" filter="url(#smallShadow)"/>
+
+      <!-- Olhos -->
+      <ellipse cx="38" cy="52" rx="11" ry="13" fill="url(#smallEyeGrad)" filter="url(#smallShadow)"/>
+      <ellipse cx="62" cy="52" rx="11" ry="13" fill="url(#smallEyeGrad)" filter="url(#smallShadow)"/>
+
+      <!-- Pupilas -->
+      <circle cx="41" cy="54" r="6" fill="url(#smallPupilGrad)"/>
+      <circle cx="65" cy="54" r="6" fill="url(#smallPupilGrad)"/>
+
+      <!-- Brilho -->
+      <circle cx="43" cy="51" r="2" fill="white"/>
+      <circle cx="67" cy="51" r="2" fill="white"/>
+
+      <!-- Sobrancelhas -->
+      <path d="M 28 38 Q 38 35 48 38" stroke="#0A4FC4" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M 52 38 Q 62 35 72 38" stroke="#0A4FC4" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+      <!-- Boca -->
+      <path d="M 38 72 Q 50 80 62 72" stroke="#0A4FC4" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+      <!-- Língua -->
+      <ellipse cx="50" cy="76" rx="5" ry="3" fill="#e94560"/>
+
+      <!-- Bochechas -->
+      <circle cx="28" cy="66" r="4" fill="rgba(255,150,170,0.5)"/>
+      <circle cx="72" cy="66" r="4" fill="rgba(255,150,170,0.5)"/>
+    </svg>
   </div>
 </div>
 
@@ -681,20 +686,6 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 
 document.querySelectorAll('.section-reveal').forEach(el => observer.observe(el));
-
-// Blokinho Popup Toggle
-function toggleBlokinho() {
-  document.getElementById('blokinhoPopup').classList.toggle('show');
-}
-
-// Close popup when clicking outside
-document.addEventListener('click', (e) => {
-  const popup = document.getElementById('blokinhoPopup');
-  const btn = document.querySelector('.blokinho-btn');
-  if (!popup.contains(e.target) && !btn.contains(e.target)) {
-    popup.classList.remove('show');
-  }
-});
 </script>
 
 </body>
