@@ -3,1730 +3,542 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MicroOne — Tudo em Um para o Microempreendedor</title>
+<title>MicroOne - Tudo em Um para o Microempreendedor</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --dark: #0D1B2A;
-    --blue: #146EF5;
-    --cyan: #00D1FF;
-    --light: #F2F4F7;
-    --text: #333333;
-    --white: #ffffff;
-    --gradient: linear-gradient(135deg, #146EF5 0%, #00D1FF 100%);
-    --gradient-dark: linear-gradient(135deg, #0D1B2A 0%, #1a2d4a 100%);
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--white);
-    color: var(--text);
-    overflow-x: hidden;
-  }
-
-  /* ========== NAVBAR ========== */
-  .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    padding: 15px 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-  }
-
-  .navbar.scrolled {
-    box-shadow: 0 4px 30px rgba(0,0,0,0.1);
-  }
-
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 800;
-    font-size: 1.4rem;
-    color: var(--dark);
-  }
-
-  .nav-logo .logo-icon {
-    width: 36px;
-    height: 36px;
-    background: var(--gradient);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 900;
-    font-size: 1.1rem;
-  }
-
-  .nav-logo span { color: var(--blue); }
-
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    text-decoration: none;
-    color: var(--text);
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: color 0.3s;
-  }
-
-  .nav-links a:hover { color: var(--blue); }
-
-  .nav-cta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .btn-google {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 18px;
-    border: 2px solid #e0e0e0;
-    border-radius: 12px;
-    background: white;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: all 0.3s;
-    color: var(--text);
-  }
-
-  .btn-google:hover {
-    border-color: var(--blue);
-    box-shadow: 0 4px 15px rgba(20,110,245,0.15);
-  }
-
-  .btn-google svg { width: 18px; height: 18px; }
-
-  .btn-primary {
-    padding: 10px 22px;
-    background: var(--gradient);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-decoration: none;
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(20,110,245,0.4);
-  }
-
-  .menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--dark);
-  }
-
-  /* ========== HERO ========== */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: 120px 30px 60px;
-    background: var(--gradient-dark);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 800px;
-    height: 800px;
-    background: radial-gradient(circle, rgba(0,209,255,0.15) 0%, transparent 60%);
-    animation: float 8s ease-in-out infinite;
-  }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: -30%;
-    left: -10%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(20,110,245,0.1) 0%, transparent 60%);
-    animation: float 10s ease-in-out infinite reverse;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(30px, -30px); }
-  }
-
-  .hero-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-    position: relative;
-    z-index: 2;
-    width: 100%;
-  }
-
-  .hero-text h1 {
-    font-size: 3.5rem;
-    font-weight: 900;
-    color: white;
-    line-height: 1.1;
-    margin-bottom: 20px;
-  }
-
-  .hero-text h1 .highlight {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-text p {
-    font-size: 1.2rem;
-    color: rgba(255,255,255,0.7);
-    line-height: 1.6;
-    margin-bottom: 30px;
-    max-width: 500px;
-  }
-
-  .hero-buttons {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-  }
-
-  .btn-hero {
-    padding: 16px 32px;
-    border-radius: 14px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .btn-hero-primary {
-    background: var(--gradient);
-    color: white;
-    border: none;
-    box-shadow: 0 8px 30px rgba(20,110,245,0.4);
-  }
-
-  .btn-hero-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(20,110,245,0.6);
-  }
-
-  .btn-hero-secondary {
-    background: rgba(255,255,255,0.1);
-    color: white;
-    border: 2px solid rgba(255,255,255,0.2);
-    backdrop-filter: blur(10px);
-  }
-
-  .btn-hero-secondary:hover {
-    background: rgba(255,255,255,0.2);
-    border-color: var(--cyan);
-  }
-
-  .hero-stats {
-    display: flex;
-    gap: 30px;
-    margin-top: 40px;
-  }
-
-  .stat-item {
-    text-align: left;
-  }
-
-  .stat-number {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--cyan);
-  }
-
-  .stat-label {
-    font-size: 0.8rem;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  /* ========== BLOKINHO (HERO) ========== */
-  .hero-blokinho {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-  }
-
-  .blokinho-container {
-    position: relative;
-    width: 350px;
-    height: 400px;
-  }
-
-  .blokinho-svg {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 20px 60px rgba(0,209,255,0.3));
-    animation: blokinhoFloat 4s ease-in-out infinite;
-  }
-
-  @keyframes blokinhoFloat {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-15px) rotate(2deg); }
-    75% { transform: translateY(-8px) rotate(-1deg); }
-  }
-
-  .blokinho-glow {
-    position: absolute;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 30px;
-    background: radial-gradient(ellipse, rgba(0,209,255,0.4) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: glowPulse 4s ease-in-out infinite;
-  }
-
-  @keyframes glowPulse {
-    0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.6; }
-    50% { transform: translateX(-50%) scaleX(1.3); opacity: 1; }
-  }
-
-  /* Speech bubble */
-  .speech-bubble {
-    position: absolute;
-    background: white;
-    border-radius: 20px;
-    padding: 15px 20px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--dark);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-    max-width: 220px;
-    animation: bubblePop 0.5s ease-out;
-    z-index: 10;
-  }
-
-  .speech-bubble::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 30px;
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 12px solid white;
-  }
-
-  .speech-bubble.right::after {
-    left: auto;
-    right: 30px;
-  }
-
-  @keyframes bubblePop {
-    0% { transform: scale(0); opacity: 0; }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
-  }
-
-  .bubble-hero { top: 20px; right: -20px; }
-
-  /* ========== SECTIONS ========== */
-  section {
-    padding: 100px 30px;
-  }
-
-  .section-container {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .section-header {
-    text-align: center;
-    margin-bottom: 60px;
-  }
-
-  .section-badge {
-    display: inline-block;
-    padding: 6px 16px;
-    background: rgba(20,110,245,0.1);
-    color: var(--blue);
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-  }
-
-  .section-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--dark);
-    margin-bottom: 15px;
-    line-height: 1.2;
-  }
-
-  .section-subtitle {
-    font-size: 1.1rem;
-    color: #666;
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-
-  /* ========== DOR / PROBLEMA ========== */
-  .pain-section {
-    background: var(--light);
-  }
-
-  .pain-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-  }
-
-  .pain-card {
-    background: white;
-    border-radius: 20px;
-    padding: 35px 30px;
-    text-align: center;
-    transition: all 0.3s;
-    border: 2px solid transparent;
-  }
-
-  .pain-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--blue);
-    box-shadow: 0 20px 50px rgba(20,110,245,0.15);
-  }
-
-  .pain-icon {
-    font-size: 3rem;
-    margin-bottom: 15px;
-  }
-
-  .pain-card h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--dark);
-    margin-bottom: 10px;
-  }
-
-  .pain-card p {
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  /* ========== NICHOS ========== */
-  .niches-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-  }
-
-  .niche-card {
-    background: white;
-    border-radius: 24px;
-    overflow: hidden;
-    border: 2px solid #f0f0f0;
-    transition: all 0.4s;
-    cursor: pointer;
-    position: relative;
-  }
-
-  .niche-card:hover {
-    transform: translateY(-10px);
-    border-color: var(--blue);
-    box-shadow: 0 25px 60px rgba(20,110,245,0.2);
-  }
-
-  .niche-visual {
-    height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .niche-visual::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0.1;
-  }
-
-  .niche-food .niche-visual { background: linear-gradient(135deg, #ff6b35, #ff8c42); }
-  .niche-beauty .niche-visual { background: linear-gradient(135deg, #e94560, #ff6b8a); }
-  .niche-law .niche-visual { background: linear-gradient(135deg, #1a2d4a, #2d4a7a); }
-  .niche-photo .niche-visual { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
-  .niche-health .niche-visual { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
-  .niche-shop .niche-visual { background: linear-gradient(135deg, #10b981, #34d399); }
-
-  .niche-info {
-    padding: 25px;
-  }
-
-  .niche-info h3 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--dark);
-    margin-bottom: 8px;
-  }
-
-  .niche-info p {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-    line-height: 1.5;
-  }
-
-  .niche-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .btn-niche {
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: none;
-    text-decoration: none;
-  }
-
-  .btn-niche-demo {
-    background: var(--gradient);
-    color: white;
-  }
-
-  .btn-niche-demo:hover {
-    box-shadow: 0 4px 15px rgba(20,110,245,0.4);
-  }
-
-  .btn-niche-free {
-    background: rgba(16,185,129,0.1);
-    color: #10b981;
-  }
-
-  .btn-niche-free:hover {
-    background: rgba(16,185,129,0.2);
-  }
-
-  /* ========== DEMO MODAL ========== */
-  .demo-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(13,27,42,0.9);
-    backdrop-filter: blur(10px);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-
-  .demo-modal.active {
-    display: flex;
-    animation: fadeIn 0.3s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  .demo-content {
-    background: white;
-    border-radius: 24px;
-    width: 100%;
-    max-width: 900px;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    animation: slideUp 0.4s ease;
-  }
-
-  @keyframes slideUp {
-    from { transform: translateY(50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-
-  .demo-header {
-    padding: 25px 30px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .demo-header h3 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--dark);
-  }
-
-  .demo-close {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    background: var(--light);
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .demo-close:hover {
-    background: #e0e0e0;
-  }
-
-  .demo-body {
-    padding: 30px;
-  }
-
-  .demo-phone {
-    width: 100%;
-    max-width: 380px;
-    margin: 0 auto;
-    background: var(--dark);
-    border-radius: 30px;
-    padding: 15px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  }
-
-  .demo-phone-screen {
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    min-height: 500px;
-  }
-
-  .demo-phone-header {
-    padding: 20px;
-    text-align: center;
-    color: white;
-  }
-
-  .demo-phone-header.food { background: linear-gradient(135deg, #ff6b35, #ff8c42); }
-  .demo-phone-header.beauty { background: linear-gradient(135deg, #e94560, #ff6b8a); }
-  .demo-phone-header.law { background: linear-gradient(135deg, #1a2d4a, #2d4a7a); }
-  .demo-phone-header.photo { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
-
-  .demo-phone-header h4 {
-    font-size: 1.3rem;
-    font-weight: 700;
-  }
-
-  .demo-phone-header p {
-    font-size: 0.8rem;
-    opacity: 0.8;
-    margin-top: 5px;
-  }
-
-  .demo-phone-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    padding: 15px;
-  }
-
-  .demo-phone-item {
-    aspect-ratio: 1;
-    border-radius: 12px;
-    background: var(--light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-  }
-
-  .demo-footer {
-    padding: 20px 30px;
-    border-top: 1px solid #f0f0f0;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .btn-demo {
-    padding: 12px 24px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: none;
-  }
-
-  .btn-demo-acquire {
-    background: var(--gradient);
-    color: white;
-  }
-
-  .btn-demo-acquire:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(20,110,245,0.4);
-  }
-
-  .btn-demo-back {
-    background: var(--light);
-    color: var(--text);
-  }
-
-  .btn-demo-back:hover {
-    background: #e0e0e0;
-  }
-
-  .btn-demo-test {
-    background: rgba(16,185,129,0.1);
-    color: #10b981;
-  }
-
-  .btn-demo-test:hover {
-    background: rgba(16,185,129,0.2);
-  }
-
-  /* ========== SOLUÇÃO ========== */
-  .solution-section {
-    background: var(--gradient-dark);
-    color: white;
-  }
-
-  .solution-section .section-title { color: white; }
-  .solution-section .section-subtitle { color: rgba(255,255,255,0.7); }
-  .solution-section .section-badge {
-    background: rgba(0,209,255,0.2);
-    color: var(--cyan);
-  }
-
-  .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    margin-top: 50px;
-  }
-
-  .step-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 24px;
-    padding: 35px 30px;
-    text-align: center;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s;
-  }
-
-  .step-card:hover {
-    background: rgba(255,255,255,0.1);
-    transform: translateY(-5px);
-  }
-
-  .step-number {
-    width: 60px;
-    height: 60px;
-    background: var(--gradient);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: 800;
-    margin: 0 auto 20px;
-    color: white;
-  }
-
-  .step-card h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-
-  .step-card p {
-    color: rgba(255,255,255,0.6);
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  /* ========== PREÇOS ========== */
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    align-items: stretch;
-  }
-
-  .pricing-card {
-    background: white;
-    border-radius: 24px;
-    padding: 35px 25px;
-    border: 2px solid #f0f0f0;
-    transition: all 0.3s;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  }
-
-  .pricing-card.featured {
-    border-color: var(--blue);
-    transform: scale(1.05);
-    box-shadow: 0 20px 60px rgba(20,110,245,0.2);
-  }
-
-  .pricing-card.featured::before {
-    content: 'MAIS POPULAR';
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--gradient);
-    color: white;
-    padding: 4px 16px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-  }
-
-  .pricing-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--blue);
-  }
-
-  .pricing-card.featured:hover {
-    transform: scale(1.05) translateY(-5px);
-  }
-
-  .pricing-name {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--blue);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-  }
-
-  .pricing-price {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--dark);
-    margin-bottom: 5px;
-  }
-
-  .pricing-price span {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #999;
-  }
-
-  .pricing-desc {
-    font-size: 0.85rem;
-    color: #666;
-    margin-bottom: 25px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .pricing-features {
-    list-style: none;
-    margin-bottom: 25px;
-    flex: 1;
-  }
-
-  .pricing-features li {
-    padding: 8px 0;
-    font-size: 0.85rem;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .pricing-features li::before {
-    content: '✓';
-    color: #10b981;
-    font-weight: 700;
-  }
-
-  .pricing-features li.disabled {
-    color: #ccc;
-  }
-
-  .pricing-features li.disabled::before {
-    content: '✗';
-    color: #ccc;
-  }
-
-  .btn-pricing {
-    width: 100%;
-    padding: 14px;
-    border-radius: 14px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: none;
-    text-align: center;
-    text-decoration: none;
-    display: block;
-  }
-
-  .btn-pricing-outline {
-    background: transparent;
-    border: 2px solid var(--blue);
-    color: var(--blue);
-  }
-
-  .btn-pricing-outline:hover {
-    background: var(--blue);
-    color: white;
-  }
-
-  .btn-pricing-filled {
-    background: var(--gradient);
-    color: white;
-  }
-
-  .btn-pricing-filled:hover {
-    box-shadow: 0 8px 25px rgba(20,110,245,0.4);
-    transform: translateY(-2px);
-  }
-
-  /* ========== BLOKINHO FLOATING ========== */
-  .blokinho-floating {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 999;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-
-  .blokinho-floating:hover {
-    transform: scale(1.1);
-  }
-
-  .blokinho-floating svg {
-    width: 70px;
-    height: 70px;
-    filter: drop-shadow(0 10px 30px rgba(20,110,245,0.4));
-  }
-
-  .blokinho-chat {
-    position: absolute;
-    bottom: 80px;
-    right: 0;
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    width: 280px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    display: none;
-    animation: bubblePop 0.4s ease;
-  }
-
-  .blokinho-chat.active {
-    display: block;
-  }
-
-  .blokinho-chat h4 {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--dark);
-    margin-bottom: 8px;
-  }
-
-  .blokinho-chat p {
-    font-size: 0.85rem;
-    color: #666;
-    line-height: 1.5;
-    margin-bottom: 15px;
-  }
-
-  .blokinho-chat .chat-options {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .chat-option {
-    padding: 10px 15px;
-    background: var(--light);
-    border: none;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.3s;
-    text-align: left;
-  }
-
-  .chat-option:hover {
-    background: var(--blue);
-    color: white;
-  }
-
-  /* ========== FAQ ========== */
-  .faq-section {
-    background: var(--light);
-  }
-
-  .faq-list {
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  .faq-item {
-    background: white;
-    border-radius: 16px;
-    margin-bottom: 12px;
-    overflow: hidden;
-    border: 2px solid transparent;
-    transition: all 0.3s;
-  }
-
-  .faq-item.active {
-    border-color: var(--blue);
-  }
-
-  .faq-question {
-    padding: 20px 25px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--dark);
-  }
-
-  .faq-question .faq-toggle {
-    font-size: 1.3rem;
-    color: var(--blue);
-    transition: transform 0.3s;
-  }
-
-  .faq-item.active .faq-toggle {
-    transform: rotate(45deg);
-  }
-
-  .faq-answer {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease, padding 0.3s ease;
-  }
-
-  .faq-item.active .faq-answer {
-    max-height: 200px;
-    padding: 0 25px 20px;
-  }
-
-  .faq-answer p {
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.6;
-  }
-
-  /* ========== CTA FINAL ========== */
-  .cta-section {
-    background: var(--gradient);
-    text-align: center;
-    padding: 100px 30px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-section::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
-    animation: float 10s ease-in-out infinite;
-  }
-
-  .cta-content {
-    position: relative;
-    z-index: 2;
-  }
-
-  .cta-section h2 {
-    font-size: 2.8rem;
-    font-weight: 900;
-    color: white;
-    margin-bottom: 15px;
-  }
-
-  .cta-section p {
-    font-size: 1.2rem;
-    color: rgba(255,255,255,0.8);
-    margin-bottom: 30px;
-  }
-
-  .cta-buttons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .btn-cta {
-    padding: 16px 36px;
-    border-radius: 14px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .btn-cta-white {
-    background: white;
-    color: var(--blue);
-    border: none;
-  }
-
-  .btn-cta-white:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-  }
-
-  .btn-cta-outline {
-    background: transparent;
-    color: white;
-    border: 2px solid rgba(255,255,255,0.5);
-  }
-
-  .btn-cta-outline:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: white;
-  }
-
-  /* ========== FOOTER ========== */
-  footer {
-    background: var(--dark);
-    color: rgba(255,255,255,0.6);
-    padding: 60px 30px 30px;
-  }
-
-  .footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 40px;
-    margin-bottom: 40px;
-  }
-
-  .footer-brand h3 {
-    color: white;
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-  }
-
-  .footer-brand p {
-    font-size: 0.85rem;
-    line-height: 1.6;
-  }
-
-  .footer-col h4 {
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .footer-col a {
-    display: block;
-    color: rgba(255,255,255,0.6);
-    text-decoration: none;
-    font-size: 0.85rem;
-    padding: 5px 0;
-    transition: color 0.3s;
-  }
-
-  .footer-col a:hover {
-    color: var(--cyan);
-  }
-
-  .footer-bottom {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding-top: 30px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.8rem;
-  }
-
-  .footer-social {
-    display: flex;
-    gap: 15px;
-  }
-
-  .footer-social a {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-decoration: none;
-    transition: all 0.3s;
-  }
-
-  .footer-social a:hover {
-    background: var(--blue);
-    transform: translateY(-3px);
-  }
-
-  /* ========== SCROLL ANIMATIONS ========== */
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s ease;
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ========== RESPONSIVE ========== */
-  @media (max-width: 1024px) {
-    .pricing-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    .pricing-card.featured {
-      transform: scale(1);
-    }
-    .pricing-card.featured:hover {
-      transform: translateY(-5px);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .nav-links { display: none; }
-    .menu-toggle { display: block; }
-    .nav-cta .btn-google { display: none; }
-
-    .hero-content {
-      grid-template-columns: 1fr;
-      text-align: center;
-    }
-
-    .hero-text h1 { font-size: 2.5rem; }
-    .hero-text p { margin: 0 auto 30px; }
-    .hero-buttons { justify-content: center; }
-    .hero-stats { justify-content: center; }
-
-    .blokinho-container {
-      width: 250px;
-      height: 300px;
-    }
-
-    .pain-grid,
-    .steps-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .pricing-grid {
-      grid-template-columns: 1fr;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-
-    .section-title { font-size: 2rem; }
-    .cta-section h2 { font-size: 2rem; }
-
-    .footer-content {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .footer-bottom {
-      flex-direction: column;
-      gap: 15px;
-      text-align: center;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .hero-text h1 { font-size: 2rem; }
-    .hero-stats { flex-direction: column; gap: 15px; }
-    .footer-content { grid-template-columns: 1fr; }
-  }
+* { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; }
+
+/* Blokinho Animations */
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+@keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(20,110,245,0.4)} 70%{box-shadow:0 0 0 15px rgba(20,110,245,0)} 100%{box-shadow:0 0 0 0 rgba(20,110,245,0)} }
+@keyframes blink { 0%,90%,100%{transform:scaleY(1)} 95%{transform:scaleY(0.1)} }
+@keyframes wave { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(15deg)} 75%{transform:rotate(-10deg)} }
+@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+.blokinho-float { animation: float 3s ease-in-out infinite; }
+.blokinho-pulse { animation: pulse-ring 2s infinite; }
+.eye-blink { animation: blink 4s infinite; transform-origin: center; }
+.arm-wave { animation: wave 2s ease-in-out infinite; transform-origin: bottom right; }
+
+.section-reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+.section-reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Blokinho Chat Bubble */
+.chat-bubble {
+  position: absolute;
+  background: white;
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #0a2540;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  max-width: 240px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s ease;
+  pointer-events: none;
+}
+.chat-bubble.show { opacity: 1; transform: translateY(0); }
+.chat-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 30px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid white;
+}
+
+/* Floating Blokinho Button */
+.blokinho-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #146EF5, #00D1FF);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 8px 25px rgba(20,110,245,0.4);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.blokinho-btn:hover { transform: scale(1.1); box-shadow: 0 12px 35px rgba(20,110,245,0.6); }
+
+.blokinho-popup {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  width: 320px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: all 0.3s;
+}
+.blokinho-popup.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+/* Hero Blokinho */
+.hero-blokinho {
+  width: 280px;
+  height: 320px;
+  position: relative;
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, #146EF5, #00D1FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card Hover */
+.card-hover { transition: all 0.3s; }
+.card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(20,110,245,0.15); }
+
+/* Pricing Card Featured */
+.pricing-featured {
+  position: relative;
+  border: 2px solid #146EF5;
+  transform: scale(1.05);
+}
+.pricing-featured::before {
+  content: 'MAIS POPULAR';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #146EF5, #00D1FF);
+  color: white;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+  .pricing-featured { transform: scale(1); }
+  .hero-blokinho { width: 200px; height: 240px; }
+}
 </style>
 </head>
-<body>
+<body class="bg-white text-slate-800">
 
 <!-- NAVBAR -->
-<nav class="navbar" id="navbar">
-  <div class="nav-logo">
-    <div class="logo-icon">M</div>
-    Micro<span>One</span>
+<nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-slate-100 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#146EF5] to-[#00D1FF] flex items-center justify-center">
+        <svg width="24" height="24" viewBox="0 0 100 100" fill="none">
+          <rect x="15" y="20" width="70" height="70" rx="18" fill="white"/>
+          <ellipse cx="38" cy="50" rx="10" ry="12" fill="#146EF5"/>
+          <ellipse cx="62" cy="50" rx="10" ry="12" fill="#146EF5"/>
+          <circle cx="41" cy="52" r="4" fill="white"/>
+          <circle cx="65" cy="52" r="4" fill="white"/>
+          <path d="M 40 68 Q 50 76 60 68" stroke="#146EF5" stroke-width="4" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="text-xl font-bold text-slate-900">Micro<span class="gradient-text">One</span></span>
+    </div>
+    
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#nichos" class="text-sm font-medium text-slate-600 hover:text-[#146EF5] transition">Nichos</a>
+      <a href="#como-funciona" class="text-sm font-medium text-slate-600 hover:text-[#146EF5] transition">Como Funciona</a>
+      <a href="#precos" class="text-sm font-medium text-slate-600 hover:text-[#146EF5] transition">Preços</a>
+      <a href="#faq" class="text-sm font-medium text-slate-600 hover:text-[#146EF5] transition">FAQ</a>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button class="hidden sm:flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-xl text-sm font-medium hover:border-[#146EF5] transition">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Entrar com Google
+      </button>
+      <button class="px-5 py-2 bg-gradient-to-r from-[#146EF5] to-[#00D1FF] text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition">Começar Grátis</button>
+    </div>
   </div>
-  <ul class="nav-links">
-    <li><a href="#nichos">Nichos</a></li>
-    <li><a href="#solucao">Como Funciona</a></li>
-    <li><a href="#precos">Preços</a></li>
-    <li><a href="#faq">FAQ</a></li>
-  </ul>
-  <div class="nav-cta">
-    <button class="btn-google" onclick="loginGoogle()">
-      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Entrar com Google
-    </button>
-    <a href="#precos" class="btn-primary">Começar Grátis</a>
-  </div>
-  <button class="menu-toggle" onclick="toggleMenu()"></button>
 </nav>
 
 <!-- HERO -->
-<section class="hero" id="hero">
-  <div class="hero-content">
-    <div class="hero-text">
-      <h1>Sua loja. Seu controle. <span class="highlight">Seu negócio.</span></h1>
-      <p>Pare de pagar R$300/mês pra quem não traz cliente. MicroOne é tudo em um para o microempreendedor brasileiro.</p>
-      <div class="hero-buttons">
-        <a href="#precos" class="btn-hero btn-hero-primary">🚀 Começar Grátis</a>
-        <a href="#nichos" class="btn-hero btn-hero-secondary">▶ Ver Demo</a>
+<section class="pt-32 pb-20 px-6 bg-gradient-to-br from-slate-50 via-blue-50/30 to-cyan-50/30 overflow-hidden">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <div class="section-reveal">
+      <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full mb-6">
+        <span class="w-2 h-2 bg-[#146EF5] rounded-full animate-pulse"></span>
+        <span class="text-sm font-medium text-[#146EF5]">Plataforma 100% brasileira</span>
       </div>
-      <div class="hero-stats">
-        <div class="stat-item">
-          <div class="stat-number">4.8k+</div>
-          <div class="stat-label">Lojas ativas</div>
+      
+      <h1 class="text-5xl md:text-6xl font-black text-slate-900 leading-tight mb-6">
+        Sua loja. Seu controle. <span class="gradient-text">Seu negócio.</span>
+      </h1>
+      
+      <p class="text-xl text-slate-600 mb-8 leading-relaxed">
+        Pare de pagar R$300/mês pra quem não traz cliente. O MicroOne é tudo em um para o microempreendedor brasileiro.
+      </p>
+
+      <div class="flex flex-wrap gap-4 mb-10">
+        <button class="px-8 py-4 bg-gradient-to-r from-[#146EF5] to-[#00D1FF] text-white rounded-2xl font-bold text-lg hover:shadow-xl hover:shadow-blue-500/30 transition transform hover:-translate-y-1">
+          🚀 Começar Grátis
+        </button>
+        <button class="px-8 py-4 bg-white border-2 border-slate-200 text-slate-700 rounded-2xl font-bold text-lg hover:border-[#146EF5] transition">
+          ▶ Ver Demo
+        </button>
+      </div>
+
+      <div class="flex items-center gap-8">
+        <div>
+          <div class="text-3xl font-black text-[#146EF5]">4.8k+</div>
+          <div class="text-sm text-slate-500">Lojas ativas</div>
         </div>
-        <div class="stat-item">
-          <div class="stat-number">95%</div>
-          <div class="stat-label">Economia</div>
+        <div>
+          <div class="text-3xl font-black text-[#146EF5]">95%</div>
+          <div class="text-sm text-slate-500">Economia</div>
         </div>
-        <div class="stat-item">
-          <div class="stat-number">6</div>
-          <div class="stat-label">Nichos</div>
+        <div>
+          <div class="text-3xl font-black text-[#146EF5]">6</div>
+          <div class="text-sm text-slate-500">Nichos</div>
         </div>
       </div>
     </div>
-    <div class="hero-blokinho">
-      <div class="blokinho-container">
-        <div class="speech-bubble bubble-hero" id="heroBubble">
-          Oi! Eu sou o Blokinho! 🤖 Vou te mostrar como é fácil ter sua loja digital!
+
+    <!-- Blokinho Hero -->
+    <div class="flex justify-center section-reveal">
+      <div class="hero-blokinho blokinho-float relative">
+        <!-- Chat Bubble -->
+        <div class="chat-bubble show" style="top: -20px; right: -40px;">
+          <span class="font-semibold">Oi! Eu sou o Blokinho!</span> 🤖<br>
+          <span class="text-sm text-slate-600">Vou te ajudar a criar sua loja digital!</span>
         </div>
-        <svg class="blokinho-svg" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
-          <!-- Glow base -->
-          <ellipse cx="100" cy="220" rx="60" ry="10" fill="rgba(0,209,255,0.3)">
-            <animate attributeName="rx" values="60;70;60" dur="4s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="4s" repeatCount="indefinite"/>
+
+        <!-- Blokinho SVG -->
+        <svg viewBox="0 0 200 220" class="w-full h-full drop-shadow-2xl">
+          <!-- Glow -->
+          <ellipse cx="100" cy="210" rx="60" ry="10" fill="rgba(20,110,245,0.2)">
+            <animate attributeName="rx" values="60;70;60" dur="3s" repeatCount="indefinite"/>
           </ellipse>
+          
           <!-- Body -->
-          <rect x="30" y="40" width="140" height="140" rx="35" fill="#146EF5">
-            <animate attributeName="y" values="40;35;40" dur="4s" repeatCount="indefinite"/>
-          </rect>
+          <rect x="30" y="30" width="140" height="140" rx="35" fill="url(#bodyGrad)"/>
+          <defs>
+            <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#146EF5"/>
+              <stop offset="100%" style="stop-color:#00D1FF"/>
+            </linearGradient>
+          </defs>
+          
           <!-- Body highlight -->
-          <rect x="30" y="40" width="140" height="70" rx="35" fill="rgba(255,255,255,0.1)">
-            <animate attributeName="y" values="40;35;40" dur="4s" repeatCount="indefinite"/>
-          </rect>
+          <rect x="30" y="30" width="140" height="70" rx="35" fill="rgba(255,255,255,0.15)"/>
+          
           <!-- Antenna -->
-          <line x1="100" y1="40" x2="100" y2="15" stroke="#146EF5" stroke-width="4" stroke-linecap="round">
-            <animate attributeName="y1" values="40;35;40" dur="4s" repeatCount="indefinite"/>
-            <animate attributeName="y2" values="15;10;15" dur="4s" repeatCount="indefinite"/>
-          </line>
-          <circle cx="100" cy="12" r="8" fill="#00D1FF">
-            <animate attributeName="cy" values="12;7;12" dur="4s" repeatCount="indefinite"/>
+          <line x1="100" y1="30" x2="100" y2="10" stroke="#146EF5" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="100" cy="8" r="8" fill="#00D1FF">
             <animate attributeName="r" values="8;10;8" dur="2s" repeatCount="indefinite"/>
           </circle>
+          
           <!-- Eyes -->
-          <ellipse cx="70" cy="100" rx="22" ry="25" fill="white">
-            <animate attributeName="cy" values="100;95;100" dur="4s" repeatCount="indefinite"/>
-          </ellipse>
-          <ellipse cx="130" cy="100" rx="22" ry="25" fill="white">
-            <animate attributeName="cy" values="100;95;100" dur="4s" repeatCount="indefinite"/>
-          </ellipse>
-          <!-- Pupils -->
-          <circle cx="75" cy="102" r="12" fill="#0D1B2A">
-            <animate attributeName="cy" values="102;97;102" dur="4s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="135" cy="102" r="12" fill="#0D1B2A">
-            <animate attributeName="cy" values="102;97;102" dur="4s" repeatCount="indefinite"/>
-          </circle>
-          <!-- Eye shine -->
-          <circle cx="80" cy="97" r="4" fill="white"/>
-          <circle cx="140" cy="97" r="4" fill="white"/>
-          <!-- Smile -->
-          <path d="M 75 135 Q 100 155 125 135" stroke="#0D1B2A" stroke-width="5" fill="none" stroke-linecap="round">
-            <animate attributeName="d" values="M 75 135 Q 100 155 125 135;M 75 132 Q 100 152 125 132;M 75 135 Q 100 155 125 135" dur="4s" repeatCount="indefinite"/>
-          </path>
-          <!-- Tongue -->
-          <ellipse cx="100" cy="142" rx="10" ry="6" fill="#e94560">
-            <animate attributeName="cy" values="142;139;142" dur="4s" repeatCount="indefinite"/>
-          </ellipse>
-          <!-- Left arm waving -->
-          <g>
-            <animateTransform attributeName="transform" type="rotate" values="-10 30 110; 20 30 110; -10 30 110" dur="2s" repeatCount="indefinite"/>
-            <rect x="5" y="95" width="30" height="14" rx="7" fill="#146EF5"/>
-            <circle cx="5" cy="102" r="10" fill="#146EF5"/>
+          <ellipse cx="70" cy="90" rx="22" ry="25" fill="white"/>
+          <ellipse cx="130" cy="90" rx="22" ry="25" fill="white"/>
+          
+          <!-- Pupils with blink -->
+          <g class="eye-blink">
+            <circle cx="75" cy="92" r="12" fill="#0a2540"/>
+            <circle cx="135" cy="92" r="12" fill="#0a2540"/>
           </g>
-          <!-- Right arm -->
-          <rect x="165" y="110" width="25" height="14" rx="7" fill="#146EF5">
-            <animate attributeName="y" values="110;105;110" dur="4s" repeatCount="indefinite"/>
-          </rect>
+          
+          <!-- Eye shine -->
+          <circle cx="80" cy="87" r="4" fill="white"/>
+          <circle cx="140" cy="87" r="4" fill="white"/>
+          
+          <!-- Smile -->
+          <path d="M 70 125 Q 100 145 130 125" stroke="#0a2540" stroke-width="5" fill="none" stroke-linecap="round"/>
+          
+          <!-- Tongue -->
+          <ellipse cx="100" cy="135" rx="10" ry="6" fill="#e94560"/>
+          
           <!-- Cheeks -->
-          <circle cx="55" cy="120" r="8" fill="rgba(233,69,96,0.3)"/>
-          <circle cx="145" cy="120" r="8" fill="rgba(233,69,96,0.3)"/>
+          <circle cx="50" cy="110" r="8" fill="rgba(233,69,96,0.3)"/>
+          <circle cx="150" cy="110" r="8" fill="rgba(233,69,96,0.3)"/>
+          
+          <!-- Waving Arm -->
+          <g class="arm-wave">
+            <rect x="5" y="80" width="30" height="14" rx="7" fill="#146EF5"/>
+            <circle cx="5" cy="87" r="10" fill="#146EF5"/>
+          </g>
+          
+          <!-- Right Arm -->
+          <rect x="165" y="90" width="25" height="14" rx="7" fill="#146EF5"/>
         </svg>
-        <div class="blokinho-glow"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- DOR / PROBLEMA -->
-<section class="pain-section" id="dor">
-  <div class="section-container">
-    <div class="section-header reveal">
-      <div class="section-badge">O Problema</div>
-      <h2 class="section-title">Você paga, posta, e nada acontece?</h2>
-      <p class="section-subtitle">A realidade do microempreendedor brasileiro que depende de "profissionais" que não entregam resultado.</p>
-    </div>
-    <div class="pain-grid">
-      <div class="pain-card reveal">
-        <div class="pain-icon">💸</div>
-        <h3>R$300/mês jogados fora</h3>
-        <p>Você paga caro pra um "sobrinho do amigo" postar quando lembra, sem estratégia, sem resultado.</p>
-      </div>
-      <div class="pain-card reveal">
-        <div class="pain-icon"></div>
-        <h3>Dependência eterna</h3>
-        <p>Se o "profissional" some, seu negócio some junto. Senhas, acesso, conteúdo — tudo na mão dele.</p>
-      </div>
-      <div class="pain-card reveal">
-        <div class="pain-icon">📉</div>
-        <h3>Zero controle, zero dados</h3>
-        <p>Você não sabe quantas pessoas viram, clicaram, ou compraram. Tá no escuro total.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- NICHOS -->
-<section id="nichos">
-  <div class="section-container">
-    <div class="section-header reveal">
-      <div class="section-badge">Para Cada Negócio</div>
-      <h2 class="section-title">Uma plataforma. Todos os nichos.</h2>
-      <p class="section-subtitle">Clique em qualquer nicho e veja como ficaria a loja digital do seu negócio.</p>
+<section id="nichos" class="py-20 px-6 bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 section-reveal">
+      <div class="inline-block px-4 py-2 bg-blue-100 rounded-full mb-4">
+        <span class="text-sm font-semibold text-[#146EF5]">Para cada negócio</span>
+      </div>
+      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Um MicroOne para cada nicho</h2>
+      <p class="text-xl text-slate-600 max-w-2xl mx-auto">Seja você lanchonete, salão, advogado ou fotógrafo — temos a solução perfeita.</p>
     </div>
-    <div class="niches-grid">
-      <div class="niche-card niche-food reveal" onclick="openDemo('food')">
-        <div class="niche-visual">🍔</div>
-        <div class="niche-info">
-          <h3>MicroFood</h3>
-          <p>Lanchonetes, food trucks, restaurantes. Cardápio digital, pedidos via WhatsApp, fotos dos pratos.</p>
-          <div class="niche-actions">
-            <button class="btn-niche btn-niche-demo">▶ Ver Demo</button>
-            <button class="btn-niche btn-niche-free"> Testar 15 dias</button>
-          </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- MicroFood -->
+      <div class="card-hover bg-gradient-to-br from-orange-50 to-red-50 rounded-3xl p-8 border border-orange-100 section-reveal">
+        <div class="text-5xl mb-4">🍔</div>
+        <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroFood</h3>
+        <p class="text-slate-600 mb-4">Lanchonetes, food trucks e restaurantes com cardápio digital e pedidos via WhatsApp.</p>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 bg-[#146EF5] text-white rounded-xl text-sm font-semibold">Ver Demo</button>
+          <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold">Testar 15 dias</button>
         </div>
       </div>
-      <div class="niche-card niche-beauty reveal" onclick="openDemo('beauty')">
-        <div class="niche-visual">💅</div>
-        <div class="niche-info">
-          <h3>MicroBeauty</h3>
-          <p>Salões, manicures, barbeiros. Portfólio de trabalhos, agendamento, antes e depois.</p>
-          <div class="niche-actions">
-            <button class="btn-niche btn-niche-demo">▶ Ver Demo</button>
-            <button class="btn-niche btn-niche-free">🆓 Testar 15 dias</button>
-          </div>
+
+      <!-- MicroBeauty -->
+      <div class="card-hover bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl p-8 border border-pink-100 section-reveal">
+        <div class="text-5xl mb-4">💅</div>
+        <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroBeauty</h3>
+        <p class="text-slate-600 mb-4">Salões, manicures e barbeiros com portfólio de trabalhos e agendamento online.</p>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 bg-[#146EF5] text-white rounded-xl text-sm font-semibold">Ver Demo</button>
+          <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold">Testar 15 dias</button>
         </div>
       </div>
-      <div class="niche-card niche-law reveal" onclick="openDemo('law')">
-        <div class="niche-visual">⚖️</div>
-        <div class="niche-info">
-          <h3>MicroLaw</h3>
-          <p>Advogados, contadores, consultores. Perfil profissional, áreas de atuação, contato direto.</p>
-          <div class="niche-actions">
-            <button class="btn-niche btn-niche-demo">▶ Ver Demo</button>
-            <button class="btn-niche btn-niche-free">🆓 Testar 15 dias</button>
-          </div>
+
+      <!-- MicroLaw -->
+      <div class="card-hover bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 border border-blue-100 section-reveal">
+        <div class="text-5xl mb-4">⚖️</div>
+        <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroLaw</h3>
+        <p class="text-slate-600 mb-4">Advogados e contadores com perfil profissional e contato direto com clientes.</p>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 bg-[#146EF5] text-white rounded-xl text-sm font-semibold">Ver Demo</button>
+          <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold">Testar 15 dias</button>
         </div>
       </div>
-      <div class="niche-card niche-photo reveal" onclick="openDemo('photo')">
-        <div class="niche-visual">📸</div>
-        <div class="niche-info">
-          <h3>MicroStudio</h3>
-          <p>Fotógrafos, designers, artistas. Galeria profissional, pacotes, orçamento online.</p>
-          <div class="niche-actions">
-            <button class="btn-niche btn-niche-demo">▶ Ver Demo</button>
-            <button class="btn-niche btn-niche-free"> Testar 15 dias</button>
-          </div>
+
+      <!-- MicroStudio -->
+      <div class="card-hover bg-gradient-to-br from-purple-50 to-violet-50 rounded-3xl p-8 border border-purple-100 section-reveal">
+        <div class="text-5xl mb-4">📸</div>
+        <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroStudio</h3>
+        <p class="text-slate-600 mb-4">Fotógrafos e designers com galeria profissional e pacotes de serviços.</p>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 bg-[#146EF5] text-white rounded-xl text-sm font-semibold">Ver Demo</button>
+          <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold">Testar 15 dias</button>
         </div>
       </div>
-      <div class="niche-card niche-health reveal" onclick="openDemo('health')">
-        <div class="niche-visual"></div>
-        <div class="niche-info">
-          <h3>MicroHealth</h3>
-          <p>Dentistas, psicólogos, personal trainers. Serviços, horários, localização, avaliações.</p>
-          <div class="niche-actions">
-            <button class="btn-niche btn-niche-demo">▶ Ver Demo</button>
-            <button class="btn-niche btn-niche-free">🆓 Testar 15 dias</button>
-          </div>
+
+      <!-- MicroHealth -->
+      <div class="card-hover bg-gradient-to-br from-cyan-50 to-teal-50 rounded-3xl p-8 border border-cyan-100 section-reveal">
+        <div class="text-5xl mb-4">🏥</div>
+        <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroHealth</h3>
+        <p class="text-slate-600 mb-4">Dentistas, psicólogos e personal trainers com agendamento e localização.</p>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 bg-[#146EF5] text-white rounded-xl text-sm font-semibold">Ver Demo</button>
+          <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold">Testar 15 dias</button>
         </div>
       </div>
-      <div class="niche-card niche-shop reveal" onclick="openDemo('shop')">
-        <div class="niche-visual">🛍️</div>
-        <div class="niche-info">
-          <h3>MicroShop</h3>
-          <p>Lojinhas, artesãos, vendedores. Catálogo de produtos, carrinho, entrega via WhatsApp.</p>
-          <div class="niche-actions">
-            <button class="btn-niche btn-niche-demo">▶ Ver Demo</button>
-            <button class="btn-niche btn-niche-free">🆓 Testar 15 dias</button>
-          </div>
+
+      <!-- MicroShop -->
+      <div class="card-hover bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 border border-green-100 section-reveal">
+        <div class="text-5xl mb-4">🛍️</div>
+        <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroShop</h3>
+        <p class="text-slate-600 mb-4">Lojinhas e artesãos com catálogo de produtos e carrinho de compras.</p>
+        <div class="flex gap-2">
+          <button class="px-4 py-2 bg-[#146EF5] text-white rounded-xl text-sm font-semibold">Ver Demo</button>
+          <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold">Testar 15 dias</button>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- DEMO MODAL -->
-<div class="demo-modal" id="demoModal">
-  <div class="demo-content">
-    <div class="demo-header">
-      <h3 id="demoTitle">Demo — MicroFood</h3>
-      <button class="demo-close" onclick="closeDemo()">✕</button>
-    </div>
-    <div class="demo-body">
-      <div class="demo-phone">
-        <div class="demo-phone-screen">
-          <div class="demo-phone-header food" id="demoPhoneHeader">
-            <h4 id="demoStoreName">Lanchonete da Maria</h4>
-            <p id="demoStoreTag"> Os melhores burgers da cidade</p>
-          </div>
-          <div class="demo-phone-grid" id="demoPhoneGrid">
-            <div class="demo-phone-item">🍔</div>
-            <div class="demo-phone-item"></div>
-            <div class="demo-phone-item">🥤</div>
-            <div class="demo-phone-item">🌭</div>
-          </div>
-        </div>
+<!-- COMO FUNCIONA -->
+<section id="como-funciona" class="py-20 px-6 bg-gradient-to-br from-slate-900 to-blue-900 text-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 section-reveal">
+      <div class="inline-block px-4 py-2 bg-white/10 rounded-full mb-4">
+        <span class="text-sm font-semibold text-cyan-300">Simples assim</span>
       </div>
+      <h2 class="text-4xl md:text-5xl font-black mb-4">3 passos para sua loja no ar</h2>
+      <p class="text-xl text-slate-300 max-w-2xl mx-auto">Do zero à sua loja digital funcionando em menos de 10 minutos.</p>
     </div>
-    <div class="demo-footer">
-      <button class="btn-demo btn-demo-back" onclick="closeDemo()">← Voltar</button>
-      <button class="btn-demo btn-demo-test" onclick="startFreeTrial()">🆓 Testar 15 dias grátis</button>
-      <button class="btn-demo btn-demo-acquire" onclick="acquirePlan()">⚡ Adquirir Agora</button>
-    </div>
-  </div>
-</div>
 
-<!-- SOLUÇÃO -->
-<section class="solution-section" id="solucao">
-  <div class="section-container">
-    <div class="section-header reveal">
-      <div class="section-badge">A Solução</div>
-      <h2 class="section-title">MicroOne resolve em 3 passos</h2>
-      <p class="section-subtitle">Do zero à sua loja digital funcionando em menos de 10 minutos.</p>
-    </div>
-    <div class="steps-grid">
-      <div class="step-card reveal">
-        <div class="step-number">1</div>
-        <h3>Cadastre-se</h3>
-        <p>Entre com sua conta Google. Sem burocracia, sem formulário gigante. 30 segundos.</p>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="section-reveal text-center">
+        <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#146EF5] to-[#00D1FF] rounded-full flex items-center justify-center text-3xl font-black">1</div>
+        <h3 class="text-2xl font-bold mb-3">Cadastre-se</h3>
+        <p class="text-slate-300">Entre com sua conta Google. Sem burocracia, sem formulário gigante. 30 segundos.</p>
       </div>
-      <div class="step-card reveal">
-        <div class="step-number">2</div>
-        <h3>Personalize</h3>
-        <p>Escolha seu nicho, template, cores. Upload de fotos, vídeos, músicas. O Blokinho te guia.</p>
+
+      <div class="section-reveal text-center">
+        <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#146EF5] to-[#00D1FF] rounded-full flex items-center justify-center text-3xl font-black">2</div>
+        <h3 class="text-2xl font-bold mb-3">Personalize</h3>
+        <p class="text-slate-300">Escolha seu nicho, template, cores. Upload de fotos, vídeos e músicas. O Blokinho te guia.</p>
       </div>
-      <div class="step-card reveal">
-        <div class="step-number">3</div>
-        <h3>Publique & Venda</h3>
-        <p>Sua loja no ar. Compartilhe no WhatsApp, Instagram, QR Code. Clientes chegam direto.</p>
+
+      <div class="section-reveal text-center">
+        <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#146EF5] to-[#00D1FF] rounded-full flex items-center justify-center text-3xl font-black">3</div>
+        <h3 class="text-2xl font-bold mb-3">Publique & Venda</h3>
+        <p class="text-slate-300">Sua loja no ar. Compartilhe no WhatsApp, Instagram, QR Code. Clientes chegam direto.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- PREÇOS -->
-<section id="precos">
-  <div class="section-container">
-    <div class="section-header reveal">
-      <div class="section-badge">Preços</div>
-      <h2 class="section-title">Plano para cada momento</h2>
-      <p class="section-subtitle">Comece grátis. Evolua quando seu negócio pedir. Cancele quando quiser.</p>
+<section id="precos" class="py-20 px-6 bg-slate-50">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 section-reveal">
+      <div class="inline-block px-4 py-2 bg-blue-100 rounded-full mb-4">
+        <span class="text-sm font-semibold text-[#146EF5]">Preços</span>
+      </div>
+      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Plano para cada momento</h2>
+      <p class="text-xl text-slate-600 max-w-2xl mx-auto">Comece grátis. Evolua quando seu negócio pedir. Cancele quando quiser.</p>
     </div>
-    <div class="pricing-grid">
-      <div class="pricing-card reveal">
-        <div class="pricing-name">Free</div>
-        <div class="pricing-price">R$0 <span>/mês</span></div>
-        <div class="pricing-desc">Para quem está começando</div>
-        <ul class="pricing-features">
-          <li>1 loja digital</li>
-          <li>6 fotos na galeria</li>
-          <li>1 vídeo</li>
-          <li>Analytics básico</li>
-          <li class="disabled">Domínio próprio</li>
-          <li class="disabled">Bot Telegram</li>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- FREE -->
+      <div class="card-hover bg-white rounded-3xl p-8 border border-slate-200 section-reveal">
+        <div class="text-sm font-bold text-[#146EF5] mb-2">FREE</div>
+        <div class="text-5xl font-black text-slate-900 mb-1">R$0<span class="text-lg text-slate-500 font-normal">/mês</span></div>
+        <p class="text-slate-600 mb-6">Para quem está começando</p>
+        <ul class="space-y-3 mb-8">
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> 1 loja digital</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> 6 fotos na galeria</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> 1 vídeo</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Analytics básico</li>
+          <li class="flex items-center gap-2 text-sm text-slate-400"><span>✗</span> Domínio próprio</li>
+          <li class="flex items-center gap-2 text-sm text-slate-400"><span>✗</span> Bot Telegram</li>
         </ul>
-        <a href="#" class="btn-pricing btn-pricing-outline" onclick="startFreeTrial()">Começar Grátis</a>
+        <button class="w-full py-3 border-2 border-[#146EF5] text-[#146EF5] rounded-xl font-bold hover:bg-[#146EF5] hover:text-white transition">Começar Grátis</button>
       </div>
-      <div class="pricing-card reveal">
-        <div class="pricing-name">Basic</div>
-        <div class="pricing-price">R$19 <span>/mês</span></div>
-        <div class="pricing-desc">Para quem quer crescer</div>
-        <ul class="pricing-features">
-          <li>1 loja digital</li>
-          <li>30 fotos na galeria</li>
-          <li>5 vídeos + 10 músicas</li>
-          <li>Analytics completo</li>
-          <li>Bot Telegram</li>
-          <li class="disabled">Domínio próprio</li>
+
+      <!-- BASIC -->
+      <div class="card-hover bg-white rounded-3xl p-8 border border-slate-200 section-reveal">
+        <div class="text-sm font-bold text-[#146EF5] mb-2">BASIC</div>
+        <div class="text-5xl font-black text-slate-900 mb-1">R$19<span class="text-lg text-slate-500 font-normal">/mês</span></div>
+        <p class="text-slate-600 mb-6">Para quem quer crescer</p>
+        <ul class="space-y-3 mb-8">
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> 1 loja digital</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> 30 fotos na galeria</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> 5 vídeos + 10 músicas</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Analytics completo</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Bot Telegram</li>
+          <li class="flex items-center gap-2 text-sm text-slate-400"><span>✗</span> Domínio próprio</li>
         </ul>
-        <a href="#" class="btn-pricing btn-pricing-outline">Assinar Basic</a>
+        <button class="w-full py-3 border-2 border-[#146EF5] text-[#146EF5] rounded-xl font-bold hover:bg-[#146EF5] hover:text-white transition">Assinar Basic</button>
       </div>
-      <div class="pricing-card featured reveal">
-        <div class="pricing-name">Plus</div>
-        <div class="pricing-price">R$39 <span>/mês</span></div>
-        <div class="pricing-desc">Para quem vende de verdade</div>
-        <ul class="pricing-features">
-          <li>3 lojas digitais</li>
-          <li>Fotos ilimitadas</li>
-          <li>Vídeos + músicas ilimitados</li>
-          <li>Analytics + IA Blokinho</li>
-          <li>Bot Telegram completo</li>
-          <li>QR Code personalizado</li>
+
+      <!-- PLUS (Featured) -->
+      <div class="card-hover pricing-featured bg-white rounded-3xl p-8 section-reveal">
+        <div class="text-sm font-bold text-[#146EF5] mb-2">PLUS</div>
+        <div class="text-5xl font-black text-slate-900 mb-1">R$39<span class="text-lg text-slate-500 font-normal">/mês</span></div>
+        <p class="text-slate-600 mb-6">Para quem vende de verdade</p>
+        <ul class="space-y-3 mb-8">
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> 3 lojas digitais</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Fotos ilimitadas</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Vídeos + músicas ilimitados</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Analytics + IA Blokinho</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Bot Telegram completo</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> QR Code personalizado</li>
         </ul>
-        <a href="#" class="btn-pricing btn-pricing-filled">Assinar Plus</a>
+        <button class="w-full py-3 bg-gradient-to-r from-[#146EF5] to-[#00D1FF] text-white rounded-xl font-bold hover:shadow-lg transition">Assinar Plus</button>
       </div>
-      <div class="pricing-card reveal">
-        <div class="pricing-name">Pro</div>
-        <div class="pricing-price">R$79 <span>/mês</span></div>
-        <div class="pricing-desc">Para quem quer dominar</div>
-        <ul class="pricing-features">
-          <li>Lojas ilimitadas</li>
-          <li>Tudo ilimitado</li>
-          <li>Domínio próprio (.com.br)</li>
-          <li>Modo Vitrine Cinematográfico</li>
-          <li>Suporte prioritário</li>
-          <li>API + integrações</li>
+
+      <!-- PRO -->
+      <div class="card-hover bg-white rounded-3xl p-8 border border-slate-200 section-reveal">
+        <div class="text-sm font-bold text-[#146EF5] mb-2">PRO</div>
+        <div class="text-5xl font-black text-slate-900 mb-1">R$79<span class="text-lg text-slate-500 font-normal">/mês</span></div>
+        <p class="text-slate-600 mb-6">Para quem quer dominar</p>
+        <ul class="space-y-3 mb-8">
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Lojas ilimitadas</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Tudo ilimitado</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Domínio próprio (.com.br)</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Modo Vitrine Cinematográfico</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Suporte prioritário</li>
+          <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> API + integrações</li>
         </ul>
-        <a href="#" class="btn-pricing btn-pricing-outline">Assinar Pro</a>
+        <button class="w-full py-3 border-2 border-[#146EF5] text-[#146EF5] rounded-xl font-bold hover:bg-[#146EF5] hover:text-white transition">Assinar Pro</button>
       </div>
     </div>
   </div>
 </section>
 
 <!-- FAQ -->
-<section class="faq-section" id="faq">
-  <div class="section-container">
-    <div class="section-header reveal">
-      <div class="section-badge">Dúvidas</div>
-      <h2 class="section-title">Perguntas Frequentes</h2>
+<section id="faq" class="py-20 px-6 bg-white">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-16 section-reveal">
+      <div class="inline-block px-4 py-2 bg-blue-100 rounded-full mb-4">
+        <span class="text-sm font-semibold text-[#146EF5]">Dúvidas</span>
+      </div>
+      <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Perguntas Frequentes</h2>
     </div>
-    <div class="faq-list">
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)">
+
+    <div class="space-y-4">
+      <div class="section-reveal border border-slate-200 rounded-2xl overflow-hidden">
+        <button class="w-full px-6 py-5 text-left font-semibold text-lg flex items-center justify-between hover:bg-slate-50 transition" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')">
           Preciso saber de tecnologia para usar?
-          <span class="faq-toggle">+</span>
-        </div>
-        <div class="faq-answer">
-          <p>Não! O MicroOne foi feito para quem nunca criou um site. O Blokinho (nossa IA) te guia em cada passo. Se você sabe usar WhatsApp, sabe usar o MicroOne.</p>
+          <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="hidden px-6 pb-5 text-slate-600">
+          Não! O MicroOne foi feito para quem nunca criou um site. O Blokinho (nossa IA) te guia em cada passo. Se você sabe usar WhatsApp, sabe usar o MicroOne.
         </div>
       </div>
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)">
+
+      <div class="section-reveal border border-slate-200 rounded-2xl overflow-hidden">
+        <button class="w-full px-6 py-5 text-left font-semibold text-lg flex items-center justify-between hover:bg-slate-50 transition" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')">
           Posso usar no celular?
-          <span class="faq-toggle">+</span>
-        </div>
-        <div class="faq-answer">
-          <p>Sim! Tudo funciona no celular. Você pode criar, editar e gerenciar sua loja pelo Telegram ou pelo app web. O Blokinho também está no seu bolso.</p>
+          <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="hidden px-6 pb-5 text-slate-600">
+          Sim! Tudo funciona no celular. Você pode criar, editar e gerenciar sua loja pelo Telegram ou pelo app web. O Blokinho também está no seu bolso.
         </div>
       </div>
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)">
+
+      <div class="section-reveal border border-slate-200 rounded-2xl overflow-hidden">
+        <button class="w-full px-6 py-5 text-left font-semibold text-lg flex items-center justify-between hover:bg-slate-50 transition" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')">
           Como funciona o teste de 15 dias?
-          <span class="faq-toggle">+</span>
-        </div>
-        <div class="faq-answer">
-          <p>Você ativa o modo Free com acesso Plus por 15 dias. Sem cartão de crédito. No final, você escolhe: continua grátis (com limites) ou assina um plano.</p>
+          <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="hidden px-6 pb-5 text-slate-600">
+          Você ativa o modo Free com acesso Plus por 15 dias. Sem cartão de crédito. No final, você escolhe: continua grátis (com limites) ou assina um plano.
         </div>
       </div>
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)">
+
+      <div class="section-reveal border border-slate-200 rounded-2xl overflow-hidden">
+        <button class="w-full px-6 py-5 text-left font-semibold text-lg flex items-center justify-between hover:bg-slate-50 transition" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')">
           Meus dados estão seguros?
-          <span class="faq-toggle">+</span>
-        </div>
-        <div class="faq-answer">
-          <p>Sim. Usamos Cloudflare (mesma infraestrutura de grandes bancos), criptografia de ponta a ponta, e login via Google. Seus dados nunca são vendidos.</p>
+          <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="hidden px-6 pb-5 text-slate-600">
+          Sim. Usamos Cloudflare (mesma infraestrutura de grandes bancos), criptografia de ponta a ponta, e login via Google. Seus dados nunca são vendidos.
         </div>
       </div>
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)">
+
+      <div class="section-reveal border border-slate-200 rounded-2xl overflow-hidden">
+        <button class="w-full px-6 py-5 text-left font-semibold text-lg flex items-center justify-between hover:bg-slate-50 transition" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')">
           Posso cancelar quando quiser?
-          <span class="faq-toggle">+</span>
-        </div>
-        <div class="faq-answer">
-          <p>Sim, sem burocracia. Cancele pelo app ou pelo Telegram. Seus dados ficam disponíveis por 30 dias para exportação.</p>
+          <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="hidden px-6 pb-5 text-slate-600">
+          Sim, sem burocracia. Cancele pelo app ou pelo Telegram. Seus dados ficam disponíveis por 30 dias para exportação.
         </div>
       </div>
     </div>
@@ -1734,276 +546,132 @@
 </section>
 
 <!-- CTA FINAL -->
-<section class="cta-section">
-  <div class="cta-content reveal">
-    <h2>Pronto para ter o controle?</h2>
-    <p>Junte-se a milhares de microempreendedores que já libertaram seu negócio.</p>
-    <div class="cta-buttons">
-      <a href="#" class="btn-cta btn-cta-white" onclick="startFreeTrial()">🚀 Começar Grátis Agora</a>
-      <a href="#" class="btn-cta btn-cta-outline" onclick="loginGoogle()">Entrar com Google</a>
+<section class="py-20 px-6 bg-gradient-to-br from-[#146EF5] to-[#00D1FF] text-white">
+  <div class="max-w-4xl mx-auto text-center section-reveal">
+    <h2 class="text-4xl md:text-5xl font-black mb-6">Pronto para ter o controle?</h2>
+    <p class="text-xl mb-10 opacity-90">Junte-se a milhares de microempreendedores que já libertaram seu negócio.</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <button class="px-8 py-4 bg-white text-[#146EF5] rounded-2xl font-bold text-lg hover:shadow-xl transition transform hover:-translate-y-1">
+        🚀 Começar Grátis Agora
+      </button>
+      <button class="px-8 py-4 bg-white/10 backdrop-blur border-2 border-white/30 text-white rounded-2xl font-bold text-lg hover:bg-white/20 transition">
+        Entrar com Google
+      </button>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
-<footer>
-  <div class="footer-content">
-    <div class="footer-brand">
-      <h3>Micro<span style="color: var(--cyan)">One</span></h3>
-      <p>Tudo em um para o microempreendedor brasileiro. Sua loja, seu controle, seu negócio.</p>
+<footer class="bg-slate-900 text-slate-400 py-16 px-6">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-8 mb-12">
+    <div>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#146EF5] to-[#00D1FF] flex items-center justify-center">
+          <svg width="24" height="24" viewBox="0 0 100 100" fill="none">
+            <rect x="15" y="20" width="70" height="70" rx="18" fill="white"/>
+            <ellipse cx="38" cy="50" rx="10" ry="12" fill="#146EF5"/>
+            <ellipse cx="62" cy="50" rx="10" ry="12" fill="#146EF5"/>
+          </svg>
+        </div>
+        <span class="text-xl font-bold text-white">Micro<span class="text-cyan-400">One</span></span>
+      </div>
+      <p class="text-sm">Tudo em um para o microempreendedor brasileiro. Sua loja, seu controle, seu negócio.</p>
     </div>
-    <div class="footer-col">
-      <h4>Produto</h4>
-      <a href="#nichos">Nichos</a>
-      <a href="#precos">Preços</a>
-      <a href="#">Demo</a>
-      <a href="#">Changelog</a>
+    <div>
+      <h4 class="text-white font-bold mb-4">Produto</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#nichos" class="hover:text-white transition">Nichos</a></li>
+        <li><a href="#precos" class="hover:text-white transition">Preços</a></li>
+        <li><a href="#" class="hover:text-white transition">Demo</a></li>
+      </ul>
     </div>
-    <div class="footer-col">
-      <h4>Suporte</h4>
-      <a href="#faq">FAQ</a>
-      <a href="#">WhatsApp</a>
-      <a href="#">Telegram</a>
-      <a href="#">Contato</a>
+    <div>
+      <h4 class="text-white font-bold mb-4">Suporte</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#faq" class="hover:text-white transition">FAQ</a></li>
+        <li><a href="#" class="hover:text-white transition">WhatsApp</a></li>
+        <li><a href="#" class="hover:text-white transition">Telegram</a></li>
+      </ul>
     </div>
-    <div class="footer-col">
-      <h4>Legal</h4>
-      <a href="#">Termos de Uso</a>
-      <a href="#">Privacidade</a>
-      <a href="#">LGPD</a>
+    <div>
+      <h4 class="text-white font-bold mb-4">Legal</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#" class="hover:text-white transition">Termos de Uso</a></li>
+        <li><a href="#" class="hover:text-white transition">Privacidade</a></li>
+        <li><a href="#" class="hover:text-white transition">LGPD</a></li>
+      </ul>
     </div>
   </div>
-  <div class="footer-bottom">
-    <p>© 2026 MicroOne. Feito com 💛 para o microempreendedor brasileiro.</p>
-    <div class="footer-social">
-      <a href="#" title="Instagram">📷</a>
-      <a href="#" title="WhatsApp"></a>
-      <a href="#" title="Telegram">✈️</a>
-      <a href="#" title="YouTube">▶️</a>
+  <div class="max-w-7xl mx-auto pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+    <p class="text-sm">© 2026 MicroOne. Feito com 💙 para o microempreendedor brasileiro.</p>
+    <div class="flex gap-4">
+      <a href="#" class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center hover:bg-[#146EF5] transition">📷</a>
+      <a href="#" class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center hover:bg-[#146EF5] transition">💬</a>
+      <a href="#" class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center hover:bg-[#146EF5] transition">✈️</a>
     </div>
   </div>
 </footer>
 
-<!-- BLOKINHO FLOATING -->
-<div class="blokinho-floating" id="blokinhoFloating" onclick="toggleBlokinhoChat()">
-  <div class="blokinho-chat" id="blokinhoChat">
-    <h4> Oi! Sou o Blokinho!</h4>
-    <p>Posso te ajudar com alguma coisa? Escolha uma opção:</p>
-    <div class="chat-options">
-      <button class="chat-option" onclick="chatAction('demo')">▶ Ver uma demo ao vivo</button>
-      <button class="chat-option" onclick="chatAction('pricing')">💰 Ver os preços</button>
-      <button class="chat-option" onclick="chatAction('trial')">🆓 Testar 15 dias grátis</button>
-      <button class="chat-option" onclick="chatAction('whatsapp')">💬 Falar no WhatsApp</button>
-    </div>
-  </div>
-  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <rect x="15" y="20" width="70" height="65" rx="18" fill="#146EF5"/>
-    <rect x="15" y="20" width="70" height="32" rx="18" fill="rgba(255,255,255,0.1)"/>
-    <line x1="50" y1="20" x2="50" y2="8" stroke="#146EF5" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="50" cy="6" r="5" fill="#00D1FF">
-      <animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite"/>
-    </circle>
-    <ellipse cx="35" cy="48" rx="11" ry="13" fill="white"/>
-    <ellipse cx="65" cy="48" rx="11" ry="13" fill="white"/>
-    <circle cx="38" cy="50" r="6" fill="#0D1B2A"/>
-    <circle cx="68" cy="50" r="6" fill="#0D1B2A"/>
-    <circle cx="40" cy="47" r="2" fill="white"/>
-    <circle cx="70" cy="47" r="2" fill="white"/>
-    <path d="M 38 68 Q 50 78 62 68" stroke="#0D1B2A" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <circle cx="27" cy="60" r="4" fill="rgba(233,69,96,0.3)"/>
-    <circle cx="73" cy="60" r="4" fill="rgba(233,69,96,0.3)"/>
+<!-- Floating Blokinho Button -->
+<div class="blokinho-btn blokinho-pulse" onclick="toggleBlokinho()">
+  <svg width="36" height="36" viewBox="0 0 100 100" fill="none">
+    <rect x="15" y="20" width="70" height="70" rx="18" fill="white"/>
+    <ellipse cx="38" cy="50" rx="10" ry="12" fill="#146EF5"/>
+    <ellipse cx="62" cy="50" rx="10" ry="12" fill="#146EF5"/>
+    <circle cx="41" cy="52" r="4" fill="white"/>
+    <circle cx="65" cy="52" r="4" fill="white"/>
+    <path d="M 40 68 Q 50 76 60 68" stroke="#146EF5" stroke-width="4" fill="none" stroke-linecap="round"/>
   </svg>
 </div>
 
+<!-- Blokinho Popup Chat -->
+<div class="blokinho-popup" id="blokinhoPopup">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#146EF5] to-[#00D1FF] flex items-center justify-center flex-shrink-0">
+      <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
+        <rect x="15" y="20" width="70" height="70" rx="18" fill="white"/>
+        <ellipse cx="38" cy="50" rx="10" ry="12" fill="#146EF5"/>
+        <ellipse cx="62" cy="50" rx="10" ry="12" fill="#146EF5"/>
+      </svg>
+    </div>
+    <div>
+      <div class="font-bold text-slate-900">Oi! Sou o Blokinho! 🤖</div>
+      <div class="text-sm text-slate-600">Como posso te ajudar?</div>
+    </div>
+  </div>
+  <div class="space-y-2">
+    <button class="w-full text-left px-4 py-3 bg-slate-100 rounded-xl text-sm font-medium hover:bg-[#146EF5] hover:text-white transition">🚀 Começar minha loja grátis</button>
+    <button class="w-full text-left px-4 py-3 bg-slate-100 rounded-xl text-sm font-medium hover:bg-[#146EF5] hover:text-white transition">💰 Ver planos e preços</button>
+    <button class="w-full text-left px-4 py-3 bg-slate-100 rounded-xl text-sm font-medium hover:bg-[#146EF5] hover:text-white transition">❓ Tirar uma dúvida</button>
+    <button class="w-full text-left px-4 py-3 bg-slate-100 rounded-xl text-sm font-medium hover:bg-[#146EF5] hover:text-white transition">💬 Falar no WhatsApp</button>
+  </div>
+</div>
+
 <script>
-  // ========== NAVBAR SCROLL ==========
-  window.addEventListener('scroll', function() {
-    const navbar = document.getElementById('navbar');
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
+// Scroll Reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
     }
   });
+}, { threshold: 0.1 });
 
-  // ========== SCROLL REVEAL ==========
-  const revealElements = document.querySelectorAll('.reveal');
-  const revealObserver = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
+document.querySelectorAll('.section-reveal').forEach(el => observer.observe(el));
 
-  revealElements.forEach(function(el) {
-    revealObserver.observe(el);
-  });
+// Blokinho Popup Toggle
+function toggleBlokinho() {
+  document.getElementById('blokinhoPopup').classList.toggle('show');
+}
 
-  // ========== BLOKINHO SPEECH BUBBLES ==========
-  const blokinhoMessages = [
-    { section: 'hero', text: 'Oi! Eu sou o Blokinho! 🤖 Vou te mostrar como é fácil ter sua loja digital!' },
-    { section: 'dor', text: 'Cansado de pagar caro e não ter resultado? Eu te entendo! 😤' },
-    { section: 'nichos', text: 'Olha só! Temos loja pra TODO tipo de negócio! 🎉' },
-    { section: 'solucao', text: '3 passinhos e sua loja tá no ar! Mais fácil que pedir pizza! 🍕' },
-    { section: 'precos', text: 'Começa GRÁTIS! Sem pegadinha! ' },
-    { section: 'faq', text: 'Tem dúvida? Eu tô aqui pra ajudar! 💙' },
-    { section: 'cta', text: 'Bora começar? Seu negócio merece! 🚀' }
-  ];
-
-  let currentBubble = null;
-
-  function updateBlokinhoMessage() {
-    const scrollY = window.scrollY;
-    const sections = document.querySelectorAll('section');
-    let activeSection = 'hero';
-
-    sections.forEach(function(section) {
-      const rect = section.getBoundingClientRect();
-      if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
-        activeSection = section.id || 'hero';
-      }
-    });
-
-    const msg = blokinhoMessages.find(function(m) { return m.section === activeSection; });
-    if (msg && currentBubble !== msg.text) {
-      currentBubble = msg.text;
-      const bubble = document.getElementById('heroBubble');
-      if (bubble) {
-        bubble.style.animation = 'none';
-        bubble.offsetHeight;
-        bubble.textContent = msg.text;
-        bubble.style.animation = 'bubblePop 0.5s ease-out';
-      }
-    }
+// Close popup when clicking outside
+document.addEventListener('click', (e) => {
+  const popup = document.getElementById('blokinhoPopup');
+  const btn = document.querySelector('.blokinho-btn');
+  if (!popup.contains(e.target) && !btn.contains(e.target)) {
+    popup.classList.remove('show');
   }
-
-  window.addEventListener('scroll', updateBlokinhoMessage);
-
-  // ========== DEMO MODAL ==========
-  const demoData = {
-    food: { name: 'Lanchonete da Maria', tag: '🍔 Os melhores burgers da cidade', header: 'food', items: ['🍔', '🍟', '🥤', '🌭', '🍕', '🌮'] },
-    beauty: { name: 'Studio Bella', tag: '💅 Unhas, cabelo e make', header: 'beauty', items: ['💅', '💇', '💄', '👁️', '✨', ''] },
-    law: { name: 'Dr. Silva Advocacia', tag: '⚖️ Direito Trabalhista e Civil', header: 'law', items: ['⚖️', '', '📚', '️', '🤝', ''] },
-    photo: { name: 'Carlos Fotografia', tag: '📸 Ensaios e eventos', header: 'photo', items: ['📸', '🎨', '️', '📷', '', '👰'] },
-    health: { name: 'Clínica Sorriso', tag: '🏥 Odontologia especializada', header: 'food', items: ['🦷', '🏥', '', '🩺', '❤️', '🧘'] },
-    shop: { name: 'Ateliê da Ana', tag: '️ Artesanatos exclusivos', header: 'beauty', items: ['🛍️', '🎁', '🧵', '', '👜', '💎'] }
-  };
-
-  function openDemo(niche) {
-    const data = demoData[niche];
-    if (!data) return;
-
-    document.getElementById('demoTitle').textContent = 'Demo — Micro' + niche.charAt(0).toUpperCase() + niche.slice(1);
-    document.getElementById('demoStoreName').textContent = data.name;
-    document.getElementById('demoStoreTag').textContent = data.tag;
-
-    const header = document.getElementById('demoPhoneHeader');
-    header.className = 'demo-phone-header ' + data.header;
-
-    const grid = document.getElementById('demoPhoneGrid');
-    grid.innerHTML = data.items.map(function(item) {
-      return '<div class="demo-phone-item">' + item + '</div>';
-    }).join('');
-
-    document.getElementById('demoModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeDemo() {
-    document.getElementById('demoModal').classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  document.getElementById('demoModal').addEventListener('click', function(e) {
-    if (e.target === this) closeDemo();
-  });
-
-  // ========== ACTIONS ==========
-  function loginGoogle() {
-    alert(' Login com Google\n\nEm breve: integração OAuth 2.0 com Google.\nPor enquanto, use o cadastro normal.');
-  }
-
-  function startFreeTrial() {
-    alert('🎉 Teste de 15 dias ativado!\n\nVocê terá acesso completo ao plano Plus por 15 dias.\nSem cartão de crédito.\n\nRedirecionando para o cadastro...');
-  }
-
-  function acquirePlan() {
-    alert('⚡ Ótima escolha!\n\nRedirecionando para o checkout seguro...\n\n(Aqui entraria a integração com pagamento)');
-  }
-
-  function toggleMenu() {
-    const links = document.querySelector('.nav-links');
-    if (links.style.display === 'flex') {
-      links.style.display = 'none';
-    } else {
-      links.style.display = 'flex';
-      links.style.flexDirection = 'column';
-      links.style.position = 'absolute';
-      links.style.top = '70px';
-      links.style.left = '0';
-      links.style.right = '0';
-      links.style.background = 'white';
-      links.style.padding = '20px';
-      links.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
-      links.style.borderRadius = '0 0 20px 20px';
-    }
-  }
-
-  // ========== FAQ ==========
-  function toggleFaq(element) {
-    const item = element.parentElement;
-    const wasActive = item.classList.contains('active');
-    document.querySelectorAll('.faq-item').forEach(function(faq) {
-      faq.classList.remove('active');
-    });
-    if (!wasActive) {
-      item.classList.add('active');
-    }
-  }
-
-  // ========== BLOKINHO CHAT ==========
-  function toggleBlokinhoChat() {
-    const chat = document.getElementById('blokinhoChat');
-    chat.classList.toggle('active');
-  }
-
-  function chatAction(action) {
-    const chat = document.getElementById('blokinhoChat');
-    chat.classList.remove('active');
-
-    switch(action) {
-      case 'demo':
-        openDemo('food');
-        break;
-      case 'pricing':
-        document.getElementById('precos').scrollIntoView({ behavior: 'smooth' });
-        break;
-      case 'trial':
-        startFreeTrial();
-        break;
-      case 'whatsapp':
-        alert('💬 WhatsApp: (00) 00000-0000\n\nEm breve: integração direta com WhatsApp Business API.');
-        break;
-    }
-  }
-
-  // Fechar chat ao clicar fora
-  document.addEventListener('click', function(e) {
-    const floating = document.getElementById('blokinhoFloating');
-    const chat = document.getElementById('blokinhoChat');
-    if (!floating.contains(e.target)) {
-      chat.classList.remove('active');
-    }
-  });
-
-  // ========== KEYBOARD ==========
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closeDemo();
-      document.getElementById('blokinhoChat').classList.remove('active');
-    }
-  });
+});
 </script>
 
 </body>
