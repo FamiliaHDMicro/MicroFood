@@ -1,90 +1,326 @@
-const WORKER_URL = 'https://microfood.hdmicro.workers.dev';
+// ==========================================
+// loja.js — MicroFood Store Frontend
+// JavaScript PURO de navegador (sem export default)
+// ==========================================
 
-const templatesHTML = {
-  'sabor-caseiro': renderSaborCaseiro,
-  'loja-virtual': renderLojaVirtual,
-  'consult-pro': renderConsultPro,
-  'barber-shop': renderBarberShop,
-  'delivery-rapido': renderDeliveryRapido,
-  'mesa-farta': renderMesaFarta,
-  'glamour-studio': renderGlamourStudio,
-  'beauty-express': renderBeautyExpress,
-  'mao-na-massa': renderMaoNaMassa,
-  'tech-solutions': renderTechSolutions,
-  'limpeza-total': renderLimpezaTotal,
-  'eventos-plus': renderEventosPlus
-};
+(function() {
+    'use strict';
 
-function renderSaborCaseiro(loja, fotos, videosCliente, musicasCliente, videosAutorais, musicasAutorais) {
-  const galeria = fotos.length > 0 ? fotos.map(f => '<div class="card-hover rounded-2xl overflow-hidden shadow-2xl"><img src="' + f.url + '" class="w-full h-64 object-cover"></div>').join('') : '<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4">🍽️</div><div class="text-xl text-gray-400">Fotos em breve!</div></div>';
-  const todosVideos = [...videosCliente, ...videosAutorais];
-  const videosHtml = todosVideos.length > 0 ? '<div class="max-w-6xl mx-auto px-4 pb-12"><h2 class="text-3xl font-black text-laranja mb-6 text-center">Nossos vídeos</h2><div class="grid md:grid-cols-3 gap-6">' + todosVideos.map(v => '<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="' + v.url + '" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">' + (v.titulo || '') + '</div></div>').join('') + '</div></div>' : '';
-  const todasMusicas = [...musicasCliente, ...musicasAutorais];
-  const musicasHtml = todasMusicas.length > 0 ? '<div class="max-w-6xl mx-auto px-4 pb-12"><h2 class="text-3xl font-black text-laranja mb-6 text-center">🎵 Trilha sonora</h2><div class="grid md:grid-cols-3 gap-6">' + todasMusicas.map(m => '<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><audio src="' + m.url + '" controls class="w-full"></audio><div class="p-3"><div class="text-sm font-bold text-white">' + (m.titulo || '') + '</div><div class="text-xs text-gray-400">' + (m.artista || '') + '</div></div></div>').join('') + '</div></div>' : '';
-  return '<div class="relative h-96 bg-gradient-to-br from-orange-900 via-red-900 to-amber-900 flex items-center justify-center overflow-hidden fade-in"><div class="relative text-center px-4"><div class="text-6xl mb-4">🍲</div><h1 class="text-5xl md:text-6xl font-black text-white mb-2">' + loja.nome_loja + '</h1><p class="text-xl text-amber-200">Feito com amor, entregue com carinho</p><a href="https://wa.me/' + loja.zap + '" target="_blank" class="inline-block mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl">💬 Pedir pelo WhatsApp</a></div></div><div class="max-w-4xl mx-auto px-4 py-12"><div class="bg-card rounded-2xl p-8 border border-roxo"><h2 class="text-3xl font-black text-laranja mb-4">Sobre nós</h2><p class="text-gray-300 text-lg">Bem-vindo à <strong class="text-white">' + loja.nome_loja + '</strong>! Preparamos cada prato com ingredientes frescos e muito carinho.</p></div></div><div class="max-w-6xl mx-auto px-4 pb-12"><h2 class="text-3xl font-black text-laranja mb-6 text-center">Galeria</h2><div class="grid md:grid-cols-3 gap-6">' + galeria + '</div></div>' + videosHtml + musicasHtml + '<footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>';
-}
+    const DEFAULT_TEMPLATE = 'glamour-studio';
 
-function renderLojaVirtual(loja, fotos, videosCliente, musicasCliente, videosAutorais, musicasAutorais) {
-  const produtos = fotos.length > 0 ? fotos.map(f => '<div class="card-hover bg-card rounded-2xl overflow-hidden border border-roxo"><img src="' + f.url + '" class="w-full h-48 object-cover"><div class="p-4"><div class="font-bold text-lg">Produto</div><div class="text-laranja font-black text-xl mt-2">R$ --</div><a href="https://wa.me/' + loja.zap + '" target="_blank" class="block mt-3 bg-laranja text-white text-center py-2 rounded-lg font-bold">Comprar</a></div></div>').join('') : '<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4">🛒</div><div class="text-xl text-gray-400">Produtos em breve!</div></div>';
-  const todosVideos = [...videosCliente, ...videosAutorais];
-  const videosHtml = todosVideos.length > 0 ? '<div class="max-w-6xl mx-auto px-4 pb-12"><h2 class="text-3xl font-black text-laranja mb-6">Vídeos da loja</h2><div class="grid md:grid-cols-3 gap-6">' + todosVideos.map(v => '<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="' + v.url + '" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">' + (v.titulo || '') + '</div></div>').join('') + '</div></div>' : '';
-  const todasMusicas = [...musicasCliente, ...musicasAutorais];
-  const musicasHtml = todasMusicas.length > 0 ? '<div class="max-w-6xl mx-auto px-4 pb-12"><h2 class="text-3xl font-black text-laranja mb-6">🎵 Músicas da loja</h2><div class="grid md:grid-cols-3 gap-6">' + todasMusicas.map(m => '<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><audio src="' + m.url + '" controls class="w-full"></audio><div class="p-3"><div class="text-sm font-bold text-white">' + (m.titulo || '') + '</div><div class="text-xs text-gray-400">' + (m.artista || '') + '</div></div></div>').join('') + '</div></div>' : '';
-  return '<div class="bg-gradient-to-r from-blue-900 to-purple-900 py-16 text-center fade-in"><div class="text-6xl mb-4">️</div><h1 class="text-5xl font-black text-white mb-4">' + loja.nome_loja + '</h1><p class="text-xl text-blue-200">Sua loja online completa</p><a href="https://wa.me/' + loja.zap + '" target="_blank" class="inline-block mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl">💬 Pedir pelo WhatsApp</a></div><div class="max-w-6xl mx-auto px-4 py-12"><h2 class="text-3xl font-black text-laranja mb-6">Produtos</h2><div class="grid md:grid-cols-3 gap-6">' + produtos + '</div></div>' + videosHtml + musicasHtml + '<footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>';
-}
+    // ---- UTILITÁRIOS ----
+    function getSubdomain() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('subdomain') || '';
+    }
 
-function renderDefault(loja, fotos, videosCliente, musicasCliente, videosAutorais, musicasAutorais, emoji, cor1, cor2) {
-  const galeria = fotos.length > 0 ? '<div class="max-w-6xl mx-auto px-4 py-12"><h2 class="text-3xl font-black text-laranja mb-6 text-center">Galeria</h2><div class="grid md:grid-cols-3 gap-6">' + fotos.map(f => '<div class="card-hover rounded-2xl overflow-hidden shadow-2xl"><img src="' + f.url + '" class="w-full h-64 object-cover"></div>').join('') + '</div></div>' : '';
-  const todosVideos = [...videosCliente, ...videosAutorais];
-  const videosHtml = todosVideos.length > 0 ? '<div class="max-w-6xl mx-auto px-4 pb-12"><h2 class="text-3xl font-black text-laranja mb-6 text-center">Vídeos</h2><div class="grid md:grid-cols-3 gap-6">' + todosVideos.map(v => '<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="' + v.url + '" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">' + (v.titulo || '') + '</div></div>').join('') + '</div></div>' : '';
-  const todasMusicas = [...musicasCliente, ...musicasAutorais];
-  const musicasHtml = todasMusicas.length > 0 ? '<div class="max-w-6xl mx-auto px-4 pb-12"><h2 class="text-3xl font-black text-laranja mb-6 text-center">🎵 Músicas</h2><div class="grid md:grid-cols-3 gap-6">' + todasMusicas.map(m => '<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><audio src="' + m.url + '" controls class="w-full"></audio><div class="p-3"><div class="text-sm font-bold text-white">' + (m.titulo || '') + '</div><div class="text-xs text-gray-400">' + (m.artista || '') + '</div></div></div>').join('') + '</div></div>' : '';
-  return '<div class="bg-gradient-to-r ' + cor1 + ' ' + cor2 + ' py-16 text-center fade-in"><div class="text-6xl mb-4">' + emoji + '</div><h1 class="text-5xl font-black text-white mb-4">' + loja.nome_loja + '</h1><p class="text-xl text-gray-200">Template ' + (loja.template_id || 'profissional') + '</p><a href="https://wa.me/' + loja.zap + '" target="_blank" class="inline-block mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl">💬 WhatsApp</a></div>' + galeria + videosHtml + musicasHtml + '<footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>';
-}
+    function getTemplateClass(template) {
+        const map = {
+            'glamour-studio': 'template-glamour',
+            'elegant-gold': 'template-elegant',
+            'modern-green': 'template-modern',
+            'dark-purple': 'template-dark',
+            'sunset-orange': 'template-sunset',
+            'ocean-blue': 'template-ocean'
+        };
+        return map[template] || 'template-glamour';
+    }
 
-function renderConsultPro(loja, f, vc, mc, va, ma) { return renderDefault(loja, f, vc, mc, va, ma, '💼', 'from-slate-900', 'to-gray-900'); }
-function renderBarberShop(loja, f, vc, mc, va, ma) { return renderDefault(loja, f, vc, mc, va, ma, '💈', 'from-gray-900', 'to-black'); }
-function renderDeliveryRapido(loja, f, vc, mc, va, ma) { return renderDefault(loja, f, vc, mc, va, ma, '🚀', 'from-red-900', 'to-orange-900'); }
-function renderMesaFarta(loja, f, vc, mc, va, ma) { return renderDefault(loja, f, vc, mc, va, ma, '🍽️', 'from-amber-900', 'to-yellow-900'); }
-function renderGlamourStudio(loja, f, vc, mc, va, ma) { return renderDefault(loja, f, vc, mc, va, ma, '✨', 'from-purple-900', 'to-pink-900'); }
-function renderBeautyExpress(loja, f, vc, mc, va, ma) { return renderDefault(loja, f, vc, mc, va, ma, '💅', 'from-pink-900', 'to-rose-900'); }
-function renderMaoNaMassa(loja, f, vc, mc, va, ma) { return renderDefault(loja, f, vc, mc, va, ma, '🔧', 'from-orange-900', 'to-amber-900'); }
-function renderTechSolutions(loja, f, vc, mc, va, ma) { return renderDefault(loja, f, vc, mc, va, ma, '💻', 'from-blue-900', 'to-cyan-900'); }
-function renderLimpezaTotal(loja, f, vc, mc, va, ma) { return renderDefault(loja, f, vc, mc, va, ma, '🧹', 'from-green-900', 'to-teal-900'); }
-function renderEventosPlus(loja, f, vc, mc, va, ma) { return renderDefault(loja, f, vc, mc, va, ma, '🎉', 'from-fuchsia-900', 'to-purple-900'); }
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
 
-async function registrarVisita(lojaId) {
-  try {
-    await fetch(WORKER_URL + '/api/registrar-visita', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ loja_id: lojaId, referer: document.referrer || '', user_agent: navigator.userAgent })
-    });
-  } catch (erro) { console.error('Erro ao registrar visita:', erro); }
-}
+    function formatTime(seconds) {
+        if (isNaN(seconds)) return '0:00';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return mins + ':' + (secs < 10 ? '0' : '') + secs;
+    }
 
-async function carregarLoja() {
-  const params = new URLSearchParams(window.location.search);
-  const subdomain = params.get('subdomain');
-  if (!subdomain) { document.getElementById('loading').classList.add('tela-oculta'); document.getElementById('erro').classList.remove('tela-oculta'); return; }
-  try {
-    const resposta = await fetch(WORKER_URL + '/api/ver?subdomain=' + encodeURIComponent(subdomain));
-    const dados = await resposta.json();
-    if (!resposta.ok || !dados.sucesso) throw new Error('Loja não encontrada');
-    const loja = dados.loja;
-    const fotos = dados.fotos || [];
-    const videosCliente = dados.videos_cliente || [];
-    const musicasCliente = dados.musicas_cliente || [];
-    const videosAutorais = dados.videos_autorais || [];
-    const musicasAutorais = dados.musicas_autorais || [];
-    const templateId = loja.template_id || 'consult-pro';
-    const renderFn = templatesHTML[templateId] || renderDefault;
-    document.getElementById('titulo-loja').textContent = loja.nome_loja;
-    document.getElementById('conteudo-loja').innerHTML = renderFn(loja, fotos, videosCliente, musicasCliente, videosAutorais, musicasAutorais);
-    document.getElementById('loading').classList.add('tela-oculta');
-    document.getElementById('conteudo-loja').classList.remove('tela-oculta');
-    if (loja.id) registrarVisita(loja.id);
-  } catch (erro) { document.getElementById('loading').classList.add('tela-oculta'); document.getElementById('erro').classList.remove('tela-oculta'); }
-}
+    function generatePlaceholder(width, height, text) {
+        const colors = ['e94560', 'd4af37', '00d4aa', '8b5cf6', 'ff6b35', '0ea5e9'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">' +
+            '<rect width="100%" height="100%" fill="#' + color + '" opacity="0.3"/>' +
+            '<defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+            '<stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:0.8"/>' +
+            '<stop offset="100%" style="stop-color:#' + color + ';stop-opacity:0.4"/>' +
+            '</linearGradient></defs>' +
+            '<rect width="100%" height="100%" fill="url(#grad)"/>' +
+            '<text x="50%" y="50%" font-family="Arial" font-size="16" fill="white" text-anchor="middle" dy=".3em">' + text + '</text>' +
+            '</svg>';
+        return 'data:image/svg+xml,' + encodeURIComponent(svg);
+    }
 
-carregarLoja();
+    // ---- BUSCAR DADOS DA LOJA ----
+    async function fetchStoreData(subdomain) {
+        try {
+            const response = await fetch('/api/store?subdomain=' + encodeURIComponent(subdomain));
+            if (response.ok) {
+                return await response.json();
+            }
+        } catch (e) {
+            console.log('API não disponível, tentando localStorage...');
+        }
+
+        try {
+            const stored = localStorage.getItem('store_' + subdomain);
+            if (stored) {
+                return JSON.parse(stored);
+            }
+        } catch (e) {
+            console.log('localStorage não disponível');
+        }
+
+        return getDemoData(subdomain);
+    }
+
+    function getDemoData(subdomain) {
+        return {
+            subdomain: subdomain,
+            storeName: subdomain,
+            template: DEFAULT_TEMPLATE,
+            plan: 'FREE',
+            photos: [
+                { id: 1, url: generatePlaceholder(400, 400, subdomain + ' - Foto 1'), title: 'Foto 1', active: true, order: 1 },
+                { id: 2, url: generatePlaceholder(400, 400, subdomain + ' - Foto 2'), title: 'Foto 2', active: true, order: 2 },
+                { id: 3, url: generatePlaceholder(400, 400, subdomain + ' - Foto 3'), title: 'Foto 3', active: true, order: 3 },
+                { id: 4, url: generatePlaceholder(400, 400, subdomain + ' - Foto 4'), title: 'Foto 4', active: true, order: 4 },
+                { id: 5, url: generatePlaceholder(400, 400, subdomain + ' - Foto 5'), title: 'Foto 5', active: true, order: 5 },
+                { id: 6, url: generatePlaceholder(400, 400, subdomain + ' - Foto 6'), title: 'Foto 6', active: true, order: 6 }
+            ],
+            videos: [
+                { id: 1, url: '', title: 'Vídeo de apresentação', duration: '2:30', active: true },
+                { id: 2, url: '', title: 'Bastidores', duration: '1:45', active: true }
+            ],
+            music: [
+                { id: 1, url: '', title: 'Música ambiente 1', duration: '3:20', active: true },
+                { id: 2, url: '', title: 'Música ambiente 2', duration: '4:10', active: true },
+                { id: 3, url: '', title: 'Música ambiente 3', duration: '2:55', active: true }
+            ],
+            visits: 142,
+            createdAt: '2026-09-01'
+        };
+    }
+
+    // ---- REGISTRAR VISITA ----
+    async function registerVisit(subdomain) {
+        try {
+            await fetch('/api/visit?subdomain=' + encodeURIComponent(subdomain), { method: 'POST' });
+        } catch (e) {
+            // silencioso
+        }
+    }
+
+    // ---- RENDER: HEADER ----
+    function renderHeader(store) {
+        return '<header class="store-header">' +
+            '<h1>' + escapeHtml(store.storeName || store.subdomain) + '</h1>' +
+            '<div class="template-badge">' + (store.template || DEFAULT_TEMPLATE) + '</div>' +
+            '<div class="store-stats">' +
+            '<span>📸 <strong>' + (store.photos || []).filter(function(p) { return p.active; }).length + '</strong> fotos</span>' +
+            '<span>🎬 <strong>' + (store.videos || []).filter(function(v) { return v.active; }).length + '</strong> vídeos</span>' +
+            '<span>🎵 <strong>' + (store.music || []).filter(function(m) { return m.active; }).length + '</strong> músicas</span>' +
+            '<span>👁 <strong>' + (store.visits || 0) + '</strong> visitas</span>' +
+            '</div></header>';
+    }
+
+    // ---- RENDER: GALERIA ----
+    function renderGallery(photos) {
+        const activePhotos = (photos || []).filter(function(p) { return p.active; }).sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
+
+        if (activePhotos.length === 0) {
+            return '<section class="section"><h2 class="section-title"><span class="icon">📸</span> Galeria <span class="count">0</span></h2>' +
+                '<div class="empty-state"><div class="empty-icon">📷</div><p>Nenhuma foto disponível ainda</p></div></section>';
+        }
+
+        let items = '';
+        activePhotos.forEach(function(photo, index) {
+            const isRotating = photo.rotation && photo.active;
+            items += '<div class="gallery-item" onclick="openLightbox(\'' + photo.url + '\')">' +
+                '<img src="' + photo.url + '" alt="' + escapeHtml(photo.title || 'Foto ' + (index + 1)) + '" loading="lazy">' +
+                (isRotating ? '<div class="rotation-badge">🔄 Ativa</div>' : '') +
+                '<div class="overlay"><span>' + escapeHtml(photo.title || 'Foto ' + (index + 1)) + '</span></div></div>';
+        });
+
+        return '<section class="section"><h2 class="section-title"><span class="icon">📸</span> Galeria <span class="count">' + activePhotos.length + '</span></h2>' +
+            '<div class="gallery-grid">' + items + '</div></section>';
+    }
+
+    // ---- RENDER: VÍDEOS ----
+    function renderVideos(videos) {
+        const activeVideos = (videos || []).filter(function(v) { return v.active; });
+
+        if (activeVideos.length === 0) {
+            return '<section class="section"><h2 class="section-title"><span class="icon">🎬</span> Vídeos <span class="count">0</span></h2>' +
+                '<div class="empty-state"><div class="empty-icon">🎥</div><p>Nenhum vídeo disponível ainda</p></div></section>';
+        }
+
+        let items = '';
+        activeVideos.forEach(function(video) {
+            const hasVideo = video.url && video.url.length > 0;
+            if (hasVideo) {
+                items += '<div class="video-item"><video controls preload="metadata"><source src="' + video.url + '" type="video/mp4">Seu navegador não suporta vídeo.</video>' +
+                    '<div class="video-info"><h4>' + escapeHtml(video.title || 'Vídeo') + '</h4><span>' + (video.duration || '--:--') + '</span></div></div>';
+            } else {
+                items += '<div class="video-item"><div style="width:100%;aspect-ratio:16/9;background:#1a1a2e;display:flex;align-items:center;justify-content:center;border-bottom:1px solid #2a2a4a;"><span style="font-size:3rem;">🎬</span></div>' +
+                    '<div class="video-info"><h4>' + escapeHtml(video.title || 'Vídeo') + '</h4><span>' + (video.duration || '--:--') + '</span></div></div>';
+            }
+        });
+
+        return '<section class="section"><h2 class="section-title"><span class="icon">🎬</span> Vídeos <span class="count">' + activeVideos.length + '</span></h2>' +
+            '<div class="videos-grid">' + items + '</div></section>';
+    }
+
+    // ---- RENDER: MÚSICAS ----
+    function renderMusic(music) {
+        const activeMusic = (music || []).filter(function(m) { return m.active; });
+
+        if (activeMusic.length === 0) {
+            return '<section class="section"><h2 class="section-title"><span class="icon">🎵</span> Músicas <span class="count">0</span></h2>' +
+                '<div class="empty-state"><div class="empty-icon">🎶</div><p>Nenhuma música disponível ainda</p></div></section>';
+        }
+
+        let items = '';
+        activeMusic.forEach(function(track, index) {
+            const hasAudio = track.url && track.url.length > 0;
+            items += '<div class="music-item" data-index="' + index + '" data-url="' + (track.url || '') + '">' +
+                '<div class="play-btn" onclick="toggleMusic(' + index + ')">' +
+                '<svg viewBox="0 0 24 24" class="play-icon"><polygon points="5,3 19,12 5,21"/></svg>' +
+                '<svg viewBox="0 0 24 24" class="pause-icon" style="display:none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>' +
+                '</div>' +
+                '<div class="music-info"><h4>' + escapeHtml(track.title || 'Música ' + (index + 1)) + '</h4><span>' + (track.duration || '--:--') + '</span></div>' +
+                '<div class="music-progress"><div class="bar"><div class="fill" id="progress-' + index + '"></div></div>' +
+                '<div class="time" id="time-' + index + '">' + (hasAudio ? '0:00 / ' + (track.duration || '--:--') : 'Sem áudio') + '</div></div></div>';
+        });
+
+        return '<section class="section"><h2 class="section-title"><span class="icon">🎵</span> Músicas <span class="count">' + activeMusic.length + '</span></h2>' +
+            '<div class="music-list">' + items + '</div></section>';
+    }
+
+    // ---- RENDER: FOOTER ----
+    function renderFooter(store) {
+        return '<footer class="store-footer"><p>Loja criada com <a href="https://microfood.pages.dev" target="_blank">MicroFood</a> • ' +
+            'Plano: ' + (store.plan || 'FREE') + ' • Desde: ' + (store.createdAt || '2026') + '</p></footer>';
+    }
+
+    // ---- PLAYER DE MÚSICA ----
+    let currentAudio = null;
+    let currentIndex = -1;
+
+    window.toggleMusic = function(index) {
+        const musicItems = document.querySelectorAll('.music-item');
+        const item = musicItems[index];
+        if (!item) return;
+
+        const url = item.getAttribute('data-url');
+
+        if (currentIndex === index && currentAudio) {
+            if (currentAudio.paused) {
+                currentAudio.play();
+                updatePlayButton(index, true);
+            } else {
+                currentAudio.pause();
+                updatePlayButton(index, false);
+            }
+            return;
+        }
+
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio = null;
+            if (currentIndex >= 0) updatePlayButton(currentIndex, false);
+        }
+
+        if (!url || url.length === 0) {
+            alert('🎵 Áudio não disponível ainda. O dono da loja precisa fazer upload do arquivo.');
+            return;
+        }
+
+        currentAudio = new Audio(url);
+        currentIndex = index;
+        currentAudio.play();
+        updatePlayButton(index, true);
+
+        currentAudio.addEventListener('timeupdate', function() {
+            const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
+            const fillEl = document.getElementById('progress-' + index);
+            const timeEl = document.getElementById('time-' + index);
+            if (fillEl) fillEl.style.width = progress + '%';
+            if (timeEl) timeEl.textContent = formatTime(currentAudio.currentTime) + ' / ' + formatTime(currentAudio.duration);
+        });
+
+        currentAudio.addEventListener('ended', function() {
+            updatePlayButton(index, false);
+            const nextIndex = index + 1;
+            if (musicItems[nextIndex]) toggleMusic(nextIndex);
+        });
+    };
+
+    function updatePlayButton(index, isPlaying) {
+        const musicItems = document.querySelectorAll('.music-item');
+        const item = musicItems[index];
+        if (!item) return;
+
+        const playBtn = item.querySelector('.play-btn');
+        const playIcon = item.querySelector('.play-icon');
+        const pauseIcon = item.querySelector('.pause-icon');
+
+        if (isPlaying) {
+            playBtn.classList.add('playing');
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+        } else {
+            playBtn.classList.remove('playing');
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+        }
+    }
+
+    // ---- LIGHTBOX ----
+    window.openLightbox = function(url) {
+        const lightbox = document.getElementById('lightbox');
+        const img = document.getElementById('lightbox-img');
+        img.src = url;
+        lightbox.classList.add('active');
+    };
+
+    window.closeLightbox = function() {
+        document.getElementById('lightbox').classList.remove('active');
+    };
+
+    // ---- INICIALIZAÇÃO ----
+    async function init() {
+        const subdomain = getSubdomain();
+        const app = document.getElementById('app');
+
+        if (!subdomain) {
+            app.innerHTML = '<div class="empty-state" style="padding:100px 20px;"><div class="empty-icon">🔍</div>' +
+                '<p>Subdomínio não informado.</p><p style="margin-top:10px;color:#888;">Use: ?subdomain=nome_da_loja</p></div>';
+            return;
+        }
+
+        const store = await fetchStoreData(subdomain);
+
+        if (!store) {
+            app.innerHTML = '<div class="empty-state" style="padding:100px 20px;"><div class="empty-icon">❌</div>' +
+                '<p>Loja "' + escapeHtml(subdomain) + '" não encontrada.</p></div>';
+            return;
+        }
+
+        document.body.classList.add(getTemplateClass(store.template));
+        registerVisit(subdomain);
+
+        app.innerHTML = renderHeader(store) + renderGallery(store.photos) + renderVideos(store.videos) + renderMusic(store.music) + renderFooter(store);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+})();
