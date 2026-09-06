@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MicroOne — Terminal</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html, body { overscroll-behavior: none; }
+.phone-frame { width: 390px; height: 844px; }
+@media (max-width: 430px) {
+  .phone-frame { width: 100vw; height: 100dvh; border-radius: 0 !important; padding: 0 !important; }
+  body { padding: 0 !important; background: #0a2540 !important; }
+}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.screen { transition: opacity 0.28s ease, transform 0.28s ease; }
+.screen.hidden { opacity: 0; transform: translateX(16px); pointer-events: none; position: absolute; inset: 0; }
+.screen.active { opacity: 1; transform: translateX(0); pointer-events: auto; position: absolute; inset: 0; }
+.no-tap { -webkit-tap-highlight-color: transparent; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+.float-anim { animation: float 3s ease-in-out infinite; }
+@keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(0,194,168,0.5)} 70%{box-shadow:0 0 0 12px rgba(0,194,168,0)} 100%{box-shadow:0 0 0 0 rgba(0,194,168,0)} }
+.pulse-ring { animation: pulse-ring 2s infinite; }
+</style>
+</head>
+<body class="bg-[#0a2540] min-h-screen flex items-center justify-center p-3 lg:p-6">
+
+<div class="phone-frame bg-black p-[10px] rounded-[56px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)] relative">
+  <div class="w-full h-full bg-[#f8fafc] rounded-[44px] overflow-hidden relative flex flex-col">
+
+    <!-- Status Bar -->
+    <div class="absolute top-0 left-0 right-0 h-[44px] z-[60] flex items-center justify-between px-8 pt-1 pointer-events-none">
+      <span class="text-[15px] font-semibold text-black">9:41</span>
+      <div class="w-[100px] h-[30px] bg-black rounded-b-[16px] absolute left-1/2 -translate-x-1/2 top-0"></div>
+      <div class="flex items-center gap-1.5">
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><path d="M0 8.5H2.5V11H0V8.5ZM4 5.5H6.5V11H4V5.5ZM8 2.5H10.5V11H8V2.5ZM12 0H14.5V11H12V0Z" fill="black"/></svg>
+        <svg width="15" height="11" viewBox="0 0 15 11" fill="none"><path d="M1.5 5.5C2.5 3.5 4.5 2 7.5 2C10.5 2 12.5 3.5 13.5 5.5" stroke="black" stroke-width="1.2" stroke-linecap="round"/><path d="M3.5 7.5C4.2 6.3 5.6 5.5 7.5 5.5C9.4 5.5 10.8 6.3 11.5 7.5" stroke="black" stroke-width="1.2" stroke-linecap="round"/><circle cx="7.5" cy="8.5" r="1.2" fill="black"/></svg>
+        <div class="w-[24px] h-[11px] border border-black rounded-[3px] relative"><div class="absolute left-[2px] top-[2px] bottom-[2px] w-[16px] bg-black rounded-[1px]"></div><div class="absolute -right-[2px] top-[3px] w-[1.5px] h-[4px] bg-black rounded-r"></div></div>
+      </div>
+    </div>
+
+    <!-- APP CONTENT -->
+    <div class="relative flex-1 overflow-hidden pt-[44px] bg-[#f8fafc]">
+
+      <!-- SPLASH -->
+      <div id="screen-splash" class="screen active w-full h-full bg-[#0a2540] flex flex-col items-center justify-center">
+        <div class="relative float-anim">
+          <div class="absolute -inset-10 bg-[#00c2a8]/20 rounded-full blur-3xl"></div>
+          <!-- Blokinho SVG -->
+          <svg width="140" height="140" viewBox="0 0 140 140" class="relative z-10">
+            <rect x="20" y="30" width="100" height="90" rx="25" fill="#146EF5"/>
+            <rect x="20" y="30" width="100" height="45" rx="25" fill="rgba(255,255,255,0.1)"/>
+            <line x1="70" y1="30" x2="70" y2="10" stroke="#146EF5" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="70" cy="8" r="6" fill="#00c2a8">
+              <animate attributeName="r" values="6;8;6" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <ellipse cx="50" cy="70" rx="15" ry="17" fill="white"/>
+            <ellipse cx="90" cy="70" rx="15" ry="17" fill="white"/>
+            <circle cx="54" cy="72" r="8" fill="#0a2540"/>
+            <circle cx="94" cy="72" r="8" fill="#0a2540"/>
+            <circle cx="57" cy="69" r="3" fill="white"/>
+            <circle cx="97" cy="69" r="3" fill="white"/>
+            <path d="M 55 95 Q 70 108 85 95" stroke="#0a2540" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <ellipse cx="70" cy="100" rx="7" ry="4" fill="#e94560"/>
+            <circle cx="38" cy="82" r="5" fill="rgba(233,69,96,0.3)"/>
+            <circle cx="102" cy="82" r="5" fill="rgba(233,69,96,0.3)"/>
+          </svg>
+        </div>
+        <div class="mt-8 flex flex-col items-center">
+          <div class="w-9 h-9 border-[3px] border-white/20 border-t-[#00c2a8] rounded-full animate-spin"></div>
+          <p class="text-white/70 text-[13px] mt-4 font-medium tracking-wide">CARREGANDO SEU NEGÓCIO</p>
+          <p class="text-white/40 text-[11px] mt-1">MicroOne v1.0 • Tudo em um</p>
+        </div>
+      </div>
+
+      <!-- HOME -->
+      <div id="screen-home" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+        <div class="px-5 pt-3 pb-28">
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-[#0a2540] flex items-center justify-center shadow-sm">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00c2a8" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              </div>
+              <div>
+                <h1 class="text-[22px] font-bold text-[#0a2540] leading-tight">Olá, Maria 👋</h1>
+                <p class="text-[12px] text-slate-500 -mt-0.5">MicroOne • maria.microone.app</p>
+              </div>
+            </div>
+            <button class="w-10 h-10 rounded-full bg-white shadow-sm border border-slate-100 flex items-center justify-center no-tap active:scale-95 transition relative">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              <span class="absolute top-2 right-2 w-2 h-2 bg-[#e94560] rounded-full"></span>
+            </button>
+          </div>
+
+          <!-- BLOKINHO DICA -->
+          <div class="bg-gradient-to-br from-[#146EF5] to-[#0a2540] rounded-[28px] p-5 text-white relative overflow-hidden mb-5 shadow-lg shadow-[#146EF5]/20">
+            <div class="absolute -right-8 -top-8 w-36 h-36 bg-[#00c2a8]/25 rounded-full blur-3xl"></div>
+            <div class="relative z-10 flex items-start gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur flex items-center justify-center shrink-0">
+                <svg width="28" height="28" viewBox="0 0 140 140">
+                  <rect x="20" y="30" width="100" height="90" rx="25" fill="#00c2a8"/>
+                  <ellipse cx="50" cy="70" rx="15" ry="17" fill="white"/>
+                  <ellipse cx="90" cy="70" rx="15" ry="17" fill="white"/>
+                  <circle cx="54" cy="72" r="8" fill="#0a2540"/>
+                  <circle cx="94" cy="72" r="8" fill="#0a2540"/>
+                  <path d="M 55 95 Q 70 108 85 95" stroke="#0a2540" stroke-width="4" fill="none" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-[11px] font-semibold text-[#00c2a8] uppercase tracking-widest">BLOKINHO DIZ</p>
+                <p class="text-[15px] font-semibold mt-1 leading-tight">Sua loja teve <span class="text-[#00c2a8]">+47 visitas</span> hoje! </p>
+                <p class="text-[12px] text-white/70 mt-1">Que tal postar uma nova foto para atrair mais clientes?</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUICK STATS -->
+          <div class="grid grid-cols-3 gap-2.5 mb-5">
+            <div class="bg-white rounded-2xl p-3 border border-slate-100">
+              <p class="text-[11px] text-slate-500">Visitas hoje</p>
+              <p class="text-[18px] font-bold text-[#0a2540]">47</p>
+            </div>
+            <div class="bg-white rounded-2xl p-3 border border-slate-100">
+              <p class="text-[11px] text-slate-500">Cliques</p>
+              <p class="text-[18px] font-bold text-[#00c2a8]">12</p>
+            </div>
+            <div class="bg-white rounded-2xl p-3 border border-slate-100">
+              <p class="text-[11px] text-slate-500">Plano</p>
+              <p class="text-[18px] font-bold text-[#146EF5]">Plus</p>
+            </div>
+          </div>
+
+          <!-- MÓDULOS -->
+          <div class="space-y-3">
+            <button data-goto="loja" class="group w-full bg-white rounded-[24px] p-[18px] shadow-sm border border-slate-100 text-left flex items-center gap-4 active:scale-[0.99] transition no-tap">
+              <div class="w-[48px] h-[48px] rounded-2xl bg-[#146EF5]/10 flex items-center justify-center group-active:bg-[#146EF5]/15 transition">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#146EF5" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-[15px] text-[#0a2540]">🖼️ Minha Loja</h3>
+                <p class="text-[13px] text-slate-500 mt-0.5">Ver e editar sua vitrine</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-bold flex items-center justify-center">6</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
+
+            <button data-goto="analytics" class="group w-full bg-white rounded-[24px] p-[18px] shadow-sm border border-slate-100 text-left flex items-center gap-4 active:scale-[0.99] transition no-tap">
+              <div class="w-[48px] h-[48px] rounded-2xl bg-[#00c2a8]/10 flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00a08a" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-[15px] text-[#0a2540]">📊 Analytics</h3>
+                <p class="text-[13px] text-slate-500 mt-0.5">Visitas, cliques e desempenho</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-[12px] font-semibold text-emerald-600">+23%</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
+
+            <button data-goto="plano" class="group w-full bg-white rounded-[24px] p-[18px] shadow-sm border border-slate-100 text-left flex items-center gap-4 active:scale-[0.99] transition no-tap">
+              <div class="w-[48px] h-[48px] rounded-2xl bg-[#e94560]/10 flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e94560" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-[15px] text-[#0a2540]">💰 Plano</h3>
+                <p class="text-[13px] text-slate-500 mt-0.5">Assinatura Plus • R$ 39/mês</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
+
+            <button data-goto="config" class="group w-full bg-white rounded-[24px] p-[18px] shadow-sm border border-slate-100 text-left flex items-center gap-4 active:scale-[0.99] transition no-tap">
+              <div class="w-[48px] h-[48px] rounded-2xl bg-[#0a2540]/5 flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-[15px] text-[#0a2540]">⚙️ Configurações</h3>
+                <p class="text-[13px] text-slate-500 mt-0.5">Domínio, canal e perfil</p>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+
+          <!-- CTA TURBO -->
+          <button id="btn-turbo" class="mt-5 w-full bg-gradient-to-r from-[#00c2a8] to-[#146EF5] text-white font-bold py-[16px] rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-[#00c2a8]/30 active:scale-[0.98] transition no-tap pulse-ring">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Otimizar tudo agora
+          </button>
+          <p class="text-center text-[11px] text-slate-500 mt-2">Blokinho cuida de tudo em 1 clique</p>
+        </div>
+      </div>
+
+      <!-- MINHA LOJA -->
+      <div id="screen-loja" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+        <div class="px-5 pt-3 pb-28">
+          <div class="flex items-center gap-3 mb-5">
+            <button data-goto="home" class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center no-tap active:scale-95">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <h2 class="text-[20px] font-bold text-[#0a2540]">🖼️ Minha Loja</h2>
+          </div>
+
+          <!-- Preview da loja -->
+          <div class="bg-[#0a2540] rounded-[28px] p-5 text-white relative overflow-hidden mb-4 shadow-lg">
+            <div class="absolute -right-8 -top-8 w-36 h-36 bg-[#e94560]/25 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+              <div class="flex items-center justify-between mb-3">
+                <p class="text-[11px] font-semibold text-[#e94560] uppercase tracking-widest">VITRINE ATIVA</p>
+                <span class="text-[10px] px-2 py-1 rounded-full bg-white/10 text-white/80">Online</span>
+              </div>
+              <h3 class="text-[24px] font-extrabold tracking-tight">Maria Studio</h3>
+              <p class="text-[13px] text-white/70">💅 Unhas, cabelo e make</p>
+              <div class="mt-4 flex gap-2">
+                <button class="flex-1 bg-[#e94560] text-white font-semibold py-2.5 rounded-xl text-[13px] active:scale-95 transition">Ver loja</button>
+                <button class="bg-white/10 text-white font-semibold px-4 py-2.5 rounded-xl text-[13px] active:scale-95 transition">QR</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats da loja -->
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100 mb-4">
+            <h3 class="font-semibold text-[16px] text-[#0a2540] mb-4">Conteúdo da loja</h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-[#e94560]/10 flex items-center justify-center"></div>
+                  <div>
+                    <p class="text-[14px] font-medium text-[#0a2540]">Fotos</p>
+                    <p class="text-[12px] text-slate-500">6 ativas</p>
+                  </div>
+                </div>
+                <button class="text-[13px] font-semibold text-[#146EF5]">Editar</button>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-[#146EF5]/10 flex items-center justify-center">🎬</div>
+                  <div>
+                    <p class="text-[14px] font-medium text-[#0a2540]">Vídeos</p>
+                    <p class="text-[12px] text-slate-500">2 ativos</p>
+                  </div>
+                </div>
+                <button class="text-[13px] font-semibold text-[#146EF5]">Editar</button>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-[#00c2a8]/10 flex items-center justify-center">🎵</div>
+                  <div>
+                    <p class="text-[14px] font-medium text-[#0a2540]">Músicas</p>
+                    <p class="text-[12px] text-slate-500">3 ativas</p>
+                  </div>
+                </div>
+                <button class="text-[13px] font-semibold text-[#146EF5]">Editar</button>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-lg bg-[#d4af37]/10 flex items-center justify-center">🎨</div>
+                  <div>
+                    <p class="text-[14px] font-medium text-[#0a2540]">Template</p>
+                    <p class="text-[12px] text-slate-500">Glamour Studio</p>
+                  </div>
+                </div>
+                <button class="text-[13px] font-semibold text-[#146EF5]">Trocar</button>
+              </div>
+            </div>
+          </div>
+
+          <button class="w-full bg-[#0a2540] text-white font-semibold py-[14px] rounded-2xl active:scale-[0.99] transition no-tap flex items-center justify-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Adicionar novo conteúdo
+          </button>
+        </div>
+      </div>
+
+      <!-- ANALYTICS -->
+      <div id="screen-analytics" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+        <div class="px-5 pt-3 pb-28">
+          <div class="flex items-center gap-3 mb-5">
+            <button data-goto="home" class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center no-tap active:scale-95">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <h2 class="text-[20px] font-bold text-[#0a2540]">📊 Analytics</h2>
+          </div>
+
+          <!-- Big stat -->
+          <div class="bg-gradient-to-br from-[#00c2a8] to-[#146EF5] rounded-[28px] p-5 text-white relative overflow-hidden mb-4 shadow-lg">
+            <div class="absolute -right-8 -top-8 w-36 h-36 bg-white/15 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+              <p class="text-[11px] font-semibold text-white/80 uppercase tracking-widest">Últimos 7 dias</p>
+              <p class="text-[42px] font-extrabold mt-2 tracking-tight">324</p>
+              <p class="text-[13px] text-white/80">visitas totais • <span class="text-[#0a2540] font-bold">+23%</span> vs semana anterior</p>
+            </div>
+          </div>
+
+          <!-- Gráfico semanal -->
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100 mb-4">
+            <h3 class="font-semibold text-[15px] text-[#0a2540] mb-4">Visitas por dia</h3>
+            <div class="flex items-end justify-between gap-2 h-32">
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-[#146EF5]/20 rounded-t-lg" style="height:40%"></div>
+                <span class="text-[10px] text-slate-500">Seg</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-[#146EF5]/30 rounded-t-lg" style="height:55%"></div>
+                <span class="text-[10px] text-slate-500">Ter</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-[#146EF5]/40 rounded-t-lg" style="height:45%"></div>
+                <span class="text-[10px] text-slate-500">Qua</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-[#146EF5]/50 rounded-t-lg" style="height:70%"></div>
+                <span class="text-[10px] text-slate-500">Qui</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-[#146EF5]/60 rounded-t-lg" style="height:85%"></div>
+                <span class="text-[10px] text-slate-500">Sex</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-[#00c2a8] rounded-t-lg" style="height:100%"></div>
+                <span class="text-[10px] font-bold text-[#00c2a8]">Sáb</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full bg-[#146EF5]/40 rounded-t-lg" style="height:60%"></div>
+                <span class="text-[10px] text-slate-500">Dom</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top conteúdo -->
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
+            <h3 class="font-semibold text-[15px] text-[#0a2540] mb-4">Top conteúdo</h3>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <span class="text-[14px] font-bold text-[#00c2a8] w-6">1</span>
+                <div class="w-12 h-12 rounded-lg bg-[#e94560]/20 flex items-center justify-center text-xl">💅</div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">Unhas decoradas</p>
+                  <p class="text-[12px] text-slate-500">89 cliques</p>
+                </div>
+                <span class="text-[13px] font-bold text-[#0a2540]">89</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-[14px] font-bold text-[#146EF5] w-6">2</span>
+                <div class="w-12 h-12 rounded-lg bg-[#146EF5]/20 flex items-center justify-center text-xl">💇</div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">Corte feminino</p>
+                  <p class="text-[12px] text-slate-500">67 cliques</p>
+                </div>
+                <span class="text-[13px] font-bold text-[#0a2540]">67</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-[14px] font-bold text-slate-400 w-6">3</span>
+                <div class="w-12 h-12 rounded-lg bg-[#00c2a8]/20 flex items-center justify-center text-xl">💄</div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">Maquiagem</p>
+                  <p class="text-[12px] text-slate-500">45 cliques</p>
+                </div>
+                <span class="text-[13px] font-bold text-[#0a2540]">45</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLANO -->
+      <div id="screen-plano" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+        <div class="px-5 pt-3 pb-28">
+          <div class="flex items-center gap-3 mb-5">
+            <button data-goto="home" class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center no-tap active:scale-95">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <h2 class="text-[20px] font-bold text-[#0a2540]">💰 Meu Plano</h2>
+          </div>
+
+          <!-- Plano atual -->
+          <div class="bg-gradient-to-br from-[#146EF5] to-[#0a2540] rounded-[28px] p-5 text-white relative overflow-hidden mb-4 shadow-lg">
+            <div class="absolute -right-8 -top-8 w-36 h-36 bg-[#00c2a8]/25 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+              <div class="flex items-center justify-between">
+                <p class="text-[11px] font-semibold text-[#00c2a8] uppercase tracking-widest">PLANO ATUAL</p>
+                <span class="text-[10px] px-2 py-1 rounded-full bg-[#00c2a8] text-[#0a2540] font-bold">PLUS</span>
+              </div>
+              <p class="text-[34px] font-extrabold mt-2 tracking-tight">R$ 39<span class="text-[16px] text-white/70">/mês</span></p>
+              <p class="text-[13px] text-white/70">Próxima cobrança: 15/10/2026</p>
+              <div class="mt-4 flex gap-2">
+                <button class="flex-1 bg-white text-[#0a2540] font-semibold py-2.5 rounded-xl text-[13px] active:scale-95 transition">Ver fatura</button>
+                <button class="bg-white/10 text-white font-semibold px-4 py-2.5 rounded-xl text-[13px] active:scale-95 transition">Trocar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Benefícios -->
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100 mb-4">
+            <h3 class="font-semibold text-[16px] text-[#0a2540] mb-4">Seus benefícios</h3>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">3 lojas digitais</p>
+                  <p class="text-[12px] text-slate-500">Ativas no momento: 1</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">Fotos ilimitadas</p>
+                  <p class="text-[12px] text-slate-500">6 uploads feitos</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">Blokinho IA</p>
+                  <p class="text-[12px] text-slate-500">Dicas inteligentes ativas</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">Canal de mensagens</p>
+                  <p class="text-[12px] text-slate-500">Notificações automáticas</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="text-[14px] font-medium text-[#0a2540]">QR Code personalizado</p>
+                  <p class="text-[12px] text-slate-500">Para imprimir e colar</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upgrade -->
+          <div class="bg-[#d4af37]/10 rounded-[28px] p-5 border border-[#d4af37]/30">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-[#d4af37]/20 flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-[15px] font-bold text-[#0a2540]">Upgrade para PRO</p>
+                <p class="text-[12px] text-slate-600">Domínio próprio + lojas ilimitadas</p>
+              </div>
+              <button class="bg-[#d4af37] text-white font-bold px-4 py-2 rounded-xl text-[12px] active:scale-95">R$ 79</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONFIGURAÇÕES -->
+      <div id="screen-config" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+        <div class="px-5 pt-3 pb-28">
+          <div class="flex items-center gap-3 mb-5">
+            <button data-goto="home" class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center no-tap active:scale-95">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <h2 class="text-[20px] font-bold text-[#0a2540]">⚙️ Configurações</h2>
+          </div>
+
+          <!-- Perfil -->
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100 mb-4">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#146EF5] to-[#0a2540] flex items-center justify-center text-white font-bold text-2xl">M</div>
+              <div class="flex-1">
+                <h3 class="font-bold text-[16px] text-[#0a2540]">Maria Silva</h3>
+                <p class="text-[13px] text-slate-500">maria@email.com</p>
+                <p class="text-[11px] text-[#146EF5] font-semibold mt-0.5">MEMBRO DESDE SET/2026</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loja -->
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100 mb-4">
+            <h3 class="font-semibold text-[14px] text-slate-500 uppercase tracking-wider mb-3">Sua loja</h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between py-2 border-b border-slate-100">
+                <div>
+                  <p class="text-[14px] font-medium text-[#0a2540]">Endereço da loja</p>
+                  <p class="text-[12px] text-[#146EF5] font-mono">maria.microone.app</p>
+                </div>
+                <button class="text-[13px] font-semibold text-[#146EF5]">Copiar</button>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-slate-100">
+                <div>
+                  <p class="text-[14px] font-medium text-[#0a2540]">Nome da loja</p>
+                  <p class="text-[12px] text-slate-500">Maria Studio</p>
+                </div>
+                <button class="text-[13px] font-semibold text-[#146EF5]">Editar</button>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <div>
+                  <p class="text-[14px] font-medium text-[#0a2540]">WhatsApp</p>
+                  <p class="text-[12px] text-slate-500">(11) 98765-4321</p>
+                </div>
+                <button class="text-[13px] font-semibold text-[#146EF5]">Editar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Canal de mensagens (sem mencionar Telegram) -->
+          <div class="bg-gradient-to-br from-[#146EF5] to-[#0a2540] rounded-[28px] p-5 text-white relative overflow-hidden mb-4 shadow-lg">
+            <div class="absolute -right-8 -top-8 w-36 h-36 bg-[#00c2a8]/25 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00c2a8" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <div>
+                  <p class="text-[11px] font-semibold text-[#00c2a8] uppercase tracking-widest">CONECTADO</p>
+                  <h3 class="font-bold text-[16px]">Canal de mensagens</h3>
+                </div>
+              </div>
+              <p class="text-[13px] text-white/80 leading-tight">Receba notificações de visitas, cliques e dicas do Blokinho direto no seu celular.</p>
+              <div class="mt-4 flex items-center justify-between bg-white/10 rounded-xl p-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span class="text-[13px] font-medium">Ativo desde 01/09/2026</span>
+                </div>
+                <button class="text-[12px] font-semibold text-[#00c2a8]">Configurar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Outras -->
+          <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100">
+            <h3 class="font-semibold text-[14px] text-slate-500 uppercase tracking-wider mb-3">Outras opções</h3>
+            <div class="space-y-3">
+              <button class="w-full flex items-center justify-between py-2 text-left">
+                <span class="text-[14px] font-medium text-[#0a2540]">Ajuda e suporte</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+              <button class="w-full flex items-center justify-between py-2 text-left">
+                <span class="text-[14px] font-medium text-[#0a2540]">Termos de uso</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+              <button class="w-full flex items-center justify-between py-2 text-left">
+                <span class="text-[14px] font-medium text-[#e94560]">Sair da conta</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e94560" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="absolute left-5 right-5 bottom-[96px] bg-[#0a2540] text-white px-4 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 translate-y-[120px] opacity-0 transition-all duration-300 z-50">
+      <div class="w-8 h-8 rounded-full bg-[#00c2a8] flex items-center justify-center flex-shrink-0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-semibold text-[13px] leading-tight" id="toast-title">Sucesso!</p>
+        <p class="text-[12px] text-white/70 leading-tight truncate" id="toast-msg">Operação concluída</p>
+      </div>
+    </div>
+
+    <!-- TURBO MODAL -->
+    <div id="modal-turbo" class="absolute inset-0 bg-black/60 backdrop-blur-md z-[70] hidden items-center justify-center p-6">
+      <div class="bg-white rounded-[32px] w-full max-w-[330px] p-6 shadow-2xl">
+        <div class="text-center">
+          <div class="w-14 h-14 rounded-2xl bg-[#00c2a8]/15 mx-auto flex items-center justify-center mb-3">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00a08a" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <h3 class="text-[20px] font-bold text-[#0a2540]">Blokinho em ação</h3>
+          <p class="text-[13px] text-slate-500 mt-1">Otimizando sua loja automaticamente</p>
+        </div>
+        <div class="mt-5 space-y-3" id="turbo-steps">
+          <div data-step="1" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center step-icon"><span class="text-[12px] font-bold text-slate-500">1</span></div>
+            <div class="flex-1"><p class="text-[14px] font-medium text-[#0a2540]">Analisar visitas</p><p class="text-[12px] text-slate-500 step-status">Aguardando...</p></div>
+          </div>
+          <div data-step="2" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center step-icon"><span class="text-[12px] font-bold text-slate-500">2</span></div>
+            <div class="flex-1"><p class="text-[14px] font-medium text-[#0a2540]">Otimizar vitrine</p><p class="text-[12px] text-slate-500 step-status">Aguardando...</p></div>
+          </div>
+          <div data-step="3" class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center step-icon"><span class="text-[12px] font-bold text-slate-500">3</span></div>
+            <div class="flex-1"><p class="text-[14px] font-medium text-[#0a2540]">Enviar notificação</p><p class="text-[12px] text-slate-500 step-status">Aguardando...</p></div>
+          </div>
+        </div>
+        <button id="turbo-close" class="mt-5 w-full py-3 rounded-2xl font-semibold text-[14px] bg-slate-100 text-slate-600 hidden no-tap">Fechar</button>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div id="bottom-nav" class="absolute bottom-0 left-0 right-0 h-[84px] bg-white/95 backdrop-blur-xl border-t border-slate-200 z-40 hidden">
+      <div class="flex items-center justify-around h-full px-2 pb-[20px] pt-2">
+        <button data-nav="home" data-goto="home" class="nav-btn flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition no-tap text-[#00c2a8]">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span class="text-[11px] font-medium">Início</span>
+        </button>
+        <button data-nav="loja" data-goto="loja" class="nav-btn flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition no-tap text-slate-400">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+          <span class="text-[11px] font-medium">Loja</span>
+        </button>
+        <button data-nav="analytics" data-goto="analytics" class="nav-btn flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition no-tap text-slate-400">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span class="text-[11px] font-medium">Analytics</span>
+        </button>
+        <button data-nav="plano" data-goto="plano" class="nav-btn flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition no-tap text-slate-400">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          <span class="text-[11px] font-medium">Plano</span>
+        </button>
+        <button data-nav="config" data-goto="config" class="nav-btn flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition no-tap text-slate-400">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span class="text-[11px] font-medium">Config</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const showScreen = (id) => {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.classList.add('hidden');
+  });
+  const target = document.getElementById('screen-' + id);
+  if (target) {
+    target.classList.remove('hidden');
+    target.classList.add('active');
+  }
+  const nav = document.getElementById('bottom-nav');
+  nav.classList.toggle('hidden', id === 'splash');
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    const isActive = btn.dataset.nav === id;
+    btn.classList.toggle('text-[#00c2a8]', isActive);
+    btn.classList.toggle('text-slate-400', !isActive);
+  });
+};
+document.querySelectorAll('[data-goto]').forEach(btn => {
+  btn.addEventListener('click', () => showScreen(btn.dataset.goto));
+});
+setTimeout(() => showScreen('home'), 1800);
+
+function showToast(title, msg) {
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-msg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('translate-y-0', 'opacity-100');
+  t.classList.remove('translate-y-[120px]', 'opacity-0');
+  setTimeout(() => {
+    t.classList.remove('translate-y-0', 'opacity-100');
+    t.classList.add('translate-y-[120px]', 'opacity-0');
+  }, 3000);
+}
+
+// TURBO
+const modal = document.getElementById('modal-turbo');
+const btnTurbo = document.getElementById('btn-turbo');
+const turboClose = document.getElementById('turbo-close');
+btnTurbo.addEventListener('click', () => {
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  turboClose.classList.add('hidden');
+  const steps = document.querySelectorAll('#turbo-steps [data-step]');
+  steps.forEach(step => {
+    const icon = step.querySelector('.step-icon');
+    const status = step.querySelector('.step-status');
+    icon.className = 'w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center step-icon';
+    icon.innerHTML = `<span class="text-[12px] font-bold text-slate-500">${step.dataset.step}</span>`;
+    status.textContent = 'Aguardando...';
+    status.className = 'text-[12px] text-slate-500 step-status';
+    step.classList.remove('bg-emerald-50', 'border-emerald-300');
+    step.classList.add('bg-slate-50', 'border-slate-200');
+  });
+  const runStep = (num, text, delay) => new Promise(resolve => {
+    setTimeout(() => {
+      const step = document.querySelector(`[data-step="${num}"]`);
+      const icon = step.querySelector('.step-icon');
+      const status = step.querySelector('.step-status');
+      icon.className = 'w-8 h-8 rounded-full bg-[#00c2a8] flex items-center justify-center step-icon';
+      icon.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`;
+      status.textContent = text;
+      status.className = 'text-[12px] text-emerald-700 font-medium step-status';
+      step.classList.remove('bg-slate-50', 'border-slate-200');
+      step.classList.add('bg-emerald-50', 'border-emerald-300');
+      resolve();
+    }, delay);
+  });
+  runStep(1, '324 visitas analisadas', 600)
+    .then(() => runStep(2, 'Vitrine otimizada pelo Blokinho', 800))
+    .then(() => runStep(3, 'Notificação enviada ao canal', 800))
+    .then(() => {
+      setTimeout(() => {
+        turboClose.classList.remove('hidden');
+        showToast('Otimização concluída!', 'Blokinho cuidou de tudo por você');
+      }, 400);
+    });
+});
+turboClose.addEventListener('click', () => {
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+});
+</script>
+
+</body>
+</html>
