@@ -277,6 +277,18 @@ async function getAnalytics(request, env) {
     const url = new URL(request.url);
     const lojaId = url.searchParams.get('loja_id');
     if (!lojaId) return new Response(JSON.stringify({ erro: 'loja_id ausente' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    
+    // Verifica se a tabela visitas existe
+    try {
+      await env.DB.prepare('SELECT 1 FROM visitas LIMIT 1').run();
+    } catch (e) {
+      // Tabela não existe, retorna zeros
+      return new Response(JSON.stringify({ 
+        sucesso: true, 
+        analytics: { total: 0, hoje: 0, semana: 0, ultimas: [] } 
+      }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    }
+    
     const hoje = new Date().toISOString().split('T')[0];
     const semanaAtras = new Date(); semanaAtras.setDate(semanaAtras.getDate() - 7);
     const dataSemana = semanaAtras.toISOString().split('T')[0];
@@ -284,9 +296,9 @@ async function getAnalytics(request, env) {
     const visitasHoje = await env.DB.prepare('SELECT COUNT(*) as total FROM visitas WHERE loja_id = ? AND data = ?').bind(lojaId, hoje).first();
     const visitasSemana = await env.DB.prepare('SELECT COUNT(*) as total FROM visitas WHERE loja_id = ? AND data >= ?').bind(lojaId, dataSemana).first();
     const ultimasVisitas = await env.DB.prepare('SELECT * FROM visitas WHERE loja_id = ? ORDER BY data DESC, hora DESC LIMIT 10').bind(lojaId).all();
-    return new Response(JSON.stringify({ sucesso: true, analytics: { total: totalVisitas.total, hoje: visitasHoje.total, semana: visitasSemana.total, ultimas: ultimasVisitas.results || [] } }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    return new Response(JSON.stringify({ sucesso: true, analytics: { total: totalVisitas.total || 0, hoje: visitasHoje.total || 0, semana: visitasSemana.total || 0, ultimas: ultimasVisitas.results || [] } }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   } catch (erro) {
-    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    return new Response(JSON.stringify({ sucesso: true, analytics: { total: 0, hoje: 0, semana: 0, ultimas: [] }, erro: erro.message }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   }
 }
 
