@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MicroOne - Tudo em Um para o Microempreendedor</title>
+<title>MicroOne — Tudo em Um para o Microempreendedor</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,43 +12,45 @@
 * { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
 html { scroll-behavior: smooth; }
 
-/* Blokinho Animations */
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 @keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(20,110,245,0.4)} 70%{box-shadow:0 0 0 15px rgba(20,110,245,0)} 100%{box-shadow:0 0 0 0 rgba(20,110,245,0)} }
 @keyframes blink { 0%,90%,100%{transform:scaleY(1)} 95%{transform:scaleY(0.1)} }
 @keyframes wave { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(15deg)} 75%{transform:rotate(-10deg)} }
-@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes glowPulse { 0%,100%{opacity:0.6;transform:scaleX(1)} 50%{opacity:1;transform:scaleX(1.1)} }
 
 .blokinho-float { animation: float 3s ease-in-out infinite; }
 .blokinho-pulse { animation: pulse-ring 2s infinite; }
 .eye-blink { animation: blink 4s infinite; transform-origin: center; }
 .arm-wave { animation: wave 2s ease-in-out infinite; transform-origin: bottom right; }
+.glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
 
 .section-reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
 .section-reveal.visible { opacity: 1; transform: translateY(0); }
 
-/* Blokinho Chat Bubble */
 .chat-bubble {
   position: absolute;
   background: white;
   border-radius: 16px;
-  padding: 12px 16px;
+  padding: 14px 18px;
   font-size: 14px;
   color: #0a2540;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  max-width: 240px;
+  max-width: 260px;
   opacity: 0;
   transform: translateY(10px);
   transition: all 0.4s ease;
   pointer-events: none;
+  z-index: 30;
 }
 .chat-bubble.show { opacity: 1; transform: translateY(0); }
 .chat-bubble::after {
   content: '';
   position: absolute;
   bottom: -8px;
-  left: 30px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 0;
   height: 0;
   border-left: 8px solid transparent;
@@ -56,7 +58,6 @@ html { scroll-behavior: smooth; }
   border-top: 10px solid white;
 }
 
-/* Floating Blokinho Button */
 .blokinho-btn {
   position: fixed;
   bottom: 24px;
@@ -92,14 +93,44 @@ html { scroll-behavior: smooth; }
 }
 .blokinho-popup.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-/* Hero Blokinho */
-.hero-blokinho {
-  width: 280px;
-  height: 320px;
+.hero-blokinho-wrapper {
   position: relative;
+  width: 320px;
+  height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Gradient Text */
+.hero-bubble {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: 14px;
+  color: #0a2540;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  max-width: 240px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.5s ease;
+  z-index: 30;
+}
+.hero-bubble.show { opacity: 1; transform: translateY(0); }
+.hero-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 40px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid white;
+}
+
 .gradient-text {
   background: linear-gradient(135deg, #146EF5, #00D1FF);
   -webkit-background-clip: text;
@@ -107,11 +138,9 @@ html { scroll-behavior: smooth; }
   background-clip: text;
 }
 
-/* Card Hover */
 .card-hover { transition: all 0.3s; }
 .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(20,110,245,0.15); }
 
-/* Pricing Card Featured */
 .pricing-featured {
   position: relative;
   border: 2px solid #146EF5;
@@ -134,7 +163,8 @@ html { scroll-behavior: smooth; }
 
 @media (max-width: 768px) {
   .pricing-featured { transform: scale(1); }
-  .hero-blokinho { width: 200px; height: 240px; }
+  .hero-blokinho-wrapper { width: 260px; height: 320px; }
+  .hero-bubble { right: 0; max-width: 200px; font-size: 12px; padding: 10px 14px; }
 }
 </style>
 </head>
@@ -169,7 +199,7 @@ html { scroll-behavior: smooth; }
         <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
         Entrar com Google
       </button>
-      <button class="px-5 py-2 bg-gradient-to-r from-[#146EF5] to-[#00D1FF] text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition">Começar Grátis</button>
+      <a href="#precos" class="px-5 py-2 bg-gradient-to-r from-[#146EF5] to-[#00D1FF] text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition">Começar Grátis</a>
     </div>
   </div>
 </nav>
@@ -183,21 +213,26 @@ html { scroll-behavior: smooth; }
         <span class="text-sm font-medium text-[#146EF5]">Plataforma 100% brasileira</span>
       </div>
       
-      <h1 class="text-5xl md:text-6xl font-black text-slate-900 leading-tight mb-6">
+      <h1 class="text-5xl md:text-6xl font-black text-slate-900 leading-tight mb-4">
         Sua loja. Seu controle. <span class="gradient-text">Seu negócio.</span>
       </h1>
       
+      <!-- NOVA FRASE ADICIONADA -->
+      <p class="text-2xl md:text-3xl font-bold text-[#146EF5] mb-6">
+        MicroOne — Sua Loja em suas Mãos
+      </p>
+
       <p class="text-xl text-slate-600 mb-8 leading-relaxed">
         Pare de pagar R$300/mês pra quem não traz cliente. O MicroOne é tudo em um para o microempreendedor brasileiro.
       </p>
 
       <div class="flex flex-wrap gap-4 mb-10">
-        <button class="px-8 py-4 bg-gradient-to-r from-[#146EF5] to-[#00D1FF] text-white rounded-2xl font-bold text-lg hover:shadow-xl hover:shadow-blue-500/30 transition transform hover:-translate-y-1">
+        <a href="#precos" class="px-8 py-4 bg-gradient-to-r from-[#146EF5] to-[#00D1FF] text-white rounded-2xl font-bold text-lg hover:shadow-xl hover:shadow-blue-500/30 transition transform hover:-translate-y-1">
           🚀 Começar Grátis
-        </button>
-        <button class="px-8 py-4 bg-white border-2 border-slate-200 text-slate-700 rounded-2xl font-bold text-lg hover:border-[#146EF5] transition">
+        </a>
+        <a href="#nichos" class="px-8 py-4 bg-white border-2 border-slate-200 text-slate-700 rounded-2xl font-bold text-lg hover:border-[#146EF5] transition">
           ▶ Ver Demo
-        </button>
+        </a>
       </div>
 
       <div class="flex items-center gap-8">
@@ -216,73 +251,71 @@ html { scroll-behavior: smooth; }
       </div>
     </div>
 
-    <!-- Blokinho Hero -->
-    <div class="flex justify-center section-reveal">
-      <div class="hero-blokinho blokinho-float relative">
-        <!-- Chat Bubble -->
-        <div class="chat-bubble show" style="top: -20px; right: -40px;">
+    <div class="section-reveal flex justify-center">
+      <div class="hero-blokinho-wrapper">
+        <!-- BALÃO DE FALA CORRIGIDO - agora visível -->
+        <div class="hero-bubble show">
           <span class="font-semibold">Oi! Eu sou o Blokinho!</span> 🤖<br>
           <span class="text-sm text-slate-600">Vou te ajudar a criar sua loja digital!</span>
         </div>
 
-        <!-- Blokinho SVG -->
-        <svg viewBox="0 0 200 220" class="w-full h-full drop-shadow-2xl">
-          <!-- Glow -->
-          <ellipse cx="100" cy="210" rx="60" ry="10" fill="rgba(20,110,245,0.2)">
-            <animate attributeName="rx" values="60;70;60" dur="3s" repeatCount="indefinite"/>
-          </ellipse>
-          
-          <!-- Body -->
-          <rect x="30" y="30" width="140" height="140" rx="35" fill="url(#bodyGrad)"/>
-          <defs>
-            <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#146EF5"/>
-              <stop offset="100%" style="stop-color:#00D1FF"/>
-            </linearGradient>
-          </defs>
-          
-          <!-- Body highlight -->
-          <rect x="30" y="30" width="140" height="70" rx="35" fill="rgba(255,255,255,0.15)"/>
-          
-          <!-- Antenna -->
-          <line x1="100" y1="30" x2="100" y2="10" stroke="#146EF5" stroke-width="4" stroke-linecap="round"/>
-          <circle cx="100" cy="8" r="8" fill="#00D1FF">
-            <animate attributeName="r" values="8;10;8" dur="2s" repeatCount="indefinite"/>
-          </circle>
-          
-          <!-- Eyes -->
-          <ellipse cx="70" cy="90" rx="22" ry="25" fill="white"/>
-          <ellipse cx="130" cy="90" rx="22" ry="25" fill="white"/>
-          
-          <!-- Pupils with blink -->
-          <g class="eye-blink">
-            <circle cx="75" cy="92" r="12" fill="#0a2540"/>
-            <circle cx="135" cy="92" r="12" fill="#0a2540"/>
-          </g>
-          
-          <!-- Eye shine -->
-          <circle cx="80" cy="87" r="4" fill="white"/>
-          <circle cx="140" cy="87" r="4" fill="white"/>
-          
-          <!-- Smile -->
-          <path d="M 70 125 Q 100 145 130 125" stroke="#0a2540" stroke-width="5" fill="none" stroke-linecap="round"/>
-          
-          <!-- Tongue -->
-          <ellipse cx="100" cy="135" rx="10" ry="6" fill="#e94560"/>
-          
-          <!-- Cheeks -->
-          <circle cx="50" cy="110" r="8" fill="rgba(233,69,96,0.3)"/>
-          <circle cx="150" cy="110" r="8" fill="rgba(233,69,96,0.3)"/>
-          
-          <!-- Waving Arm -->
-          <g class="arm-wave">
-            <rect x="5" y="80" width="30" height="14" rx="7" fill="#146EF5"/>
-            <circle cx="5" cy="87" r="10" fill="#146EF5"/>
-          </g>
-          
-          <!-- Right Arm -->
-          <rect x="165" y="90" width="25" height="14" rx="7" fill="#146EF5"/>
-        </svg>
+        <!-- BLOKINHO SVG -->
+        <div class="blokinho-float">
+          <svg width="260" height="300" viewBox="0 0 260 300" fill="none">
+            <!-- Glow na base -->
+            <ellipse cx="130" cy="285" rx="80" ry="12" fill="rgba(20,110,245,0.2)" class="glow-pulse"/>
+            
+            <!-- Antena -->
+            <line x1="130" y1="55" x2="130" y2="20" stroke="#146EF5" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="130" cy="15" r="10" fill="#00D1FF">
+              <animate attributeName="r" values="10;12;10" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            
+            <!-- Corpo - forma quadrada arredondada (como o original) -->
+            <rect x="40" y="55" width="180" height="180" rx="45" fill="#146EF5"/>
+            
+            <!-- Brilho no corpo -->
+            <rect x="40" y="55" width="180" height="90" rx="45" fill="rgba(255,255,255,0.15)"/>
+            
+            <!-- Olhos grandes e expressivos -->
+            <ellipse cx="95" cy="130" rx="32" ry="36" fill="white"/>
+            <ellipse cx="165" cy="130" rx="32" ry="36" fill="white"/>
+            
+            <!-- Pupilas -->
+            <circle cx="102" cy="135" r="16" fill="#0a2540" class="eye-blink"/>
+            <circle cx="172" cy="135" r="16" fill="#0a2540" class="eye-blink"/>
+            
+            <!-- Brilho dos olhos -->
+            <circle cx="108" cy="128" r="6" fill="white"/>
+            <circle cx="178" cy="128" r="6" fill="white"/>
+            <circle cx="96" cy="142" r="3" fill="white" opacity="0.6"/>
+            <circle cx="166" cy="142" r="3" fill="white" opacity="0.6"/>
+            
+            <!-- Sobrancelhas -->
+            <path d="M 70 95 Q 95 85 120 95" stroke="#0a2540" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <path d="M 140 95 Q 165 85 190 95" stroke="#0a2540" stroke-width="5" fill="none" stroke-linecap="round"/>
+            
+            <!-- Boca sorridente -->
+            <path d="M 90 185 Q 130 210 170 185" stroke="#0a2540" stroke-width="6" fill="none" stroke-linecap="round"/>
+            
+            <!-- Língua -->
+            <ellipse cx="130" cy="195" rx="14" ry="9" fill="#e94560"/>
+            
+            <!-- Bochechas rosadas -->
+            <circle cx="65" cy="165" r="14" fill="rgba(255,150,150,0.5)"/>
+            <circle cx="195" cy="165" r="14" fill="rgba(255,150,150,0.5)"/>
+            
+            <!-- Braço esquerdo acenando -->
+            <g class="arm-wave" style="transform-origin: 40px 140px;">
+              <rect x="5" y="120" width="40" height="20" rx="10" fill="#146EF5"/>
+              <circle cx="10" cy="130" r="14" fill="#146EF5"/>
+            </g>
+            
+            <!-- Braço direito -->
+            <rect x="215" y="130" width="35" height="20" rx="10" fill="#146EF5"/>
+            <circle cx="245" cy="140" r="14" fill="#146EF5"/>
+          </svg>
+        </div>
       </div>
     </div>
   </div>
@@ -296,11 +329,10 @@ html { scroll-behavior: smooth; }
         <span class="text-sm font-semibold text-[#146EF5]">Para cada negócio</span>
       </div>
       <h2 class="text-4xl md:text-5xl font-black text-slate-900 mb-4">Um MicroOne para cada nicho</h2>
-      <p class="text-xl text-slate-600 max-w-2xl mx-auto">Seja você lanchonete, salão, advogado ou fotógrafo — temos a solução perfeita.</p>
+      <p class="text-xl text-slate-600 max-w-2xl mx-auto">Seja você lanchonete, salão de beleza, advogado ou fotógrafo — temos a solução perfeita.</p>
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- MicroFood -->
       <div class="card-hover bg-gradient-to-br from-orange-50 to-red-50 rounded-3xl p-8 border border-orange-100 section-reveal">
         <div class="text-5xl mb-4">🍔</div>
         <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroFood</h3>
@@ -311,18 +343,16 @@ html { scroll-behavior: smooth; }
         </div>
       </div>
 
-      <!-- MicroBeauty -->
       <div class="card-hover bg-gradient-to-br from-pink-50 to-rose-50 rounded-3xl p-8 border border-pink-100 section-reveal">
         <div class="text-5xl mb-4">💅</div>
         <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroBeauty</h3>
-        <p class="text-slate-600 mb-4">Salões, manicures e barbeiros com portfólio de trabalhos e agendamento online.</p>
+        <p class="text-slate-600 mb-4">Salões de beleza, manicures e barbeiros com portfólio de trabalhos e agendamento online.</p>
         <div class="flex gap-2">
           <button class="px-4 py-2 bg-[#146EF5] text-white rounded-xl text-sm font-semibold">Ver Demo</button>
           <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold">Testar 15 dias</button>
         </div>
       </div>
 
-      <!-- MicroLaw -->
       <div class="card-hover bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 border border-blue-100 section-reveal">
         <div class="text-5xl mb-4">⚖️</div>
         <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroLaw</h3>
@@ -333,7 +363,6 @@ html { scroll-behavior: smooth; }
         </div>
       </div>
 
-      <!-- MicroStudio -->
       <div class="card-hover bg-gradient-to-br from-purple-50 to-violet-50 rounded-3xl p-8 border border-purple-100 section-reveal">
         <div class="text-5xl mb-4">📸</div>
         <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroStudio</h3>
@@ -344,7 +373,6 @@ html { scroll-behavior: smooth; }
         </div>
       </div>
 
-      <!-- MicroHealth -->
       <div class="card-hover bg-gradient-to-br from-cyan-50 to-teal-50 rounded-3xl p-8 border border-cyan-100 section-reveal">
         <div class="text-5xl mb-4">🏥</div>
         <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroHealth</h3>
@@ -355,7 +383,6 @@ html { scroll-behavior: smooth; }
         </div>
       </div>
 
-      <!-- MicroShop -->
       <div class="card-hover bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 border border-green-100 section-reveal">
         <div class="text-5xl mb-4">🛍️</div>
         <h3 class="text-2xl font-bold text-slate-900 mb-2">MicroShop</h3>
@@ -414,7 +441,6 @@ html { scroll-behavior: smooth; }
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- FREE -->
       <div class="card-hover bg-white rounded-3xl p-8 border border-slate-200 section-reveal">
         <div class="text-sm font-bold text-[#146EF5] mb-2">FREE</div>
         <div class="text-5xl font-black text-slate-900 mb-1">R$0<span class="text-lg text-slate-500 font-normal">/mês</span></div>
@@ -427,10 +453,9 @@ html { scroll-behavior: smooth; }
           <li class="flex items-center gap-2 text-sm text-slate-400"><span>✗</span> Domínio próprio</li>
           <li class="flex items-center gap-2 text-sm text-slate-400"><span>✗</span> Bot Telegram</li>
         </ul>
-        <button class="w-full py-3 border-2 border-[#146EF5] text-[#146EF5] rounded-xl font-bold hover:bg-[#146EF5] hover:text-white transition">Começar Grátis</button>
+        <a href="#" class="block w-full py-3 border-2 border-[#146EF5] text-[#146EF5] rounded-xl font-bold hover:bg-[#146EF5] hover:text-white transition text-center">Começar Grátis</a>
       </div>
 
-      <!-- BASIC -->
       <div class="card-hover bg-white rounded-3xl p-8 border border-slate-200 section-reveal">
         <div class="text-sm font-bold text-[#146EF5] mb-2">BASIC</div>
         <div class="text-5xl font-black text-slate-900 mb-1">R$19<span class="text-lg text-slate-500 font-normal">/mês</span></div>
@@ -443,10 +468,9 @@ html { scroll-behavior: smooth; }
           <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Bot Telegram</li>
           <li class="flex items-center gap-2 text-sm text-slate-400"><span>✗</span> Domínio próprio</li>
         </ul>
-        <button class="w-full py-3 border-2 border-[#146EF5] text-[#146EF5] rounded-xl font-bold hover:bg-[#146EF5] hover:text-white transition">Assinar Basic</button>
+        <a href="#" class="block w-full py-3 border-2 border-[#146EF5] text-[#146EF5] rounded-xl font-bold hover:bg-[#146EF5] hover:text-white transition text-center">Assinar Basic</a>
       </div>
 
-      <!-- PLUS (Featured) -->
       <div class="card-hover pricing-featured bg-white rounded-3xl p-8 section-reveal">
         <div class="text-sm font-bold text-[#146EF5] mb-2">PLUS</div>
         <div class="text-5xl font-black text-slate-900 mb-1">R$39<span class="text-lg text-slate-500 font-normal">/mês</span></div>
@@ -459,10 +483,9 @@ html { scroll-behavior: smooth; }
           <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Bot Telegram completo</li>
           <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> QR Code personalizado</li>
         </ul>
-        <button class="w-full py-3 bg-gradient-to-r from-[#146EF5] to-[#00D1FF] text-white rounded-xl font-bold hover:shadow-lg transition">Assinar Plus</button>
+        <a href="#" class="block w-full py-3 bg-gradient-to-r from-[#146EF5] to-[#00D1FF] text-white rounded-xl font-bold hover:shadow-lg transition text-center">Assinar Plus</a>
       </div>
 
-      <!-- PRO -->
       <div class="card-hover bg-white rounded-3xl p-8 border border-slate-200 section-reveal">
         <div class="text-sm font-bold text-[#146EF5] mb-2">PRO</div>
         <div class="text-5xl font-black text-slate-900 mb-1">R$79<span class="text-lg text-slate-500 font-normal">/mês</span></div>
@@ -475,7 +498,7 @@ html { scroll-behavior: smooth; }
           <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> Suporte prioritário</li>
           <li class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span> API + integrações</li>
         </ul>
-        <button class="w-full py-3 border-2 border-[#146EF5] text-[#146EF5] rounded-xl font-bold hover:bg-[#146EF5] hover:text-white transition">Assinar Pro</button>
+        <a href="#" class="block w-full py-3 border-2 border-[#146EF5] text-[#146EF5] rounded-xl font-bold hover:bg-[#146EF5] hover:text-white transition text-center">Assinar Pro</a>
       </div>
     </div>
   </div>
@@ -551,9 +574,9 @@ html { scroll-behavior: smooth; }
     <h2 class="text-4xl md:text-5xl font-black mb-6">Pronto para ter o controle?</h2>
     <p class="text-xl mb-10 opacity-90">Junte-se a milhares de microempreendedores que já libertaram seu negócio.</p>
     <div class="flex flex-wrap justify-center gap-4">
-      <button class="px-8 py-4 bg-white text-[#146EF5] rounded-2xl font-bold text-lg hover:shadow-xl transition transform hover:-translate-y-1">
-        🚀 Começar Grátis Agora
-      </button>
+      <a href="#precos" class="px-8 py-4 bg-white text-[#146EF5] rounded-2xl font-bold text-lg hover:shadow-xl transition transform hover:-translate-y-1">
+         Começar Grátis Agora
+      </a>
       <button class="px-8 py-4 bg-white/10 backdrop-blur border-2 border-white/30 text-white rounded-2xl font-bold text-lg hover:bg-white/20 transition">
         Entrar com Google
       </button>
