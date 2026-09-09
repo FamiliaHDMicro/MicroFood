@@ -13,419 +13,264 @@
               </style>
                         </head>
                         <body>
-                            <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="titulo-loja">Carregando...</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          bg: '#0d0d0d', card: '#121212', roxo: '#1a0f2b',
-          laranja: '#ff5500', amarelo: '#ffcc00', verde: '#10b981', vermelho: '#ef4444'
-        }
-      }
-    }
-  }
-</script>
-<style>
-  body { background: #0d0d0d; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; }
-  .fade-in { animation: fadeIn 0.6s ease-out; }
-  @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
-  .card-hover { transition: all 0.3s; }
-  .card-hover:hover { transform: translateY(-5px); }
-  .tela-oculta { display: none !important; }
-  video, iframe { width: 100%; border-radius: 12px; }
-</style>
-</head>
-<body>
-
-<div id="loading" class="min-h-screen flex items-center justify-center">
-  <div class="text-center">
-    <div class="text-6xl mb-4">🍽️</div>
-    <div class="text-2xl font-bold text-laranja">Carregando loja...</div>
+                            <a href="https://wa.me/${loja.zap}" target="_blank">💬 Pedir pelo WhatsApp</a>
+<button onclick="abrirFormularioPedido('${loja.id}', '${loja.nome_loja}')" class="inline-block mt-6 bg-laranja hover:bg-orange-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl">
+  🛒 Fazer Pedido
+</button>
+<!-- Modal de Pedido -->
+<div id="modal-pedido" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+  <div style="background:#121212; padding:2rem; border-radius:16px; max-width:500px; width:90%; max-height:90vh; overflow-y:auto;">
+    <h2 style="color:#ff5500; margin-bottom:1rem;">Fazer Pedido</h2>
+    <form id="form-pedido">
+      <div style="margin-bottom:1rem;">
+        <label style="color:#fff; display:block; margin-bottom:0.5rem;">Seu nome *</label>
+        <input type="text" id="pedido-nome" required style="width:100%; padding:0.8rem; border-radius:8px; border:1px solid #1a0f2b; background:#0d0d0d; color:#fff;">
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="color:#fff; display:block; margin-bottom:0.5rem;">Telefone (WhatsApp)</label>
+        <input type="tel" id="pedido-telefone" placeholder="(11) 99999-9999" style="width:100%; padding:0.8rem; border-radius:8px; border:1px solid #1a0f2b; background:#0d0d0d; color:#fff;">
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="color:#fff; display:block; margin-bottom:0.5rem;">O que você quer? *</label>
+        <textarea id="pedido-itens" required rows="4" placeholder="Ex: 2 marmitas grandes, 1 refrigerante..." style="width:100%; padding:0.8rem; border-radius:8px; border:1px solid #1a0f2b; background:#0d0d0d; color:#fff; resize:vertical;"></textarea>
+      </div>
+      <div style="margin-bottom:1.5rem;">
+        <label style="color:#fff; display:block; margin-bottom:0.5rem;">Observação</label>
+        <textarea id="pedido-observacao" rows="2" placeholder="Ex: Sem cebola, entregar rápido..." style="width:100%; padding:0.8rem; border-radius:8px; border:1px solid #1a0f2b; background:#0d0d0d; color:#fff; resize:vertical;"></textarea>
+      </div>
+      <div style="display:flex; gap:1rem;">
+        <button type="button" onclick="fecharFormularioPedido()" style="flex:1; padding:1rem; border-radius:8px; border:1px solid #1a0f2b; background:transparent; color:#fff; font-weight:bold; cursor:pointer;">Cancelar</button>
+        <button type="submit" style="flex:1; padding:1rem; border-radius:8px; border:none; background:#ff5500; color:#fff; font-weight:bold; cursor:pointer;">Enviar Pedido</button>
+      </div>
+    </form>
   </div>
 </div>
 
-<div id="erro" class="tela-oculta min-h-screen flex items-center justify-center">
-  <div class="text-center">
-    <div class="text-6xl mb-4">😕</div>
-    <div class="text-2xl font-bold text-vermelho mb-2">Loja não encontrada</div>
-    <div class="text-gray-400 mb-6">Este endereço não existe ou foi desativado.</div>
-    <a href="https://microfood.pages.dev" class="inline-block bg-laranja px-6 py-3 rounded-lg font-bold hover:bg-orange-600">Voltar ao SiteOne</a>
-  </div>
-</div>
-
-<div id="conteudo-loja" class="tela-oculta"></div>
-
 <script>
-const WORKER_URL = 'https://microfood.hdmicro.workers.dev';
+let lojaIdAtual = '';
+let lojaNomeAtual = '';
 
-const templatesHTML = {
-  'sabor-caseiro': renderSaborCaseiro,
-  'loja-virtual': renderLojaVirtual,
-  'consult-pro': renderConsultPro,
-  'barber-shop': renderBarberShop,
-  'delivery-rapido': renderDeliveryRapido,
-  'mesa-farta': renderMesaFarta,
-  'glamour-studio': renderGlamourStudio,
-  'beauty-express': renderBeautyExpress,
-  'mao-na-massa': renderMaoNaMassa,
-  'tech-solutions': renderTechSolutions,
-  'limpeza-total': renderLimpezaTotal,
-  'eventos-plus': renderEventosPlus
-};
-
-function renderSaborCaseiro(loja, fotos, videos, musicas) {
-  const galeria = fotos.length > 0 
-    ? fotos.map(f => `<div class="card-hover rounded-2xl overflow-hidden shadow-2xl"><img src="${f.url}" class="w-full h-64 object-cover"></div>`).join('')
-    : `<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4">🍽️</div><div class="text-xl text-gray-400">Fotos em breve!</div></div>`;
-
-  const videosHtml = videos.length > 0 ? `
-    <div class="max-w-6xl mx-auto px-4 pb-12">
-      <h2 class="text-3xl font-black text-laranja mb-6 text-center">Nossos vídeos</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        ${videos.map(v => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="${v.url}" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">${v.titulo || ''}</div></div>`).join('')}
-      </div>
-    </div>` : '';
-
-  const musicasHtml = musicas.length > 0 ? `
-    <div class="max-w-6xl mx-auto px-4 pb-12">
-      <h2 class="text-3xl font-black text-laranja mb-6 text-center">🎵 Trilha sonora</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        ${musicas.map(m => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><iframe src="${m.url}" class="w-full h-48" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="p-3"><div class="text-sm font-bold text-white">${m.titulo || ''}</div><div class="text-xs text-gray-400">${m.artista || ''}</div></div></div>`).join('')}
-      </div>
-    </div>` : '';
-
-  return `
-    <div class="relative h-96 bg-gradient-to-br from-orange-900 via-red-900 to-amber-900 flex items-center justify-center overflow-hidden fade-in">
-      <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%2250%22 font-size=%2280%22>🍲</text></svg>'); background-size: 100px;"></div>
-      <div class="relative text-center px-4">
-        <div class="text-6xl mb-4">🍲</div>
-        <h1 class="text-5xl md:text-6xl font-black text-white mb-2">${loja.nome_loja}</h1>
-        <p class="text-xl text-amber-200">Feito com amor, entregue com carinho</p>
-        <a href="https://wa.me/${loja.zap}" target="_blank" class="inline-block mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl">💬 Pedir pelo WhatsApp</a>
-      </div>
-    </div>
-    <div class="max-w-4xl mx-auto px-4 py-12">
-      <div class="bg-card rounded-2xl p-8 border border-roxo">
-        <h2 class="text-3xl font-black text-laranja mb-4">Sobre nós</h2>
-        <p class="text-gray-300 text-lg">Bem-vindo à <strong class="text-white">${loja.nome_loja}</strong>! Preparamos cada prato com ingredientes frescos e muito carinho.</p>
-      </div>
-    </div>
-    <div class="max-w-6xl mx-auto px-4 pb-12">
-      <h2 class="text-3xl font-black text-laranja mb-6 text-center">Nossas delícias</h2>
-      <div class="grid md:grid-cols-3 gap-6">${galeria}</div>
-    </div>
-    ${videosHtml}
-    ${musicasHtml}
-    <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
-  `;
+function abrirFormularioPedido(lojaId, lojaNome) {
+  lojaIdAtual = lojaId;
+  lojaNomeAtual = lojaNome;
+  document.getElementById('modal-pedido').style.display = 'flex';
 }
 
-function renderLojaVirtual(loja, fotos, videos, musicas) {
-  const produtos = fotos.length > 0 
-    ? fotos.map(f => `<div class="card-hover bg-card rounded-2xl overflow-hidden border border-roxo"><img src="${f.url}" class="w-full h-48 object-cover"><div class="p-4"><div class="font-bold text-lg">Produto</div><div class="text-laranja font-black text-xl mt-2">R$ --</div><a href="https://wa.me/${loja.zap}" target="_blank" class="block mt-3 bg-laranja text-white text-center py-2 rounded-lg font-bold">Comprar</a></div></div>`).join('')
-    : `<div class="col-span-full text-center py-12 bg-roxo rounded-2xl"><div class="text-6xl mb-4">🛒</div><div class="text-xl text-gray-400">Produtos em breve!</div></div>`;
-
-  const videosHtml = videos.length > 0 ? `
-    <div class="max-w-6xl mx-auto px-4 pb-12">
-      <h2 class="text-3xl font-black text-laranja mb-6">Vídeos da loja</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        ${videos.map(v => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="${v.url}" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">${v.titulo || ''}</div></div>`).join('')}
-      </div>
-    </div>` : '';
-
-  const musicasHtml = musicas.length > 0 ? `
-    <div class="max-w-6xl mx-auto px-4 pb-12">
-      <h2 class="text-3xl font-black text-laranja mb-6">🎵 Músicas da loja</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        ${musicas.map(m => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><iframe src="${m.url}" class="w-full h-48" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="p-3"><div class="text-sm font-bold text-white">${m.titulo || ''}</div><div class="text-xs text-gray-400">${m.artista || ''}</div></div></div>`).join('')}
-      </div>
-    </div>` : '';
-
-  return `
-    <div class="bg-gradient-to-r from-blue-900 to-purple-900 py-16 text-center fade-in">
-      <div class="text-6xl mb-4">🛍️</div>
-      <h1 class="text-5xl font-black text-white mb-4">${loja.nome_loja}</h1>
-      <p class="text-xl text-blue-200">Sua loja online completa</p>
-      <a href="https://wa.me/${loja.zap}" target="_blank" class="inline-block mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl">💬 Pedir pelo WhatsApp</a>
-    </div>
-    <div class="max-w-6xl mx-auto px-4 py-12">
-      <h2 class="text-3xl font-black text-laranja mb-6">Produtos</h2>
-      <div class="grid md:grid-cols-3 gap-6">${produtos}</div>
-    </div>
-    ${videosHtml}
-    ${musicasHtml}
-    <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
-  `;
+function fecharFormularioPedido() {
+  document.getElementById('modal-pedido').style.display = 'none';
+  document.getElementById('form-pedido').reset();
 }
 
-function renderDefault(loja, fotos, videos, musicas, emoji, cor1, cor2) {
-  const galeria = fotos.length > 0 
-    ? `<div class="max-w-6xl mx-auto px-4 py-12"><h2 class="text-3xl font-black text-laranja mb-6 text-center">Galeria</h2><div class="grid md:grid-cols-3 gap-6">${fotos.map(f => `<div class="card-hover rounded-2xl overflow-hidden shadow-2xl"><img src="${f.url}" class="w-full h-64 object-cover"></div>`).join('')}</div></div>`
-    : '';
+document.getElementById('form-pedido').addEventListener('submit', async function(e) {
+  e.preventDefault();
   
-  const videosHtml = videos.length > 0 ? `
-    <div class="max-w-6xl mx-auto px-4 pb-12">
-      <h2 class="text-3xl font-black text-laranja mb-6 text-center">Vídeos</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        ${videos.map(v => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><video src="${v.url}" controls autoplay muted loop playsinline></video><div class="p-3 text-sm text-gray-300">${v.titulo || ''}</div></div>`).join('')}
-      </div>
-    </div>` : '';
-
-  const musicasHtml = musicas.length > 0 ? `
-    <div class="max-w-6xl mx-auto px-4 pb-12">
-      <h2 class="text-3xl font-black text-laranja mb-6 text-center"> Músicas</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        ${musicas.map(m => `<div class="card-hover rounded-2xl overflow-hidden bg-card border border-roxo"><iframe src="${m.url}" class="w-full h-48" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="p-3"><div class="text-sm font-bold text-white">${m.titulo || ''}</div><div class="text-xs text-gray-400">${m.artista || ''}</div></div></div>`).join('')}
-      </div>
-    </div>` : '';
-
-  return `
-    <div class="bg-gradient-to-r ${cor1} ${cor2} py-16 text-center fade-in">
-      <div class="text-6xl mb-4">${emoji}</div>
-      <h1 class="text-5xl font-black text-white mb-4">${loja.nome_loja}</h1>
-      <p class="text-xl text-gray-200">Template ${loja.template_id || 'profissional'}</p>
-      <a href="https://wa.me/${loja.zap}" target="_blank" class="inline-block mt-6 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl">💬 WhatsApp</a>
-    </div>
-    ${galeria}
-    ${videosHtml}
-    ${musicasHtml}
-    <footer class="bg-black py-6 text-center text-gray-500 text-sm">Powered by <strong class="text-laranja">SiteOne</strong></footer>
-  `;
-}
-
-function renderConsultPro(loja, f, v, m) { return renderDefault(loja, f, v, m, '💼', 'from-slate-900', 'to-gray-900'); }
-function renderBarberShop(loja, f, v, m) { return renderDefault(loja, f, v, m, '💈', 'from-gray-900', 'to-black'); }
-function renderDeliveryRapido(loja, f, v, m) { return renderDefault(loja, f, v, m, '', 'from-red-900', 'to-orange-900'); }
-function renderMesaFarta(loja, f, v, m) { return renderDefault(loja, f, v, m, '🍽️', 'from-amber-900', 'to-yellow-900'); }
-function renderGlamourStudio(loja, f, v, m) { return renderDefault(loja, f, v, m, '✨', 'from-purple-900', 'to-pink-900'); }
-function renderBeautyExpress(loja, f, v, m) { return renderDefault(loja, f, v, m, '💅', 'from-pink-900', 'to-rose-900'); }
-function renderMaoNaMassa(loja, f, v, m) { return renderDefault(loja, f, v, m, '', 'from-orange-900', 'to-amber-900'); }
-function renderTechSolutions(loja, f, v, m) { return renderDefault(loja, f, v, m, '💻', 'from-blue-900', 'to-cyan-900'); }
-function renderLimpezaTotal(loja, f, v, m) { return renderDefault(loja, f, v, m, '🧹', 'from-green-900', 'to-teal-900'); }
-function renderEventosPlus(loja, f, v, m) { return renderDefault(loja, f, v, m, '🎉', 'from-fuchsia-900', 'to-purple-900'); }
-
-async function carregarLoja() {
-  const params = new URLSearchParams(window.location.search);
-  const subdomain = params.get('subdomain');
-  if (!subdomain) {
-    document.getElementById('loading').classList.add('tela-oculta');
-    document.getElementById('erro').classList.remove('tela-oculta');
-    return;
-  }
-
+  const nome = document.getElementById('pedido-nome').value;
+  const telefone = document.getElementById('pedido-telefone').value;
+  const itens = document.getElementById('pedido-itens').value;
+  const observacao = document.getElementById('pedido-observacao').value;
+  
   try {
-    const resposta = await fetch(WORKER_URL + '/api/ver?subdomain=' + encodeURIComponent(subdomain));
+    const resposta = await fetch(WORKER_URL + '/api/pedido', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        loja_id: lojaIdAtual,
+        nome_cliente: nome,
+        telefone: telefone,
+        itens: itens,
+        observacao: observacao
+      })
+    });
+    
     const dados = await resposta.json();
     
-    if (!resposta.ok || !dados.sucesso) throw new Error('Loja não encontrada');
-
-    const loja = dados.loja;
-    const fotos = dados.fotos || [];
-    const videos = dados.videos || [];
-    const musicas = dados.musicas || [];
-    const templateId = loja.template_id || 'consult-pro';
-    const renderFn = templatesHTML[templateId] || renderDefault;
-
-    document.getElementById('titulo-loja').textContent = loja.nome_loja;
-    document.getElementById('conteudo-loja').innerHTML = renderFn(loja, fotos, videos, musicas);
-    document.getElementById('loading').classList.add('tela-oculta');
-    document.getElementById('conteudo-loja').classList.remove('tela-oculta');
-
+    if (dados.sucesso) {
+      alert('✅ Pedido enviado!\n\nO dono da loja entrará em contato com você em breve pelo WhatsApp.');
+      fecharFormularioPedido();
+    } else {
+      alert('❌ Erro: ' + (dados.erro || 'Tente novamente'));
+    }
   } catch (erro) {
-    document.getElementById('loading').classList.add('tela-oculta');
-    document.getElementById('erro').classList.remove('tela-oculta');
+    alert('❌ Erro ao enviar pedido. Tente novamente.');
   }
-}
+});
 
-carregarLoja();
+// Fechar modal ao clicar fora
+document.getElementById('modal-pedido').addEventListener('click', function(e) {
+  if (e.target === this) fecharFormularioPedido();
+});
 </script>
-</body>
-</html>
+<button data-nav="pedidos" data-goto="pedidos" class="nav-btn flex flex-col items-center gap-1 py-2 px-4 rounded-xl transition no-tap text-slate-400">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+  </svg>
+  <span class="text-[11px] font-medium">Pedidos</span>
+</button>
+<div id="screen-pedidos" class="screen hidden w-full h-full overflow-y-auto scrollbar-hide bg-[#f8fafc]">
+  <div class="px-5 pt-3 pb-28">
+    <div class="flex items-center gap-3 mb-5">
+      <button data-goto="home" class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center no-tap active:scale-95">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a2540" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h2 class="text-[20px] font-bold text-[#0a2540]">Pedidos</h2>
+    </div>
+
+    <div class="bg-white rounded-[28px] p-5 shadow-sm border border-slate-100 mb-4">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold text-[16px] text-[#0a2540]">Pedidos Novos</h3>
+        <button onclick="carregarPedidos()" class="text-[#00c2a8] text-sm font-semibold">Atualizar</button>
+      </div>
+      <div id="lista-pedidos" class="space-y-3">
+        <p class="text-center text-slate-500 py-8">Nenhum pedido novo</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 
               <script>
-                              const R2_PUBLIC_URL = 'https://pub-4c6d087b787a47b8ae27e1d94b5725e1.r2.dev';
+                              // Rota para criar pedido
+if (url.pathname === '/api/pedido' && request.method === 'POST') return await criarPedido(request, env);
 
-export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
+// Rota para listar pedidos
+if (url.pathname === '/api/pedidos' && request.method === 'GET') return await listarPedidos(request, env);
 
-    if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Access-Control-Max-Age': '86400',
-        },
-      });
-    }
+// Rota para atualizar status do pedido
+if (url.pathname === '/api/pedido-status' && request.method === 'PUT') return await atualizarStatusPedido(request, env);
 
-    if (url.pathname === '/api/criar-loja' && request.method === 'POST') return await criarLoja(request, env);
-    if (url.pathname === '/api/ver' && request.method === 'GET') return await verLoja(request, env);
-    if (url.pathname === '/api/upload-foto' && request.method === 'POST') return await uploadFoto(request, env);
-    if (url.pathname === '/api/listar-fotos' && request.method === 'GET') return await listarFotos(request, env);
-    if (url.pathname === '/api/deletar-foto' && request.method === 'POST') return await deletarFoto(request, env);
-
-    return new Response('Microfood API Online - SiteOne v1.0', {
-      headers: { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' }
-    });
-  },
-};
-
-async function criarLoja(request, env) {
+async function criarPedido(request, env) {
   try {
     const dados = await request.json();
-    const { nome, nome_loja, subdomain, nicho, plano, zap, template_id } = dados;
-
-    if (!nome || !nome_loja || !subdomain || !nicho || !plano) {
+    const { loja_id, nome_cliente, telefone, itens, observacao } = dados;
+    
+    if (!loja_id || !nome_cliente || !itens) {
       return new Response(JSON.stringify({ erro: 'Campos obrigatórios ausentes' }), {
         status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
-
-    const subdomainLimpo = subdomain.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '').substring(0, 30);
-    if (subdomainLimpo.length < 3) {
-      return new Response(JSON.stringify({ erro: 'Domínio muito curto' }), {
-        status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-      });
-    }
-
-    const existente = await env.DB.prepare('SELECT id FROM lojas WHERE subdomain = ?').bind(subdomainLimpo).first();
-    if (existente) {
-      return new Response(JSON.stringify({ erro: 'Domínio já em uso' }), {
-        status: 409, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-      });
-    }
-
-    const idLoja = 'loja_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    const dataExpira = new Date(); dataExpira.setDate(dataExpira.getDate() + 30);
-    const dataCobranca = new Date(); dataCobranca.setDate(dataCobranca.getDate() + 30);
-
+    
+    const idPedido = 'ped_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const agora = new Date().toISOString();
+    
     await env.DB.prepare(`
-      INSERT INTO lojas (id, nome, nome_loja, subdomain, nicho, plano, template_id, setup_pago, mensal_pago, ativa, zap, data_expira_midia, data_proxima_cobranca)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0, 1, ?, ?, ?)
-    `).bind(idLoja, nome, nome_loja, subdomainLimpo, nicho, plano, template_id || null, zap || '', dataExpira.toISOString().split('T')[0], dataCobranca.toISOString().split('T')[0]).run();
-
-    return new Response(JSON.stringify({
-      sucesso: true,
-      loja: { id: idLoja, nome: nome_loja, subdomain: subdomainLimpo, plano, nicho, template_id: template_id || null }
-    }), { status: 201, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
+      INSERT INTO pedidos (id, loja_id, nome_cliente, telefone, itens, observacao, status, data_criacao)
+      VALUES (?, ?, ?, ?, ?, ?, 'novo', ?)
+    `).bind(idPedido, loja_id, nome_cliente, telefone || '', itens, observacao || '', agora).run();
+    
+    return new Response(JSON.stringify({ sucesso: true, pedido_id: idPedido }), {
+      status: 201, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
   } catch (erro) {
-    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    return new Response(JSON.stringify({ erro: erro.message }), {
+      status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
   }
 }
 
-async function verLoja(request, env) {
-  try {
-    const url = new URL(request.url);
-    const subdomain = url.searchParams.get('subdomain');
-    if (!subdomain) return new Response(JSON.stringify({ erro: 'Subdomínio não fornecido' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
-    const loja = await env.DB.prepare('SELECT * FROM lojas WHERE subdomain = ?').bind(subdomain).first();
-    if (!loja) return new Response(JSON.stringify({ erro: 'Loja não encontrada' }), { status: 404, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
-    const fotos = await env.DB.prepare('SELECT * FROM midias WHERE loja_id = ? AND tipo = ? AND ativa = 1').bind(loja.id, 'foto').all();
-
-    let videos = [];
-    let musicas = [];
-    if (loja.template_id) {
-      const vids = await env.DB.prepare('SELECT * FROM videos_autorais WHERE template_id = ? ORDER BY ordem').bind(loja.template_id).all();
-      videos = vids.results || [];
-      
-      const musics = await env.DB.prepare('SELECT * FROM musicas_autorais WHERE template_id = ? ORDER BY ordem').bind(loja.template_id).all();
-      musicas = musics.results || [];
-    }
-
-    return new Response(JSON.stringify({ 
-      sucesso: true, 
-      loja, 
-      fotos: fotos.results || [],
-      videos,
-      musicas
-    }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-  } catch (erro) {
-    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-  }
-}
-
-async function uploadFoto(request, env) {
-  try {
-    const formData = await request.formData();
-    const arquivo = formData.get('foto');
-    const lojaId = formData.get('loja_id');
-
-    if (!arquivo || !lojaId) return new Response(JSON.stringify({ erro: 'Arquivo ou loja_id ausente' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
-    const tipoValido = ['image/jpeg', 'image/png', 'image/webp'].includes(arquivo.type);
-    if (!tipoValido) return new Response(JSON.stringify({ erro: 'Formato inválido. Use JPG, PNG ou WEBP.' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
-    if (arquivo.size > 5 * 1024 * 1024) return new Response(JSON.stringify({ erro: 'Arquivo muito grande. Máximo 5MB.' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
-    const loja = await env.DB.prepare('SELECT plano FROM lojas WHERE id = ?').bind(lojaId).first();
-    if (!loja) return new Response(JSON.stringify({ erro: 'Loja não encontrada' }), { status: 404, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
-    const rotacao = { FREE: 15, BASIC: 90, PLUS: 15, PRO: 0 }[loja.plano] || 30;
-    const dataExpira = new Date();
-    if (rotacao > 0) dataExpira.setDate(dataExpira.getDate() + rotacao);
-
-    const ext = arquivo.name.split('.').pop().toLowerCase();
-    const r2Key = `lojas/${lojaId}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
-
-    await env.FOTOS.put(r2Key, arquivo.stream(), { httpMetadata: { contentType: arquivo.type } });
-    const urlPublica = `${R2_PUBLIC_URL}/${r2Key}`;
-
-    const idMidia = 'mid_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    await env.DB.prepare(`
-      INSERT INTO midias (id, loja_id, tipo, url, r2_key, data_upload, data_expira, ativa)
-      VALUES (?, ?, 'foto', ?, ?, ?, ?, 1)
-    `).bind(idMidia, lojaId, urlPublica, r2Key, new Date().toISOString().split('T')[0], rotacao > 0 ? dataExpira.toISOString().split('T')[0] : null).run();
-
-    return new Response(JSON.stringify({ sucesso: true, midia: { id: idMidia, url: urlPublica, data_expira: rotacao > 0 ? dataExpira.toISOString().split('T')[0] : 'Nunca' } }), { status: 201, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
-  } catch (erro) {
-    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-  }
-}
-
-async function listarFotos(request, env) {
+async function listarPedidos(request, env) {
   try {
     const url = new URL(request.url);
     const lojaId = url.searchParams.get('loja_id');
-    if (!lojaId) return new Response(JSON.stringify({ erro: 'loja_id ausente' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
-    const midias = await env.DB.prepare('SELECT * FROM midias WHERE loja_id = ? AND tipo = ? AND ativa = 1 ORDER BY data_upload DESC').bind(lojaId, 'foto').all();
-    return new Response(JSON.stringify({ sucesso: true, midias: midias.results || [] }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    const status = url.searchParams.get('status') || 'novo';
+    
+    if (!lojaId) {
+      return new Response(JSON.stringify({ erro: 'loja_id ausente' }), {
+        status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+    
+    const pedidos = await env.DB.prepare(
+      'SELECT * FROM pedidos WHERE loja_id = ? AND status = ? ORDER BY data_criacao DESC'
+    ).bind(lojaId, status).all();
+    
+    return new Response(JSON.stringify({ sucesso: true, pedidos: pedidos.results || [] }), {
+      status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
   } catch (erro) {
-    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    return new Response(JSON.stringify({ erro: erro.message }), {
+      status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
   }
 }
 
-async function deletarFoto(request, env) {
+async function atualizarStatusPedido(request, env) {
   try {
     const dados = await request.json();
-    const { midia_id, loja_id } = dados;
-    if (!midia_id || !loja_id) return new Response(JSON.stringify({ erro: 'IDs ausentes' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
-    const midia = await env.DB.prepare('SELECT * FROM midias WHERE id = ? AND loja_id = ?').bind(midia_id, loja_id).first();
-    if (!midia) return new Response(JSON.stringify({ erro: 'Mídia não encontrada' }), { status: 404, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-
-    if (midia.r2_key) await env.FOTOS.delete(midia.r2_key);
-    await env.DB.prepare('UPDATE midias SET ativa = 0 WHERE id = ?').bind(midia_id).run();
-
-    return new Response(JSON.stringify({ sucesso: true }), { status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    const { pedido_id, status } = dados;
+    
+    if (!pedido_id || !status) {
+      return new Response(JSON.stringify({ erro: 'pedido_id e status obrigatórios' }), {
+        status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+    
+    await env.DB.prepare(
+      'UPDATE pedidos SET status = ? WHERE id = ?'
+    ).bind(status, pedido_id).run();
+    
+    return new Response(JSON.stringify({ sucesso: true }), {
+      status: 200, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
   } catch (erro) {
-    return new Response(JSON.stringify({ erro: erro.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    return new Response(JSON.stringify({ erro: erro.message }), {
+      status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
   }
 }
+
+// Carregar pedidos
+async function carregarPedidos() {
+  const lojaId = 'loja_demo'; // Substituir pelo ID real da loja
+  const lista = document.getElementById('lista-pedidos');
+  
+  try {
+    const resposta = await fetch(`https://microfood.hdmicro.workers.dev/api/pedidos?loja_id=${lojaId}&status=novo`);
+    const dados = await resposta.json();
+    
+    if (dados.sucesso && dados.pedidos.length > 0) {
+      lista.innerHTML = dados.pedidos.map(p => `
+        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
+          <div class="flex items-start justify-between mb-2">
+            <div>
+              <p class="font-semibold text-[#0a2540]">${p.nome_cliente}</p>
+              <p class="text-xs text-slate-500">${p.telefone || 'Sem telefone'}</p>
+            </div>
+            <span class="text-xs text-slate-400">${new Date(p.data_criacao).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</span>
+          </div>
+          <div class="bg-white rounded-xl p-3 mb-3">
+            <p class="text-sm text-[#0a2540] font-medium">${p.itens}</p>
+            ${p.observacao ? `<p class="text-xs text-slate-500 mt-2">Obs: ${p.observacao}</p>` : ''}
+          </div>
+          <button onclick="marcarAtendido('${p.id}')" class="w-full bg-[#00c2a8] text-[#0a2540] font-semibold py-2 rounded-xl text-sm">
+            ✓ Marcar como atendido
+          </button>
+        </div>
+      `).join('');
+    } else {
+      lista.innerHTML = '<p class="text-center text-slate-500 py-8">Nenhum pedido novo</p>';
+    }
+  } catch (erro) {
+    lista.innerHTML = '<p class="text-center text-red-500 py-8">Erro ao carregar pedidos</p>';
+  }
+}
+
+async function marcarAtendido(pedidoId) {
+  try {
+    await fetch('https://microfood.hdmicro.workers.dev/api/pedido-status', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pedido_id: pedidoId, status: 'atendido' })
+    });
+    carregarPedidos();
+  } catch (erro) {
+    alert('Erro ao atualizar pedido');
+  }
+}
+
+// Carregar pedidos ao abrir a aba
+document.querySelector('[data-goto="pedidos"]').addEventListener('click', () => {
+  setTimeout(carregarPedidos, 300);
+});
 
 
               </script>
